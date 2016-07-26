@@ -10,8 +10,10 @@ This cookbook installs and configures Nexus Repository Manager OSS v3 (http://ww
 
 # Usage
 
-Include default recipe or use nexus3 resource to download and install the latest Nexus Repository Manager OSS v3.
-Use nexus3_api resource to configure Nexus Repository Manager OSS v3.
+Include [default](https://github.com/dhoer/chef-nexus3#default recipe or use 
+[nexus3](https://github.com/dhoer/chef-nexus3#nexus3 resource to download and install 
+the latest Nexus Repository Manager OSS v3.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus Repository Manager OSS v3.
 
 ## Requirements
 
@@ -181,17 +183,17 @@ expect(chef_run).to install_nexus('resource_name').with(
       
 Nexus3 Cookbook Matchers
 
-- install_nexus(resource_name)
+- install_nexus3(resource_name)
 
 ## Getting Help
 
 - Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus).
-- Report bugs and discuss potential features in [Github issues](https://github.com/dhoer/chef-nexus/issues).
+- Report bugs and discuss potential features in [Github issues](https://github.com/dhoer/chef-nexus3/issues).
 
 ## Contributing
 
-Please refer to [CONTRIBUTING](https://github.com/dhoer/chef-nexus/blob/master/CONTRIBUTING.md).
+Please refer to [CONTRIBUTING](https://github.com/dhoer/chef-nexus3/blob/master/CONTRIBUTING.md).
 
 ## License
 
-MIT - see the accompanying [LICENSE](https://github.com/dhoer/chef-nexus/blob/master/LICENSE.md) file for details.
+MIT - see the accompanying [LICENSE](https://github.com/dhoer/chef-nexus3/blob/master/LICENSE.md) file for details.
