@@ -1,0 +1,13 @@
+[Unit]
+Description=nexus service
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=<%=@home%>/bin/nexus start
+ExecStop=<%=@home%>/bin/nexus stop
+User=<%=@user%>
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
