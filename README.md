@@ -101,11 +101,17 @@ include_recipe 'nexus3'
 
 Downloads and installs the latest Nexus Repository Manager OSS v3.
 
+### Actions
+- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
+- `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
+When this resource is notified, this resource block is either run immediately or it is queued up to be run 
+at the end of the chef-client run.
+   
 ### Attributes
 
 - `servicename` - Name of service. Default value is the name of the resource block.
-- `user` - 
-- `group` -
+- `user` - The owner of nexus3. Creates a nexus user when nil or uses value passed in. Default `nil`.
+- `group` - The group of nexus3. Creates a nexus group when nil or uses value passed in. Default `nil`.
 - `url` - The download URL of latest Nexus Repository Manager OSS v3. This can be updated to
 download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
 Default `node['nexus3']['url']`.
@@ -167,6 +173,26 @@ nexus3 'nexus' do
   action :install
 end
 ```
+
+## nexus3_api
+
+Configures Nexus Repository Manager OSS v3 via APIs.
+
+### Actions
+- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
+- `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
+When this resource is notified, this resource block is either run immediately or it is queued up to be run 
+at the end of the chef-client run.
+
+### Attributes
+
+- `name` - Name of script. Default value is the name of the resource block.
+- `type` - Type of script. Default `groovy`.
+- `content` - Content of script.  Ignored if cookbook and file attributes are provided. Default `nil`*[]: 
+
+
+### Examples
+
 
 ## ChefSpec Matchers
 
