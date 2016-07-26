@@ -10,8 +10,8 @@ This cookbook installs and configures Nexus Repository Manager OSS v3 (http://ww
 
 # Usage
 
-Include [default](https://github.com/dhoer/chef-nexus3#default recipe or use 
-[nexus3](https://github.com/dhoer/chef-nexus3#nexus3 resource to download and install 
+Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
+[nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install 
 the latest Nexus Repository Manager OSS v3.
 Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus Repository Manager OSS v3.
 
