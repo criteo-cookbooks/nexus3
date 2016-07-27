@@ -9,5 +9,7 @@ issues_url 'https://github.com/dhoer/chef-nexus3/issues' if respond_to?(:issues_
 version '0.1.0'
 
 supports 'centos'
+supports 'debian'
+supports 'fedora'
 supports 'redhat'
-# supports 'ubuntu'
+supports 'ubuntu'

@@ -6,14 +6,14 @@
 [cookbook]: https://supermarket.chef.io/cookbooks/nexus3
 [linux]: https://travis-ci.org/dhoer/chef-nexus3/branches
 
-This cookbook installs and configures Nexus Repository Manager OSS v3 (http://www.sonatype.com/download-oss-sonatype).
+This cookbook installs and configures Nexus 3 Repository Manager OSS (http://www.sonatype.com/download-oss-sonatype).
 
 # Usage
 
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install 
-the latest Nexus Repository Manager OSS v3.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus Repository Manager OSS v3.
+the latest Nexus 3 Repository Manager OSS.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager OSS.
 
 ## Requirements
 
@@ -21,23 +21,24 @@ Nexus Repository Manager requires a Java 8 Runtime Environment (JRE) from Oracle
  
 ### Platforms
 
-- CentOS, RedHat
+- CentOS, RedHat, Fedora
+- Debian, Ubuntu
 
 # Recipes
 
 ## default
 
-Downloads and installs the latest Nexus Repository Manager OSS v3.
+Downloads and installs the latest Nexus 3 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of latest Nexus Repository Manager OSS v3. This can be updated to
+- `node['nexus3']['url']` - The download URL of latest Nexus 3 Repository Manager OSS. This can be updated to
 download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
 - `node['nexus3']['data']` -  Data directory. Default `/opt/repository/data`.
 - `node['nexus3']['root']` -  Root directory. Default `/opt/nexus`.
-- `node['nexus3']['home']` -  Link to install directory. Default `/opt/nexus/nexus3`.
+- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus3`.
 - `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
 - `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/bin/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
@@ -53,8 +54,8 @@ Default `{ port: '8081', context_path: '/' }`.
    '-Dkaraf.base=.',
    '-Dkaraf.etc=etc',
    '-Djava.util.logging.config.file=etc/java.util.logging.properties',
-   "-Dkaraf.data=#{data}",
-   "-Djava.io.tmpdir=#{data}/tmp",
+   "-Dkaraf.data=#{node['nexus3']['data']}",
+   "-Djava.io.tmpdir=#{node['nexus3']['data']}/tmp",
    '-Dkaraf.startLocalConsole=false']`.
 
 ### Examples
@@ -112,7 +113,7 @@ at the end of the chef-client run.
 - `servicename` - Name of service. Default value is the name of the resource block.
 - `user` - The owner of nexus3. Creates a nexus user when nil or uses value passed in. Default `nil`.
 - `group` - The group of nexus3. Creates a nexus group when nil or uses value passed in. Default `nil`.
-- `url` - The download URL of latest Nexus Repository Manager OSS v3. This can be updated to
+- `url` - The download URL of latest Nexus 3 Repository Manager OSS. This can be updated to
 download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
 Default `node['nexus3']['url']`.
 - `checksum` (optional) - The checksum of Nexus Repository Manager. Default `node['nexus3']['checksum']`.
@@ -176,10 +177,13 @@ end
 
 ## nexus3_api
 
-Configures Nexus Repository Manager OSS v3 via APIs.
+Configures Nexus 3 Repository Manager OSS via API.
 
 ### Actions
-- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
+- `:run` - Default. Run the script on the Nexus 3 Repository Manager. If cookbook_source or content attribute is 
+provided, then the script will be uploaded first before running.
+- `:upload` - Uploads script to Nexus 3 Repository Manager.
+- `:delete` - Deletes script on Nexus 3 Repository Manager.
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
 When this resource is notified, this resource block is either run immediately or it is queued up to be run 
 at the end of the chef-client run.
@@ -187,12 +191,28 @@ at the end of the chef-client run.
 ### Attributes
 
 - `name` - Name of script. Default value is the name of the resource block.
+- `username` - Username to run the script as. Default `admin`. 
+- `password` - Password of username.  Default `admin123`.  
+- `content` - Content of script. Ignored if cookbook_source attribute provided. Default `nil`. 
+- `cookbook_name` - Cookbook name that contains the cookbook file to use. Default `nexus3`. 
+- `cookbook_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
+in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
+- `args` - Array of arguments to be used in script. Default `nil`.
 - `type` - Type of script. Default `groovy`.
-- `content` - Content of script.  Ignored if cookbook and file attributes are provided. Default `nil`*[]: 
-
+- `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
 
 ### Examples
 
+#### Simple repository creation script
+
+Creates createMavenPrivateRepo.json script and uploads to Nexus 3 Repository Manager and then runs the script. 
+
+```ruby
+nexus3_api 'createMavenPrivateRepo' do
+  content "repository.createMavenHosted('private')"
+  action :run
+end
+```
 
 ## ChefSpec Matchers
 
@@ -202,7 +222,7 @@ your own cookbooks.
 Example Matcher Usage
 
 ```ruby
-expect(chef_run).to install_nexus('resource_name').with(
+expect(chef_run).to install_nexus('nexus').with(
   data: '/opt/repository/data'
 )
 ```
