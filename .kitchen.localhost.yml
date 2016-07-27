@@ -12,5 +12,5 @@ platforms:
 suites:
 - name: default
   run_list:
-    - nexus_test3::default
+    - nexus3_test::default
   attributes:
