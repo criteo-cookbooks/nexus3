@@ -13,7 +13,6 @@ This cookbook installs and configures Nexus 3 Repository Manager OSS (http://www
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install 
 the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager OSS.
 
 ## Requirements
 
@@ -173,58 +172,6 @@ nexus3 'nexus' do
   )
   action :install
 end
-```
-
-## nexus3_api
-
-Configures Nexus 3 Repository Manager OSS via API.
-
-### Actions
-- `:run` - Default. Run the script on the Nexus 3 Repository Manager. If cookbook_source or content attribute is 
-provided, then the script will be uploaded first before running.
-- `:upload` - Uploads script to Nexus 3 Repository Manager.
-- `:delete` - Deletes script on Nexus 3 Repository Manager.
-- `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
-When this resource is notified, this resource block is either run immediately or it is queued up to be run 
-at the end of the chef-client run.
-
-### Attributes
-
-- `name` - Name of script. Default value is the name of the resource block.
-- `username` - Username to run the script as. Default `admin`. 
-- `password` - Password of username.  Default `admin123`.  
-- `content` - Content of script. Ignored if cookbook_source attribute provided. Default `nil`. 
-- `cookbook_name` - Cookbook name that contains the cookbook file to use. Default `nexus3`. 
-- `cookbook_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
-in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
-- `args` - Array of arguments to be used in script. Default `nil`.
-- `type` - Type of script. Default `groovy`.
-- `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
-
-### Examples
-
-#### Simple repository creation script
-
-Creates createMavenPrivateRepo.json script and uploads to Nexus 3 Repository Manager and then runs the script. 
-
-```ruby
-nexus3_api 'createMavenPrivateRepo' do
-  content "repository.createMavenHosted('private')"
-  action :run
-end
-```
-
-## ChefSpec Matchers
-
-The nexus3 cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test 
-your own cookbooks.
-
-Example Matcher Usage
-
-```ruby
-expect(chef_run).to install_nexus('nexus').with(
-  data: '/opt/repository/data'
-)
 ```
       
 Nexus3 Cookbook Matchers
