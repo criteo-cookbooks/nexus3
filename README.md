@@ -196,17 +196,18 @@ at the end of the chef-client run.
 
 ### Attributes
 
-- `name` - Name of script. Default value is the name of the resource block.
+- `script_name` - Name of script. Default value is the name of the resource block.
 - `username` - Username to run the script as. Default `admin`. 
 - `password` - Password of username.  Default `admin123`.  
 - `content` - Content of script. Ignored if cookbook_source attribute provided. Default `nil`. 
-- `cookbook_name` - Cookbook name that contains the cookbook file to use. Default `nexus3`. 
+- `cookbook_name` - Cookbook name that contains the cookbook file to use. 
+Default `node['nexus3']['api']['cookbook_name']`. 
 - `cookbook_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
 in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
-- `args` - Array of arguments to be used in script. Default `nil`.
-- `type` - Type of script. Default `groovy`.
-- `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
-- `sensitive` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
+- `args` - Array, Hash or String of arguments to be used in script. Default `nil`.
+- `type` - Type of script. Default `node['nexus3']['api']['type']`.
+- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
+- `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
 
 ### Examples
 
@@ -237,6 +238,10 @@ expect(chef_run).to install_nexus('nexus').with(
 Nexus3 Cookbook Matchers
 
 - install_nexus3(resource_name)
+- run_nexus3_api(resource_name)
+- upload_nexus3_api(resource_name)
+- delete_nexus3_api(resource_name)
+- list_nexus3_api(resource_name)
 
 ## Getting Help
 
