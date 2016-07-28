@@ -6,7 +6,8 @@
 [cookbook]: https://supermarket.chef.io/cookbooks/nexus3
 [linux]: https://travis-ci.org/dhoer/chef-nexus3/branches
 
-This cookbook installs and configures Nexus 3 Repository Manager OSS (http://www.sonatype.com/download-oss-sonatype).
+This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS 
+(http://www.sonatype.com/download-oss-sonatype).
 
 __WARNING!__ Major version zero (0.y.z) is for initial development. Anything may change at any time. 
 The public API should not be considered stable.
