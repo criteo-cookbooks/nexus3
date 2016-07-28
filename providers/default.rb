@@ -83,6 +83,7 @@ action :install do
 
     template "#{install_dir}/bin/nexus.rc" do
       source 'nexus.rc.erb'
+      cookbook 'nexus3'
       variables(user: usr)
       mode '0644'
       owner usr
@@ -119,6 +120,7 @@ action :install do
     when 'systemd'
       template "/etc/systemd/system/#{new_resource.servicename}.service" do
         source 'systemd.erb'
+        cookbook 'nexus3'
         mode '0755'
         variables(user: usr, home: new_resource.home)
         notifies(:restart, "service[#{new_resource.servicename}]")
