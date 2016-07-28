@@ -25,30 +25,10 @@ def scripts_dir(scripts_dir = "#{cache_dir}/scripts")
   scripts_dir
 end
 
-def fetch_list
-  list_file = "#{list_dir}/#{new_resource.script_name.gsub(' ', '_')}.json"
-
-  execute "list #{new_resource.script_name}" do
-    command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
-      " -o \"#{list_file}\""
-    live_stream new_resource.live_stream
-    sensitive new_resource.sensitive
-  end
-
-  file 'ensure file exists' do
-    path list_file
-    content '{}'
-    mode '0755'
-    action :create_if_missing
-  end
-
-  list_file
-end
-
 def upload_script
   delete_script
 
-  file "#{cache_dir}/#{new_resource.script_name}.json" do
+  file "#{scripts_dir}/#{new_resource.script_name}.json" do
     content <<EOF
 {
   "name": "#{new_resource.script_name}",
@@ -58,13 +38,12 @@ def upload_script
 EOF
     mode '0755'
     not_if { new_resource.content.nil? }
-    only_if { new_resource.cookbook_source.nil? }
   end
 
-  execute 'upload script' do
+  execute "upload script #{new_resource.script_name}" do
     command "curl -v --fail -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
-    cwd cache_dir
+    cwd scripts_dir
     live_stream new_resource.live_stream
     sensitive new_resource.sensitive
     action :run
@@ -74,8 +53,9 @@ end
 def run_script
   upload_script
   args = new_resource.args.nil? ? '' : "-d #{new_resource.args.join(' -d ')}"
-  execute "curl -v -X POST -u #{new_resource.username}:#{new_resource.password}" \
-        " --header \"Content-Type: application/json\" \"#{new_resource.endpoint}\" #{args}" do
+  execute "run script #{new_resource.script_name}" do
+    command "curl -v -X POST -u #{new_resource.username}:#{new_resource.password}" \
+        " --header \"Content-Type: application/json\" \"#{new_resource.endpoint}\" #{args}"
     live_stream new_resource.live_stream
     sensitive new_resource.sensitive
     action :run
@@ -83,7 +63,7 @@ def run_script
 end
 
 def delete_script
-  execute "delete #{new_resource.script_name}" do
+  execute "delete script #{new_resource.script_name}" do
     command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
       " '#{new_resource.endpoint}/#{new_resource.script_name}'"
     live_stream new_resource.live_stream
@@ -93,41 +73,39 @@ def delete_script
 end
 
 def list_scripts
-  ruby_block 'display list' do
-    block do
-      puts '' # line break
-      require 'json'
-      match = false
-      sleep(15) # wait for api transaction to go through
-      file = ::File.read(fetch_list)
-      obj = ::JSON.parse(file)
-      obj.each do |script|
-        if script['name'] == new_resource.script_name
-          if new_resource.sensitive
-            script.delete('content') # suppress content
-            pp script
-          else
-            pp script
-          end
-          match = true
-          break
-        end
-      end
+  list_file = "#{list_dir}/#{new_resource.script_name.tr(' ', '_')}.json"
 
-      unless match
-        if new_resource.sensitive
-          names = []
-          obj.each do |script|
-            script.delete('content') # suppress content
-            names << script
-          end
-          pp names
-        else
-          pp obj
-        end
+  file list_file do
+    content '{}'
+    mode '0755'
+    action :create
+  end
+
+  execute "write #{list_file}" do
+    command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
+      " -o \"#{list_file}\""
+    live_stream new_resource.live_stream
+    sensitive new_resource.sensitive
+    action :run
+  end
+
+  ruby_block "list #{new_resource.script_name}" do
+    block do
+      require 'json'
+      puts '' # line break
+      match = false
+      obj = ::JSON.parse(::File.read(list_file))
+      obj.each do |script|
+        script.delete('content') if new_resource.sensitive # suppress content
+        next unless script['name'] == new_resource.script_name
+        pp script
+        match = true
+        break
       end
+      pp obj unless match
     end
     action :run
+    only_if { ::File.exist?(list_file) }
   end
 end
 
