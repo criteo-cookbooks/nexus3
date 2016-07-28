@@ -8,6 +8,9 @@
 
 This cookbook installs and configures Nexus 3 Repository Manager OSS (http://www.sonatype.com/download-oss-sonatype).
 
+__WARNING!__ Major version zero (0.y.z) is for initial development. Anything may change at any time. 
+The public API should not be considered stable.
+
 # Usage
 
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
@@ -180,10 +183,13 @@ end
 Configures Nexus 3 Repository Manager OSS via API.
 
 ### Actions
-- `:run` - Default. Run the script on the Nexus 3 Repository Manager. If cookbook_source or content attribute is 
-provided, then the script will be uploaded first before running.
-- `:upload` - Uploads script to Nexus 3 Repository Manager.
-- `:delete` - Deletes script on Nexus 3 Repository Manager.
+- `:run` - Default. Run the script on repository manager. If cookbook_source or content attribute is 
+provided, the script will be added or updated on repository manager before running.
+- `:upload` - Adds or updates script on repository manager.
+- `:delete` - Deletes script from repository manager.
+- `:list` - Returns a list of scripts, including content, stored on the repository manager. If the script name matches
+resource name, then only its script content is returned from repository manager.  If sensitive is true, the content 
+will be suppressed in the output.
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
 When this resource is notified, this resource block is either run immediately or it is queued up to be run 
 at the end of the chef-client run.
@@ -200,6 +206,7 @@ in `#{cookbook_name}/files`. The path must include the file name and its extensi
 - `args` - Array of arguments to be used in script. Default `nil`.
 - `type` - Type of script. Default `groovy`.
 - `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
+- `sensitive` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
 
 ### Examples
 
