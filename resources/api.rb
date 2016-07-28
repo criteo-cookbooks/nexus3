@@ -10,6 +10,7 @@ attribute :cookbook_source, kind_of: [String, NilClass]
 attribute :args, kind_of: [Array, NilClass]
 attribute :type, kind_of: String, default: lazy { node['nexus3']['api']['type'] }
 attribute :endpoint, kind_of: String, default: lazy { node['nexus3']['api']['endpoint'] }
+attribute :fail, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['fail'] }
 attribute :live_stream, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['live_stream'] }
 attribute :sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
 

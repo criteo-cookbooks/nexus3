@@ -33,4 +33,4 @@ suites:
        nexus3:
          api:
            sensitive: false
-           live_stream: false
+           live_stream: true

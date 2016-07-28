@@ -41,7 +41,7 @@ EOF
   end
 
   execute "upload script #{new_resource.script_name}" do
-    command "curl -v --fail -X POST -u #{new_resource.username}:#{new_resource.password}" \
+    command "curl -v #{fail_flag} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
     cwd scripts_dir
     live_stream new_resource.live_stream
@@ -50,12 +50,16 @@ EOF
   end
 end
 
+def fail_flag
+  new_resource.fail ? '--fail' : ''
+end
+
 def run_script
   upload_script
   args = new_resource.args.nil? ? '' : "-d #{new_resource.args.join(' -d ')}"
   execute "run script #{new_resource.script_name}" do
-    command "curl -v -X POST -u #{new_resource.username}:#{new_resource.password}" \
-        " --header \"Content-Type: application/json\" \"#{new_resource.endpoint}\" #{args}"
+    command "curl -v #{fail_flag} -X POST -u #{new_resource.username}:#{new_resource.password}" \
+        " --header \"Content-Type: text/plain\" '#{new_resource.endpoint}/#{new_resource.script_name}/run' #{args}"
     live_stream new_resource.live_stream
     sensitive new_resource.sensitive
     action :run
