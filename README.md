@@ -185,12 +185,11 @@ Configures Nexus 3 Repository Manager OSS via API.
 
 ### Actions
 - `:run` - Default. Run the script on repository manager. If cookbook_source or content attribute is 
-provided, the script will be added or updated on repository manager before running.
-- `:upload` - Adds or updates script on repository manager.
+provided, the script will be created or updated on repository manager before running.
+- `:create` - Creates or updates script on repository manager.
 - `:delete` - Deletes script from repository manager.
 - `:list` - Returns a list of scripts, including content, stored on the repository manager. If the script name matches
-resource name, then only its script content is returned from repository manager.  If sensitive is true, the content 
-will be suppressed in the output.
+resource name, then only its script content is returned from repository manager.  
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
 When this resource is notified, this resource block is either run immediately or it is queued up to be run 
 at the end of the chef-client run.
@@ -202,22 +201,28 @@ at the end of the chef-client run.
 - `password` - Password of username.  Default `admin123`.  
 - `content` - Content of script. Ignored if cookbook_source attribute provided. Default `nil`. 
 - `cookbook_name` - Cookbook name that contains the cookbook file to use. 
-Default `node['nexus3']['api']['cookbook_name']`. 
+Default `nexus3`. 
 - `cookbook_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
 in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
-- `args` - Array, Hash or String of arguments to be used in script. Default `nil`.
-- `type` - Type of script. Default `node['nexus3']['api']['type']`.
-- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
-- `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
+- `args` - String argument or Array of arguments to be used in script. Default `nil`.
+- `type` - Type of script. Default `groovy`.
+- `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
+- `fail_silently` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
+failed attempts, e.g., creating a repo that already exists. Default `true`.
+- `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. Default `false`.
+- `sensitive` - Suppress output. Default `true`.
 
 ### Examples
 
+See [api_examples](https://github.com/dhoer/chef-nexus3/tree/master/api_examples) for more examples of using 
+nexus3_api.  Pull requests adding examples to configure Nexus 3 Repository Manager are welcome and encouraged!
+
 #### Simple repository creation script
 
-Creates createMavenPrivateRepo.json script and uploads to Nexus 3 Repository Manager and then runs the script. 
+Creates or updates private script on Nexus 3 Repository Manager, then runs the script. 
 
 ```ruby
-nexus3_api 'createMavenPrivateRepo' do
+nexus3_api 'private' do
   content "repository.createMavenHosted('private')"
   action :run
 end
@@ -240,7 +245,7 @@ Nexus3 Cookbook Matchers
 
 - install_nexus3(resource_name)
 - run_nexus3_api(resource_name)
-- upload_nexus3_api(resource_name)
+- create_nexus3_api(resource_name)
 - delete_nexus3_api(resource_name)
 - list_nexus3_api(resource_name)
 

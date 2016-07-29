@@ -4,29 +4,20 @@ def whyrun_supported?
   true
 end
 
-def cache_dir(cache_dir = "#{Chef::Config[:file_cache_path]}/nexus")
-  directory cache_dir do
-    recursive true
-  end
-  cache_dir
-end
+def create_script
+  delete_script
 
-def list_dir(list_dir = "#{cache_dir}/list")
-  directory list_dir do
-    recursive true
-  end
-  list_dir
-end
+  scripts_dir = "#{Chef::Config[:file_cache_path]}/nexus/scripts"
 
-def scripts_dir(scripts_dir = "#{cache_dir}/scripts")
   directory scripts_dir do
     recursive true
   end
-  scripts_dir
-end
 
-def upload_script
-  delete_script
+  cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
+    source new_resource.cookbook_source
+    mode '0755'
+    not_if { new_resource.cookbook_source.nil? }
+  end
 
   file "#{scripts_dir}/#{new_resource.script_name}.json" do
     content <<EOF
@@ -38,10 +29,11 @@ def upload_script
 EOF
     mode '0755'
     not_if { new_resource.content.nil? }
+    only_if { new_resource.cookbook_source.nil? }
   end
 
   execute "upload script #{new_resource.script_name}" do
-    command "curl -v #{fail_flag} -X POST -u #{new_resource.username}:#{new_resource.password}" \
+    command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
     cwd scripts_dir
     live_stream new_resource.live_stream
@@ -50,15 +42,25 @@ EOF
   end
 end
 
-def fail_flag
-  new_resource.fail ? '--fail' : ''
+def fail_silently
+  new_resource.fail_silently ? '' : '--fail'
+end
+
+def args(args = new_resource.args)
+  return '' if args.nil?
+  case args
+  when Array
+    "-d '#{args.join("' -d '")}'"
+  when String
+    "-d '#{args}'"
+  end
 end
 
 def run_script
-  upload_script
-  args = new_resource.args.nil? ? '' : "-d #{new_resource.args.join(' -d ')}"
+  create_script unless new_resource.cookbook_source.nil? && new_resource.content.nil?
+
   execute "run script #{new_resource.script_name}" do
-    command "curl -v #{fail_flag} -X POST -u #{new_resource.username}:#{new_resource.password}" \
+    command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: text/plain\" '#{new_resource.endpoint}/#{new_resource.script_name}/run' #{args}"
     live_stream new_resource.live_stream
     sensitive new_resource.sensitive
@@ -77,6 +79,12 @@ def delete_script
 end
 
 def list_scripts
+  list_dir = "#{Chef::Config[:file_cache_path]}/nexus/list"
+
+  directory list_dir do
+    recursive true
+  end
+
   list_file = "#{list_dir}/#{new_resource.script_name.tr(' ', '_')}.json"
 
   file list_file do
@@ -100,7 +108,6 @@ def list_scripts
       match = false
       obj = ::JSON.parse(::File.read(list_file))
       obj.each do |script|
-        script.delete('content') if new_resource.sensitive # suppress content
         next unless script['name'] == new_resource.script_name
         pp script
         match = true
@@ -119,9 +126,9 @@ action :run do
   end
 end
 
-action :upload do
-  converge_by('upload script') do
-    upload_script
+action :create do
+  converge_by('create script') do
+    create_script
   end
 end
 

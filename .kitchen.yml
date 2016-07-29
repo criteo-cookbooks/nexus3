@@ -22,15 +22,14 @@ platforms:
 suites:
   - name: default
     run_list:
-#      - nexus3_test::default
-#      - nexus3_test::list_scripts
-#      - nexus3_test::delete_script
+      - nexus3_test::default
+      - nexus3_test::create_script
+      - nexus3_test::delete_script
       - nexus3_test::run_script
-#      - nexus3_test::upload_script
-#      - nexus3_test::script_content
       - nexus3_test::list_scripts
     attributes:
        nexus3:
          api:
            sensitive: false
-           live_stream: true
+           live_stream: false
+           fail: false
