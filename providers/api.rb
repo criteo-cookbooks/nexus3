@@ -14,6 +14,7 @@ def create_script
   end
 
   cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
+    cookbook new_resource.cookbook_name
     source new_resource.cookbook_source
     mode '0755'
     not_if { new_resource.cookbook_source.nil? }
