@@ -7,8 +7,8 @@ if defined?(ChefSpec)
     ChefSpec::Matchers::ResourceMatcher.new(:nexus3_api, :run, resource_name)
   end
 
-  def update_nexus3_api(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:nexus3_api, :update, resource_name)
+  def create_nexus3_api(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:nexus3_api, :create, resource_name)
   end
 
   def delete_nexus3_api(resource_name)
