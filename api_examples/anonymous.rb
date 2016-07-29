@@ -7,7 +7,7 @@ end
 
 # or you can use json cookbook file included in nexus3
 # nexus3_api 'anonymous' do
-#   cookbook_source 'anonymous.json'
+#   script_source 'anonymous.json'
 #   args 'true' # enable anonymous access
 #   action :run
 # end

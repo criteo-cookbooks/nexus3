@@ -14,10 +14,10 @@ def create_script
   end
 
   cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
-    cookbook new_resource.cookbook_name
-    source new_resource.cookbook_source
+    cookbook new_resource.script_cookbook
+    source new_resource.script_source
     mode '0755'
-    not_if { new_resource.cookbook_source.nil? }
+    not_if { new_resource.script_source.nil? }
   end
 
   file "#{scripts_dir}/#{new_resource.script_name}.json" do
@@ -30,7 +30,7 @@ def create_script
 EOF
     mode '0755'
     not_if { new_resource.content.nil? }
-    only_if { new_resource.cookbook_source.nil? }
+    only_if { new_resource.script_source.nil? }
   end
 
   execute "upload script #{new_resource.script_name}" do
@@ -58,7 +58,7 @@ def args(args = new_resource.args)
 end
 
 def run_script
-  create_script unless new_resource.cookbook_source.nil? && new_resource.content.nil?
+  create_script unless new_resource.script_source.nil? && new_resource.content.nil?
 
   execute "run script #{new_resource.script_name}" do
     command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
@@ -117,7 +117,6 @@ def list_scripts
       pp obj unless match
     end
     action :run
-    only_if { ::File.exist?(list_file) }
   end
 end
 

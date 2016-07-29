@@ -1,7 +1,7 @@
 # creates script, then deletes it
 nexus3_api 'create bar' do
   script_name 'bar'
-  content "repository.createMavenHosted('foo')"
+  content "repository.createMavenHosted('bar')"
   fail_silently false
   action :create
 end

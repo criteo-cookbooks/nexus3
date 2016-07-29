@@ -1,5 +1,5 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
 
-Chef::Config[:chef_gem_compile_time] = false
+CACHE = Chef::Config[:file_cache_path]
 ChefSpec::Coverage.start!

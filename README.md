@@ -184,7 +184,7 @@ end
 Configures Nexus 3 Repository Manager OSS via API.
 
 ### Actions
-- `:run` - Default. Run the script on repository manager. If cookbook_source or content attribute is 
+- `:run` - Default. Run the script on repository manager. If script_source or content attribute is 
 provided, the script will be created or updated on repository manager before running.
 - `:create` - Creates or updates script on repository manager.
 - `:delete` - Deletes script from repository manager.
@@ -199,10 +199,9 @@ at the end of the chef-client run.
 - `script_name` - Name of script. Default value is the name of the resource block.
 - `username` - Username to run the script as. Default `admin`. 
 - `password` - Password of username.  Default `admin123`.  
-- `content` - Content of script. Ignored if cookbook_source attribute provided. Default `nil`. 
-- `cookbook_name` - Cookbook name that contains the cookbook file to use. 
-Default `nexus3`. 
-- `cookbook_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
+- `content` - Content of script. Ignored if script_source attribute provided. Default `nil`. 
+- `script_cookbook` - Cookbook that contains the file to use. Default `nexus3`. 
+- `script_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
 in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
 - `args` - String argument or Array of arguments to be used in script. Default `nil`.
 - `type` - Type of script. Default `groovy`.
