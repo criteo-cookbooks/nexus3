@@ -92,4 +92,5 @@ suites:
   attributes:
     nexus3:
       api:
+        sensitive: false
         wait: true

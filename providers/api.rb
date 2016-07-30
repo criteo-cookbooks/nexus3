@@ -33,6 +33,8 @@ EOF
     only_if { new_resource.script_source.nil? }
   end
 
+  install_curl
+
   execute "upload script #{new_resource.script_name}" do
     command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
@@ -57,8 +59,14 @@ def args(args = new_resource.args)
   end
 end
 
+def install_curl
+  package 'curl' if platform_family?('debian')
+end
+
 def run_script
   create_script unless new_resource.script_source.nil? && new_resource.content.nil?
+
+  install_curl
 
   execute "run script #{new_resource.script_name}" do
     command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
@@ -70,6 +78,8 @@ def run_script
 end
 
 def delete_script
+  install_curl
+
   execute "delete script #{new_resource.script_name}" do
     command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
       " '#{new_resource.endpoint}/#{new_resource.script_name}'"
@@ -93,6 +103,8 @@ def list_scripts
     mode '0755'
     action :create
   end
+
+  install_curl
 
   execute "write #{list_file}" do
     command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
