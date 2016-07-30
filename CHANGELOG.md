@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0 2016-07-29
+
+- Add REST API
+
 ## 0.1.1 2016-07-28
 
 - Fix #1 FileNotFoundException due to Chef searching for template files in a wrapper cookbook
