@@ -200,16 +200,18 @@ at the end of the chef-client run.
 - `username` - Username to run the script as. Default `admin`. 
 - `password` - Password of username.  Default `admin123`.  
 - `content` - Content of script. Ignored if script_source attribute provided. Default `nil`. 
-- `script_cookbook` - Cookbook that contains the file to use. Default `nexus3`. 
-- `script_source` - Name of the file in `#{cookbook_name}/files/default` or the path to a file located 
-in `#{cookbook_name}/files`. The path must include the file name and its extension. . Default `nil`. 
+- `script_cookbook` - Cookbook that contains the file to use. Default `node['nexus3']['api']['script_cookbook']`. 
+- `script_source` - Name of the file in `#{script_cookbook}/files/default` or the path to a file located 
+in `#{script_cookbook}/files`. The path must include the file name and its extension. . Default `nil`. 
 - `args` - String argument or Array of arguments to be used in script. Default `nil`.
-- `type` - Type of script. Default `groovy`.
-- `endpoint` - REST API endpoint. Default `http://localhost:8081/service/siesta/rest/v1/script`.
+- `type` - Type of script. Default `node['nexus3']['api']['type']`.
+- `host` - Nexus host url (including port if necessary). Default `node['nexus3']['api']['host']`.
+- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
 - `fail_silently` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
-failed attempts, e.g., creating a repo that already exists. Default `true`.
-- `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. Default `false`.
-- `sensitive` - Suppress output. Default `true`.
+failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['fail_silently']`.
+- `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. 
+Default `node['nexus3']['api']['live_stream']`.
+- `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
 
 ### Examples
 
