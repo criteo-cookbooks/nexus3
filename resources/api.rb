@@ -9,6 +9,7 @@ attribute :script_cookbook, kind_of: String, default: lazy { node['nexus3']['api
 attribute :script_source, kind_of: [String, NilClass]
 attribute :args, kind_of: [Array, String, NilClass]
 attribute :type, kind_of: String, default: lazy { node['nexus3']['api']['type'] }
+attribute :host, kind_of: String, default: lazy { node['nexus3']['api']['host'] }
 attribute :endpoint, kind_of: String, default: lazy { node['nexus3']['api']['endpoint'] }
 attribute :fail_silently, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['fail_silently'] }
 attribute :live_stream, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['live_stream'] }
