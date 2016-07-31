@@ -214,7 +214,8 @@ failed attempts, e.g., creating a repo that already exists. Default `true`.
 ### Examples
 
 See [api_examples](https://github.com/dhoer/chef-nexus3/tree/master/api_examples) for more examples of using 
-nexus3_api.  Pull requests adding examples to configure Nexus 3 Repository Manager are welcome and encouraged!
+*nexus3_api* resource to configure Nexus Repository Manager.  Pull Requests improving or adding additional 
+API Examples are welcome and encouraged.
 
 #### Simple repository creation script
 
