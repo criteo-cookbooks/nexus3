@@ -12,12 +12,13 @@ end
 # Returns resolved download url, e.g.,
 # http://download.sonatype.com/nexus/3/latest-unix.tar.gz ->
 # http://download.sonatype.com/nexus/3/nexus-3.0.1-01-unix.tar.gz
-def download_url(url = new_resource.url)
+def download_url(url)
   uri = URI(url)
-  response = Net::HTTP.start(uri.host, use_ssl: true, verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
-    http.get uri.request_uri
+  response = Net::HTTP.start(uri.host) { |http| http.get uri.request_uri }
+
+  unless response.is_a?(Net::HTTPRedirection)
+    return response['location'].nil? ? url : response['location']
   end
-  return response['location'] unless response.is_a?(Net::HTTPRedirection)
 
   if response['location'].include?('latest')
     download_url(response['location'])
@@ -36,7 +37,7 @@ end
 
 action :install do
   converge_by('install nexus') do
-    url = download_url
+    url = download_url(new_resource.url)
     filename = filename(url)
     cached_file = ::File.join(Chef::Config[:file_cache_path], filename)
     usr = new_resource.user.nil? ? 'nexus' : new_resource.user

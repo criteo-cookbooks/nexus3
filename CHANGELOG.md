@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 2016-08-01
+
+- Fix #2 Custom url issue
+
 ## 0.2.0 2016-07-29
 
 - Add REST API
