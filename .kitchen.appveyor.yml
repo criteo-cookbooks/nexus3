@@ -15,10 +15,12 @@ platforms:
   - name: windows-2012R2
 
 suites:
-  - name: default
-    run_list:
-      - nexus3_test::default
-    attributes:
-      nexus_test:
-        username: <%= ENV["machine_user"] %>
-        password: <%= ENV["machine_pass"] %>
+- name: default
+  run_list:
+    - nexus3_test::default
+    - nexus3_test::wait
+  attributes:
+    nexus3:
+      api:
+        sensitive: false
+        wait: 120

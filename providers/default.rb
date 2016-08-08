@@ -35,22 +35,34 @@ def version(download_url)
   /\d\.\d+.\d-.\d|\d+.\d-.\d/.match(download_url).to_s # http://rubular.com/r/xutlWB31fR
 end
 
+def usr
+  new_resource.user.nil? ? 'nexus' : new_resource.user
+end
+
+def grp
+  if new_resource.group.nil?
+    platform?('windows') ? 'Administrators' : 'nexus'
+  else
+    new_resource.group
+  end
+end
+
 action :install do
   converge_by('install nexus') do
     url = download_url(new_resource.url)
     filename = filename(url)
     cached_file = ::File.join(Chef::Config[:file_cache_path], filename)
-    usr = new_resource.user.nil? ? 'nexus' : new_resource.user
-    grp = new_resource.group.nil? ? 'nexus' : new_resource.group
 
     group grp do # ~FC021
       system true
-      only_if { new_resource.group.nil? }
+      only_if { grp == 'nexus' }
     end
 
     user usr do # ~FC021
+      comment 'Nexus Repository Manager User'
       home new_resource.root
       shell '/bin/bash'
+      password new_resource.password
       gid grp
       system true
       only_if { new_resource.user.nil? }
@@ -72,14 +84,30 @@ action :install do
       checksum new_resource.checksum unless new_resource.checksum.nil?
       action :create
       not_if { ::File.exist?(install_dir) }
-      notifies(:run, 'execute[untar nexus]', :immediately)
+      notifies(:run, "execute[untar #{filename}]", :immediately) unless platform?('windows')
+      notifies(:run, "batch[unzip #{filename}]", :immediately) if platform?('windows')
     end
 
-    execute 'untar nexus' do
-      command "tar -xzf #{cached_file} -C #{new_resource.root} " \
+    if platform?('windows')
+      batch "unzip #{filename}" do
+        code "powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem';" \
+      " [IO.Compression.ZipFile]::ExtractToDirectory('#{cached_file}', '#{new_resource.root}'); }\""
+        action :nothing
+        notifies(:run, "batch[install #{new_resource.servicename} service]", :immediately)
+      end
+
+      batch "install #{new_resource.servicename} service" do
+        code "#{install_dir}/bin/nexus.exe /install"
+        action :nothing
+        notifies(:restart, "service[#{new_resource.servicename}]")
+      end
+    else
+      execute "untar #{filename}" do
+        command "tar -xzf #{cached_file} -C #{new_resource.root} " \
         "&& chown -R #{usr}:#{grp} #{new_resource.root}"
-      action :nothing
-      notifies(:restart, "service[#{new_resource.servicename}]")
+        action :nothing
+        notifies(:restart, "service[#{new_resource.servicename}]")
+      end
     end
 
     template "#{install_dir}/bin/nexus.rc" do
@@ -131,10 +159,46 @@ action :install do
         to "#{new_resource.home}/bin/nexus"
         notifies(:restart, "service[#{new_resource.servicename}]")
       end
-    end
+    end unless platform?('windows')
 
     service new_resource.servicename do
       action :enable
+    end
+  end
+end
+
+action :uninstall do
+  converge_by('uninstall nexus') do
+    service new_resource.servicename do # ~FC021
+      action [:stop, :disable]
+      ignore_failure true
+      only_if { ::File.exist?(new_resource.root) }
+    end
+
+    execute 'rm -fr nexus-*' do
+      cwd Chef::Config[:file_cache_path]
+    end
+
+    if platform?('windows')
+      batch "uninstall #{new_resource.servicename} service" do
+        code "#{new_resource.home}/bin/nexus.exe /uninstall #{new_resource.servicename}"
+        only_if { ::File.exist?("#{new_resource.home}/bin/nexus.exe") }
+      end
+    else
+      case systype
+      when 'systemd'
+        execute "rm -fr /etc/systemd/system/#{new_resource.servicename}.service" do
+          only_if { ::File.exist?("/etc/systemd/system/#{new_resource.servicename}.service") }
+        end
+      else
+        execute "rm -fr /etc/init.d/#{new_resource.servicename}" do
+          only_if { ::File.exist?("/etc/init.d/#{new_resource.servicename}") }
+        end
+      end
+    end
+
+    execute "rm -fr #{new_resource.root}" do
+      only_if { ::File.exist?(new_resource.root) }
     end
   end
 end

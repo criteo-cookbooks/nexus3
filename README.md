@@ -2,9 +2,12 @@
 
 [![Cookbook Version](http://img.shields.io/cookbook/v/nexus3.svg?style=flat-square)][cookbook]
 [![linux](http://img.shields.io/travis/dhoer/chef-nexus3/master.svg?label=linux&style=flat-square)][linux]
+[![win](https://img.shields.io/appveyor/ci/dhoer/chef-nexus3/master.svg?label=windows&style=flat-square)][win]
 
 [cookbook]: https://supermarket.chef.io/cookbooks/nexus3
-[linux]: https://travis-ci.org/dhoer/chef-nexus3/branches
+[linux]: https://travis-ci.org/dhoer/chef-nexus3
+[win]: https://ci.appveyor.com/project/dhoer/chef-nexus3
+
 
 This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS 
 (http://www.sonatype.com/download-oss-sonatype).
@@ -17,16 +20,18 @@ The public API should not be considered stable.
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install 
 the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager OSS.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
 
 ## Requirements
-
-Nexus Repository Manager requires a Java 8 Runtime Environment (JRE) from Oracle which is not included in this cookbook.
+* Chef 12+
+* Java 8+ (not installed by this cookbook)
+* Windows platform requires PowerShell 3+
  
 ### Platforms
 
 - CentOS, RedHat, Fedora
 - Debian, Ubuntu
+- Windows
 
 # Recipes
 
@@ -36,13 +41,13 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of latest Nexus 3 Repository Manager OSS. This can be updated to
-download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
+- `node['nexus3']['url']` - The download URL of Nexus 3 Repository Manager. This can be a specific version of 
+Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
 - `node['nexus3']['data']` -  Data directory. Default `/opt/repository/data`.
-- `node['nexus3']['root']` -  Root directory. Default `/opt/nexus`.
-- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus3`.
+- `node['nexus3']['root']` -  Root directory. Default `/opt/sonatype`.
+- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus`.
 - `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
 - `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/bin/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
@@ -108,6 +113,8 @@ Downloads and installs the latest Nexus Repository Manager OSS v3.
 
 ### Actions
 - `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
+- `:uninstall` - Removes service and root directory. Uninstall will not delete the data directory unless the default
+data configuration has changed to place it under the root directory (which is not recommended).
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
 When this resource is notified, this resource block is either run immediately or it is queued up to be run 
 at the end of the chef-client run.
@@ -246,6 +253,7 @@ expect(chef_run).to install_nexus('nexus').with(
 Nexus3 Cookbook Matchers
 
 - install_nexus3(resource_name)
+- uninstall_nexus3(resource_name)
 - run_nexus3_api(resource_name)
 - create_nexus3_api(resource_name)
 - delete_nexus3_api(resource_name)
