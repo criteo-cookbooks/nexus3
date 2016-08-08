@@ -93,4 +93,4 @@ suites:
     nexus3:
       api:
         sensitive: false
-        wait: true
+        wait: 550

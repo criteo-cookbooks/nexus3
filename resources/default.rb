@@ -1,9 +1,10 @@
-actions :install
+actions :install, :uninstall
 default_action :install
 
 attribute :servicename, kind_of: String, name_attribute: true
 attribute :user, kind_of: [String, NilClass]
 attribute :group, kind_of: [String, NilClass]
+attribute :password, kind_of: [String, NilClass]
 attribute :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 attribute :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
 attribute :root, kind_of: String, default: lazy { node['nexus3']['root'] }
