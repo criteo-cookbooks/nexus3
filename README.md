@@ -20,7 +20,8 @@ The public API should not be considered stable.
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use 
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install 
 the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager 
+(linux only).
 
 ## Requirements
 * Chef 12+
@@ -188,7 +189,7 @@ end
 
 ## nexus3_api
 
-Configures Nexus 3 Repository Manager OSS via API.
+Configures Nexus 3 Repository Manager via API (linux only).
 
 ### Actions
 - `:run` - Default. Run the script on repository manager. If script_source or content attribute is 
