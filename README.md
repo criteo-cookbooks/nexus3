@@ -215,8 +215,8 @@ in `#{script_cookbook}/files`. The path must include the file name and its exten
 - `type` - Type of script. Default `node['nexus3']['api']['type']`.
 - `host` - Nexus host url (including port if necessary). Default `node['nexus3']['api']['host']`.
 - `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
-- `fail_silently` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
-failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['fail_silently']`.
+- `ignore_failure` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
+failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['ignore_failure']`.
 - `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. 
 Default `node['nexus3']['api']['live_stream']`.
 - `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
