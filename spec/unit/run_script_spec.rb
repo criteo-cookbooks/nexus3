@@ -16,6 +16,10 @@ describe 'nexus3_test::run_script' do
       )
     end
 
+    it 'waits for api endpoint to respond' do
+      expect(chef_run).to run_ruby_block('wait for Nexus Rest API endpoint to respond')
+    end
+
     it 'deletes script' do
       expect(chef_run).to run_execute('delete script anonymous')
     end
