@@ -2,7 +2,7 @@
 
 ## 0.4.0 2016-08-11
 
-- Wait for Nexus Rest API endpoint to come up
+- Wait for Nexus Rest API endpoint to respond
 - Replace vmoptions attribute with template
 
 ## 0.3.0 2016-08-08
