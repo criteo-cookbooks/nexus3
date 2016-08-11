@@ -43,7 +43,7 @@ describe 'nexus3::default' do
     end
 
     it 'updates nexus.vmoptions' do
-      expect(chef_run).to create_file("/opt/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run).to create_template("/opt/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
     end
 
     it 'creates home link' do
@@ -107,7 +107,7 @@ describe 'nexus3::default' do
     end
 
     it 'updates nexus.vmoptions' do
-      expect(chef_run).to create_file("C:/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run).to create_template("C:/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
     end
 
     it 'creates home link' do

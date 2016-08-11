@@ -13,4 +13,6 @@ attribute :home, kind_of: String, default: lazy { node['nexus3']['home'] }
 attribute :cfg_cookbook, kind_of: String, default: lazy { node['nexus3']['cfg_cookbook'] }
 attribute :cfg_source, kind_of: String, default: lazy { node['nexus3']['cfg_source'] }
 attribute :cfg_variables, kind_of: Hash, default: lazy { node['nexus3']['cfg_variables'] }
-attribute :vmoptions, kind_of: Array, default: lazy { node['nexus3']['vmoptions'] }
+attribute :vmoptions_cookbook, kind_of: String, default: lazy { node['nexus3']['vmoptions_cookbook'] }
+attribute :vmoptions_source, kind_of: String, default: lazy { node['nexus3']['vmoptions_source'] }
+attribute :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }

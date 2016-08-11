@@ -47,6 +47,13 @@ def grp
   end
 end
 
+# inject data path if not provided in vmoptions_variables
+def vmoptions(vmoptions = {})
+  vmoptions.merge!(new_resource.vmoptions_variables)
+  vmoptions['data'] = new_resource.data if vmoptions['data'].nil?
+  vmoptions
+end
+
 action :install do
   converge_by('install nexus') do
     url = download_url(new_resource.url)
@@ -120,18 +127,20 @@ action :install do
       notifies(:restart, "service[#{new_resource.servicename}]")
     end
 
-    template "#{install_dir}/etc/org.sonatype.nexus.cfg" do
-      source new_resource.cfg_source
-      variables new_resource.cfg_variables
-      cookbook new_resource.cfg_cookbook
+    template "#{install_dir}/bin/nexus.vmoptions" do
+      source new_resource.vmoptions_source
+      variables vmoptions
+      cookbook new_resource.vmoptions_cookbook
       mode '0644'
       owner usr
       group grp
       notifies(:restart, "service[#{new_resource.servicename}]")
     end
 
-    file "#{install_dir}/bin/nexus.vmoptions" do
-      content new_resource.vmoptions.join("\n")
+    template "#{install_dir}/etc/org.sonatype.nexus.cfg" do
+      source new_resource.cfg_source
+      variables new_resource.cfg_variables
+      cookbook new_resource.cfg_cookbook
       mode '0644'
       owner usr
       group grp

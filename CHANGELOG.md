@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0 2016-08-11
+
+- Replace vmoptions attribute with template
+
 ## 0.3.0 2016-08-08
 
 - Fix #4 Support Windows install
