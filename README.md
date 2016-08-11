@@ -187,6 +187,7 @@ in `#{script_cookbook}/files`. The path must include the file name and its exten
 failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['fail_silently']`.
 - `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. 
 Default `node['nexus3']['api']['live_stream']`.
+- `wait` - Wait time in seconds for Nexus Rest API endpoint to come up. Default `node['nexus3']['api']['wait']`.
 - `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
 
 ### Examples

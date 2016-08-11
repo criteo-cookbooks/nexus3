@@ -13,6 +13,7 @@ attribute :host, kind_of: String, default: lazy { node['nexus3']['api']['host'] 
 attribute :endpoint, kind_of: String, default: lazy { node['nexus3']['api']['endpoint'] }
 attribute :fail_silently, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['fail_silently'] }
 attribute :live_stream, kind_of: [TrueClass, FalseClass], default: lazy { node['nexus3']['api']['live_stream'] }
+attribute :wait, kind_of: Integer, default: lazy { node['nexus3']['api']['wait'] }
 attribute :sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
 
 # Chef will override sensitive back to its global value, so set default to true in init

@@ -4,6 +4,27 @@ def whyrun_supported?
   true
 end
 
+def health_check
+  ruby_block 'wait for Nexus Rest API endpoint to come up' do
+    block do
+      i = 0
+      wait = new_resource.wait
+      require 'mixlib/shellout'
+      cmd = "curl --fail -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'"
+      while i < wait
+        response = Mixlib::ShellOut.new(cmd)
+        response.run_command
+        break unless response.error?
+        print '.'
+        sleep 5
+        i += 5
+      end
+      raise "Nexus Rest API endpoint has failed to respond within #{wait} seconds!" if i >= wait
+    end
+    action :run
+  end
+end
+
 def create_script
   delete_script
 
@@ -134,24 +155,28 @@ end
 
 action :run do
   converge_by('run script') do
+    health_check
     run_script
   end
 end
 
 action :create do
   converge_by('create script') do
+    health_check
     create_script
   end
 end
 
 action :delete do
   converge_by('delete script') do
+    health_check
     delete_script
   end
 end
 
 action :list do
   converge_by('list scripts') do
+    health_check
     list_scripts
   end
 end
