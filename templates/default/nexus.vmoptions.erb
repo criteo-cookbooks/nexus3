@@ -1,0 +1,12 @@
+-Xms<%= @Xms %>
+-Xmx<%= @Xmx %>
+-XX:+UnlockDiagnosticVMOptions
+-XX:+UnsyncloadClass
+-Djava.net.preferIPv4Stack=true
+-Dkaraf.home=.
+-Dkaraf.base=.
+-Dkaraf.etc=etc
+-Djava.util.logging.config.file=etc/java.util.logging.properties
+-Dkaraf.data=<%= @data %>
+-Djava.io.tmpdir=<%= @data %>/tmp
+-Dkaraf.startLocalConsole=false

@@ -9,6 +9,27 @@ def auth_info # windows only
   '$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)));'
 end
 
+def health_check
+  ruby_block 'wait for Nexus Rest API endpoint to respond' do
+    block do
+      i = 0
+      wait = new_resource.wait
+      require 'mixlib/shellout'
+      cmd = "curl --fail -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'"
+      while i < wait
+        response = Mixlib::ShellOut.new(cmd)
+        response.run_command
+        break unless response.error?
+        print '.'
+        sleep 5
+        i += 5
+      end
+      raise "Nexus Rest API endpoint has failed to respond within #{wait} seconds!" if i >= wait
+    end
+    action :run
+  end
+end
+
 def create_json(scripts_dir)
   cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
     cookbook new_resource.script_cookbook
@@ -41,8 +62,6 @@ def create_script
   end
 
   create_json(scripts_dir)
-
-  install_curl
 
   if platform?('windows')
     powershell_script "upload script #{new_resource.script_name}" do
@@ -93,8 +112,6 @@ end
 def run_script
   create_script unless new_resource.script_source.nil? && new_resource.content.nil?
 
-  install_curl
-
   if platform?('windows')
     powershell_script "run script #{new_resource.script_name}" do
       code <<-EOF
@@ -119,8 +136,6 @@ def run_script
 end
 
 def delete_script
-  install_curl
-
   if platform?('windows')
     powershell_script "delete script #{new_resource.script_name}" do
       code <<-EOF
@@ -134,7 +149,7 @@ def delete_script
   else
     execute "delete script #{new_resource.script_name}" do
       command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
-      " '#{new_resource.endpoint}/#{new_resource.script_name}'"
+        " '#{new_resource.endpoint}/#{new_resource.script_name}'"
       live_stream new_resource.live_stream
       sensitive new_resource.sensitive
       action :run
@@ -156,8 +171,6 @@ def list_scripts
     mode '0755'
     action :create
   end
-
-  install_curl
 
   if platform?('windows')
     powershell_script "write #{list_file}" do
@@ -200,24 +213,32 @@ end
 
 action :run do
   converge_by('run script') do
+    install_curl
+    health_check
     run_script
   end
 end
 
 action :create do
   converge_by('create script') do
+    install_curl
+    health_check
     create_script
   end
 end
 
 action :delete do
   converge_by('delete script') do
+    install_curl
+    health_check
     delete_script
   end
 end
 
 action :list do
   converge_by('list scripts') do
+    install_curl
+    health_check
     list_scripts
   end
 end

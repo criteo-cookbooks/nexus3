@@ -84,7 +84,6 @@ suites:
 - name: default
   run_list:
     - nexus3_test::default
-    - nexus3_test::wait
     - nexus3_test::create_script
     - nexus3_test::delete_script
     - nexus3_test::run_script
@@ -93,4 +92,3 @@ suites:
     nexus3:
       api:
         sensitive: false
-        wait: 550

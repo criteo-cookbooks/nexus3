@@ -50,23 +50,15 @@ Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['root']` -  Root directory. Default `/opt/sonatype`.
 - `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus`.
 - `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
-- `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/bin/org.sonatype.nexus.cfg` 
+- `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
 - `node['nexus3']['cfg_variables']` -  A Hash of variables that are passed into a template file. 
 Default `{ port: '8081', context_path: '/' }`.
-- `node['nexus3']['vmoptions']` -  Array of application startup options used to create the 
-`#{home}/bin/nexus.vmoptions` file. Default `['-Xms1200M',
-   '-Xmx1200M',
-   '-XX:+UnlockDiagnosticVMOptions',
-   '-XX:+UnsyncloadClass',
-   '-Djava.net.preferIPv4Stack=true',
-   '-Dkaraf.home=.',
-   '-Dkaraf.base=.',
-   '-Dkaraf.etc=etc',
-   '-Djava.util.logging.config.file=etc/java.util.logging.properties',
-   "-Dkaraf.data=#{node['nexus3']['data']}",
-   "-Djava.io.tmpdir=#{node['nexus3']['data']}/tmp",
-   '-Dkaraf.startLocalConsole=false']`.
+- `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
+- `node['nexus3']['vmoptions_source']` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions` 
+file. Default `nexus.vmoptions.erb`.
+- `node['nexus3']['vmoptions_variables']` -  A Hash of variables that are passed into a template file. Note that 
+data directory will be injected into the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
 
 ### Examples
 
@@ -83,26 +75,12 @@ include_recipe 'nexus3'
 
 #### Updating Memory Allocation and other JVM Paramaters
 The default and maximum heap sizes for the repository manager are a value of 1200M, suitable for most usage patterns. 
-To install latest nexus3 with 1500M initial memory and 2G max memory, set it in the vmoptions array along with all 
-the other settings:
+To install latest nexus3 with 1500M initial memory and 2G max memory, set it in the vmoptions_variables:
 
 ```ruby
 include_recipe 'java_se'
 
-node.default['nexus3']['vmoptions'] = [
-  '-Xms1500M',
-  '-Xmx2G',
-  '-XX:+UnlockDiagnosticVMOptions',
-  '-XX:+UnsyncloadClass',
-  '-Djava.net.preferIPv4Stack=true',
-  '-Dkaraf.home=.',
-  '-Dkaraf.base=.',
-  '-Dkaraf.etc=etc',
-  '-Djava.util.logging.config.file=etc/java.util.logging.properties',
-  "-Dkaraf.data=#{node['nexus3']['data']}",
-  "-Djava.io.tmpdir=#{node['nexus3']['data']}/tmp",
-  '-Dkaraf.startLocalConsole=false'
-]
+node.default['nexus3']['vmoptions_variables'] = { Xms: '1500M', Xmx: '2G' }
 include_recipe 'nexus3'
 ```
 
@@ -133,12 +111,15 @@ Default `node['nexus3']['url']`.
 - `root` -  Root directory. Default `node['nexus3']['root']`.
 - `home` -  Link to install directory. Default `node['nexus3']['home']`.
 - `cfg_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['cfg_cookbook']`.
-- `cfg_source` -  Template file that will be used to create the `#{home}/bin/org.sonatype.nexus.cfg` 
+- `cfg_source` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 
 file. Default `node['nexus3']['cfg_source']`.
 - `cfg_variables` -  A Hash of variables that are passed into a template file. 
 Default `node['nexus3']['cfg_variables']`.
-- `vmoptions` -  Array of application startup options used to create the `#{home}/bin/nexus.vmoptions` file. 
-Default `node['nexus3']['vmoptions']`.
+- `vmoptions_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['vmoptions_cookbook']`.
+- `vmoptions_source` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions` 
+file. Default `node['nexus3']['vmoptions_source']`.
+- `vmoptions_variables` -  A Hash of variables that are passed into a template file. Note that data directory will
+be injected into the hash if it is not defined. Default `node['nexus3']['vmoptions_variables']`.
 
 ### Examples
 
@@ -160,28 +141,15 @@ end
 
 #### Updating Memory Allocation and other JVM Paramaters
 The default and maximum heap sizes for the repository manager are a value of 1200M, suitable for most usage patterns. 
-To install latest nexus3 with 1500M initial memory and 2G max memory, set it in the vmoptions array along with all 
-the other settings:
+To install latest nexus3 with 1500M initial memory and 2G max memory, set it in the vmoptions_variable:
 
 ```ruby
 include_recipe 'java_se'
 
 nexus3 'nexus' do
-  vmoptions(
-    [
-      '-Xms1500M',
-      '-Xmx2G',
-      '-XX:+UnlockDiagnosticVMOptions',
-      '-XX:+UnsyncloadClass',
-      '-Djava.net.preferIPv4Stack=true',
-      '-Dkaraf.home=.',
-      '-Dkaraf.base=.',
-      '-Dkaraf.etc=etc',
-      '-Djava.util.logging.config.file=etc/java.util.logging.properties',
-      "-Dkaraf.data=#{data}",
-      "-Djava.io.tmpdir=#{data}/tmp",
-      '-Dkaraf.startLocalConsole=false'
-    ]
+  vmoptions_variables( 
+    Xms: '1500M', 
+    Xmx: '2G' 
   )
   action :install
 end
@@ -219,6 +187,7 @@ in `#{script_cookbook}/files`. The path must include the file name and its exten
 failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['ignore_failure']`.
 - `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. 
 Default `node['nexus3']['api']['live_stream']`.
+- `wait` - Wait time in seconds for Nexus Rest API endpoint to come up. Default `node['nexus3']['api']['wait']`.
 - `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
 
 ### Examples
