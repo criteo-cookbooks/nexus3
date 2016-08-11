@@ -1,13 +1,8 @@
 # Changelog
 
-## 0.4.0 2016-08-11
+## 0.3.0 2016-08-11
 
 - Replace vmoptions attribute with template
-
-## 0.3.0 2016-08-08
-
-- Fix #4 Support Windows install
-- Fix #6 Change install directory to closely match docker image
 
 ## 0.2.1 2016-08-01
 
