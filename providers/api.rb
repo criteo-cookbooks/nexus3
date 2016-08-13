@@ -4,24 +4,55 @@ def whyrun_supported?
   true
 end
 
+def auth_info # windows only
+  "$username = '#{new_resource.username}'; $password = '#{new_resource.password}';" \
+  '$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)));' \
+  'Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}'
+end
+
 def health_check
-  ruby_block 'wait for Nexus Rest API endpoint to respond' do
+  ruby_block "wait up to #{new_resource.wait} seconds for Nexus Rest API endpoint to respond" do # ~FC014
     block do
-      i = 0
-      wait = new_resource.wait
-      require 'mixlib/shellout'
-      cmd = "curl --fail -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'"
-      while i < wait
-        response = Mixlib::ShellOut.new(cmd)
-        response.run_command
-        break unless response.error?
-        print '.'
-        sleep 5
-        i += 5
+      retries = new_resource.wait / 2
+      if platform?('windows')
+        powershell_script "wait for #{new_resource.endpoint} to respond" do
+          code "#{auth_info} -Uri #{new_resource.endpoint}"
+          live_stream new_resource.live_stream
+          sensitive new_resource.sensitive
+          retries retries
+          action :run
+        end
+      else
+        execute "wait for #{new_resource.endpoint} to respond" do
+          command "curl --fail -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'"
+          live_stream new_resource.live_stream
+          sensitive new_resource.sensitive
+          retries retries
+          action :run
+        end
       end
-      raise "Nexus Rest API endpoint has failed to respond within #{wait} seconds!" if i >= wait
     end
     action :run
+  end
+end
+
+def create_json(scripts_dir)
+  cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
+    cookbook new_resource.script_cookbook
+    source new_resource.script_source
+    not_if { new_resource.script_source.nil? }
+  end
+
+  file "#{scripts_dir}/#{new_resource.script_name}.json" do
+    content <<-EOF
+    {
+      "name": "#{new_resource.script_name}",
+      "type": "#{new_resource.type}",
+      "content": "#{new_resource.content}"
+    }
+    EOF
+    not_if { new_resource.content.nil? }
+    only_if { new_resource.script_source.nil? }
   end
 end
 
@@ -34,47 +65,44 @@ def create_script
     recursive true
   end
 
-  cookbook_file "#{scripts_dir}/#{new_resource.script_name}.json" do
-    cookbook new_resource.script_cookbook
-    source new_resource.script_source
-    mode '0755'
-    not_if { new_resource.script_source.nil? }
-  end
+  create_json(scripts_dir)
 
-  file "#{scripts_dir}/#{new_resource.script_name}.json" do
-    content <<EOF
-{
-  "name": "#{new_resource.script_name}",
-  "type": "#{new_resource.type}",
-  "content": "#{new_resource.content}"
-}
-EOF
-    mode '0755'
-    not_if { new_resource.content.nil? }
-    only_if { new_resource.script_source.nil? }
-  end
-
-  execute "upload script #{new_resource.script_name}" do
-    command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
+  if platform?('windows')
+    powershell_script "upload script #{new_resource.script_name}" do
+      code "#{auth_info} -Uri #{new_resource.endpoint} -Method Post -ContentType 'application/json'" \
+        " -InFile '#{scripts_dir}/#{new_resource.script_name}.json'"
+      returns fail_silently
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
+  else
+    execute "upload script #{new_resource.script_name}" do
+      command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
-    cwd scripts_dir
-    live_stream new_resource.live_stream
-    sensitive new_resource.sensitive
-    action :run
+      cwd scripts_dir
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
   end
 end
 
 def fail_silently
-  new_resource.fail_silently ? '' : '--fail'
+  if platform?('windows')
+    new_resource.ignore_failure ? [0, 1] : 0
+  else
+    new_resource.ignore_failure ? '' : '--fail'
+  end
 end
 
 def args(args = new_resource.args)
   return '' if args.nil?
   case args
   when Array
-    "-d '#{args.join("' -d '")}'"
+    platform?('windows') ? "-Body #{args.join('&')}" : "-d '#{args.join("' -d '")}'"
   when String
-    "-d '#{args}'"
+    platform?('windows') ? "-Body #{args}" : "-d '#{args}'"
   end
 end
 
@@ -85,22 +113,43 @@ end
 def run_script
   create_script unless new_resource.script_source.nil? && new_resource.content.nil?
 
-  execute "run script #{new_resource.script_name}" do
-    command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
+  if platform?('windows')
+    powershell_script "run script #{new_resource.script_name}" do
+      code "#{auth_info} -Uri #{new_resource.endpoint}/#{new_resource.script_name}/run -Method Post" \
+        " -ContentType 'text/plain' #{args}"
+      returns fail_silently
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
+  else
+    execute "run script #{new_resource.script_name}" do
+      command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: text/plain\" '#{new_resource.endpoint}/#{new_resource.script_name}/run' #{args}"
-    live_stream new_resource.live_stream
-    sensitive new_resource.sensitive
-    action :run
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
   end
 end
 
 def delete_script
-  execute "delete script #{new_resource.script_name}" do
-    command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
-      " '#{new_resource.endpoint}/#{new_resource.script_name}'"
-    live_stream new_resource.live_stream
-    sensitive new_resource.sensitive
-    action :run
+  if platform?('windows')
+    powershell_script "delete script #{new_resource.script_name}" do
+      code "#{auth_info} -Uri #{new_resource.endpoint}/#{new_resource.script_name} -Method Delete"
+      returns [0, 1]
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
+  else
+    execute "delete script #{new_resource.script_name}" do
+      command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
+        " '#{new_resource.endpoint}/#{new_resource.script_name}'"
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
   end
 end
 
@@ -115,16 +164,25 @@ def list_scripts
 
   file list_file do
     content '{}'
-    mode '0755'
     action :create
   end
 
-  execute "write #{list_file}" do
-    command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
-      " -o \"#{list_file}\""
-    live_stream new_resource.live_stream
-    sensitive new_resource.sensitive
-    action :run
+  if platform?('windows')
+    powershell_script "write #{list_file}" do
+      code "#{auth_info} -Uri #{new_resource.endpoint} -OutFile '#{list_file}'"
+      returns [0, 1]
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
+  else
+    execute "write #{list_file}" do
+      command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
+        " -o '#{list_file}'"
+      live_stream new_resource.live_stream
+      sensitive new_resource.sensitive
+      action :run
+    end
   end
 
   ruby_block "list #{new_resource.script_name}" do

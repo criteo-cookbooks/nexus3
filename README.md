@@ -50,7 +50,7 @@ Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['root']` -  Root directory. Default `/opt/sonatype`.
 - `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus`.
 - `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
-- `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/bin/org.sonatype.nexus.cfg` 
+- `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
 - `node['nexus3']['cfg_variables']` -  A Hash of variables that are passed into a template file. 
 Default `{ port: '8081', context_path: '/' }`.
@@ -183,8 +183,8 @@ in `#{script_cookbook}/files`. The path must include the file name and its exten
 - `type` - Type of script. Default `node['nexus3']['api']['type']`.
 - `host` - Nexus host url (including port if necessary). Default `node['nexus3']['api']['host']`.
 - `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
-- `fail_silently` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
-failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['fail_silently']`.
+- `ignore_failure` - Fail silently on script errors. This is mostly done to enable scripts to better deal with 
+failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['ignore_failure']`.
 - `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true. 
 Default `node['nexus3']['api']['live_stream']`.
 - `wait` - Wait time in seconds for Nexus Rest API endpoint to come up. Default `node['nexus3']['api']['wait']`.
@@ -231,7 +231,7 @@ Nexus3 Cookbook Matchers
 
 ## Getting Help
 
-- Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus).
+- Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus3).
 - Report bugs and discuss potential features in [Github issues](https://github.com/dhoer/chef-nexus3/issues).
 
 ## Contributing
