@@ -5,4 +5,4 @@ default['nexus3']['api']['endpoint'] = "#{node['nexus3']['api']['host']}/service
 default['nexus3']['api']['ignore_failure'] = true
 default['nexus3']['api']['live_stream'] = false
 default['nexus3']['api']['wait'] = 600 # 10 minutes
-default['nexus3']['api']['sensitive'] = false
+default['nexus3']['api']['sensitive'] = true

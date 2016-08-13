@@ -231,7 +231,7 @@ Nexus3 Cookbook Matchers
 
 ## Getting Help
 
-- Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus).
+- Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus3).
 - Report bugs and discuss potential features in [Github issues](https://github.com/dhoer/chef-nexus3/issues).
 
 ## Contributing
