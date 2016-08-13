@@ -4,7 +4,7 @@ def whyrun_supported?
   true
 end
 
-def auth_info # windows only
+def win_api_prefix
   "$username = '#{new_resource.username}'; $password = '#{new_resource.password}';" \
   '$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)));' \
   'Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)}'
@@ -16,7 +16,7 @@ def health_check
       retries = new_resource.wait / 2
       if platform?('windows')
         powershell_script "wait for #{new_resource.endpoint} to respond" do
-          code "#{auth_info} -Uri #{new_resource.endpoint}"
+          code "#{win_api_prefix} -Uri #{new_resource.endpoint}"
           live_stream new_resource.live_stream
           sensitive new_resource.sensitive
           retries retries
@@ -69,7 +69,7 @@ def create_script
 
   if platform?('windows')
     powershell_script "upload script #{new_resource.script_name}" do
-      code "#{auth_info} -Uri #{new_resource.endpoint} -Method Post -ContentType 'application/json'" \
+      code "#{win_api_prefix} -Uri #{new_resource.endpoint} -Method Post -ContentType 'application/json'" \
         " -InFile '#{scripts_dir}/#{new_resource.script_name}.json'"
       returns fail_silently
       live_stream new_resource.live_stream
@@ -115,7 +115,7 @@ def run_script
 
   if platform?('windows')
     powershell_script "run script #{new_resource.script_name}" do
-      code "#{auth_info} -Uri #{new_resource.endpoint}/#{new_resource.script_name}/run -Method Post" \
+      code "#{win_api_prefix} -Uri #{new_resource.endpoint}/#{new_resource.script_name}/run -Method Post" \
         " -ContentType 'text/plain' #{args}"
       returns fail_silently
       live_stream new_resource.live_stream
@@ -136,7 +136,7 @@ end
 def delete_script
   if platform?('windows')
     powershell_script "delete script #{new_resource.script_name}" do
-      code "#{auth_info} -Uri #{new_resource.endpoint}/#{new_resource.script_name} -Method Delete"
+      code "#{win_api_prefix} -Uri #{new_resource.endpoint}/#{new_resource.script_name} -Method Delete"
       returns [0, 1]
       live_stream new_resource.live_stream
       sensitive new_resource.sensitive
@@ -169,7 +169,7 @@ def list_scripts
 
   if platform?('windows')
     powershell_script "write #{list_file}" do
-      code "#{auth_info} -Uri #{new_resource.endpoint} -OutFile '#{list_file}'"
+      code "#{win_api_prefix} -Uri #{new_resource.endpoint} -OutFile '#{list_file}'"
       returns [0, 1]
       live_stream new_resource.live_stream
       sensitive new_resource.sensitive
