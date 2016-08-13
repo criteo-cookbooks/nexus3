@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 2016-08-13
+
+- Resolve #5 Add support for Windows configuration
+
 ## 0.4.0 2016-08-11
 
 - Wait for Nexus Rest API endpoint to respond
