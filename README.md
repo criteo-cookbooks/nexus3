@@ -24,8 +24,7 @@ Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to co
 
 ## Requirements
 * Chef 12+
-* Java 8+ (not installed by this cookbook)
-* Windows platform requires PowerShell 3+
+* Java 8+ from Oracle (Java is not installed by this cookbook and OpenJDK is not supported)
  
 ### Platforms
 

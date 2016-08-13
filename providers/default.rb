@@ -92,13 +92,13 @@ action :install do
       action :create
       not_if { ::File.exist?(install_dir) }
       notifies(:run, "execute[untar #{filename}]", :immediately) unless platform?('windows')
-      notifies(:run, "batch[unzip #{filename}]", :immediately) if platform?('windows')
+      notifies(:run, "powershell_script[unzip #{filename}]", :immediately) if platform?('windows')
     end
 
     if platform?('windows')
-      batch "unzip #{filename}" do
-        code "powershell.exe -nologo -noprofile -command \"& { Add-Type -A 'System.IO.Compression.FileSystem';" \
-      " [IO.Compression.ZipFile]::ExtractToDirectory('#{cached_file}', '#{new_resource.root}'); }\""
+      powershell_script "unzip #{filename}" do
+        code "Add-Type -A 'System.IO.Compression.FileSystem';" \
+          " [IO.Compression.ZipFile]::ExtractToDirectory('#{cached_file}', '#{new_resource.root}');"
         action :nothing
         notifies(:run, "batch[install #{new_resource.servicename} service]", :immediately)
       end

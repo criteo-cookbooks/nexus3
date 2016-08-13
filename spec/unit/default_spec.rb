@@ -91,7 +91,7 @@ describe 'nexus3::default' do
     end
 
     it 'extracts server' do
-      expect(chef_run).to_not run_batch('unzip nexus-3.0.1-01-win64.zip')
+      expect(chef_run).to_not run_powershell_script('unzip nexus-3.0.1-01-win64.zip')
     end
 
     it 'installs server' do
