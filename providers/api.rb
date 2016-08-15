@@ -1,9 +1,5 @@
 use_inline_resources
 
-def whyrun_supported?
-  true
-end
-
 def win_api_prefix
   "$username = '#{new_resource.username}'; $password = '#{new_resource.password}';" \
   '$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f $username, $password)));' \
@@ -204,33 +200,25 @@ def list_scripts
 end
 
 action :run do
-  converge_by('run script') do
-    install_curl
-    health_check
-    run_script
-  end
+  install_curl
+  health_check
+  run_script
 end
 
 action :create do
-  converge_by('create script') do
-    install_curl
-    health_check
-    create_script
-  end
+  install_curl
+  health_check
+  create_script
 end
 
 action :delete do
-  converge_by('delete script') do
-    install_curl
-    health_check
-    delete_script
-  end
+  install_curl
+  health_check
+  delete_script
 end
 
 action :list do
-  converge_by('list scripts') do
-    install_curl
-    health_check
-    list_scripts
-  end
+  install_curl
+  health_check
+  list_scripts
 end
