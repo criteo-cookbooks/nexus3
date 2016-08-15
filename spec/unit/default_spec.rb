@@ -79,7 +79,7 @@ describe 'nexus3::default' do
     end
 
     it 'does not create group' do
-      expect(chef_run).to_not create_group('Administrators')
+      expect(chef_run).to create_group('Administrators')
     end
 
     it 'creates user' do
