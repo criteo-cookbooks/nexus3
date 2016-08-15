@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 2016-08-15
+
+- Fix #9 Why_run/converge_by causes notifies to fire when no changes
+
 ## 0.5.0 2016-08-13
 
 - Resolve #5 Add support for Windows configuration
