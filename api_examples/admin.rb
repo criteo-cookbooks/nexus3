@@ -12,7 +12,7 @@ end
 nexus3_api 'admin_update_email' do
   content "def user = security.securitySystem.getUser('admin');" \
     "user.setEmailAddress('admin@mycompany.com');" \
-    "security.securitySystem.updateUser(user);"
+    'security.securitySystem.updateUser(user);'
   password 'admin456'
   action :run
 end
