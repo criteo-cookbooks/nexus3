@@ -1,11 +1,12 @@
-# Change admin password.  Note that the action is set to nothing.  This should
-# only be ran once during initial install of Nexus, otherwise, you will get a
-# 'wait up to 600 seconds for Nexus Rest API endpoint to respond' exception
-# because the default password 'admin123' will be incorrect.
+# Change admin password.  Note that not_if guard insures that this runs
+# only once during initial install of Nexus, otherwise, you will get a
+# 'wait up to 600 seconds for Nexus Rest API endpoint to respond'
+# exception because the default password 'admin123' will be incorrect.
 nexus3_api 'admin_change_password' do
   content "security.securitySystem.changePassword('admin', args)"
   args 'admin456'
-  action :nothing
+  action :run
+  not_if { ::File.exist?("#{node['nexus3']['data']}/tmp") }
 end
 
 # Update admin's email address using the new admin password
