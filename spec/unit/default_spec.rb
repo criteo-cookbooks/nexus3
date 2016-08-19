@@ -10,7 +10,7 @@ describe 'nexus3::default' do
       expect(chef_run).to install_nexus3('nexus')
     end
 
-    it 'creates root directory' do
+    it 'creates path directory' do
       expect(chef_run).to create_directory('/opt/sonatype')
     end
 
@@ -70,7 +70,7 @@ describe 'nexus3::default' do
       expect(chef_run).to install_nexus3('nexus')
     end
 
-    it 'creates root directory' do
+    it 'creates path directory' do
       expect(chef_run).to create_directory('C:/sonatype')
     end
 

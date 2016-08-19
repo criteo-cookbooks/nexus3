@@ -7,7 +7,7 @@ attribute :group, kind_of: [String, NilClass]
 attribute :password, kind_of: [String, NilClass]
 attribute :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 attribute :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
-attribute :root, kind_of: String, default: lazy { node['nexus3']['root'] }
+attribute :path, kind_of: String, default: lazy { node['nexus3']['path'] }
 attribute :data, kind_of: String, default: lazy { node['nexus3']['data'] }
 attribute :home, kind_of: String, default: lazy { node['nexus3']['home'] }
 attribute :cfg_cookbook, kind_of: String, default: lazy { node['nexus3']['cfg_cookbook'] }

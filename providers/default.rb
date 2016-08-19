@@ -57,7 +57,7 @@ action :install do
 
   user usr do # ~FC021
     comment 'Nexus Repository Manager User'
-    home new_resource.root
+    home new_resource.path
     shell '/bin/bash'
     password new_resource.password
     system true
@@ -70,7 +70,7 @@ action :install do
     only_if { new_resource.group.nil? }
   end
 
-  [new_resource.root, new_resource.data].each do |dir|
+  [new_resource.path, new_resource.data].each do |dir|
     directory dir do
       recursive true
       owner usr
@@ -78,7 +78,7 @@ action :install do
     end
   end
 
-  install_dir = "#{new_resource.root}/nexus-#{version(url)}"
+  install_dir = "#{new_resource.path}/nexus-#{version(url)}"
 
   remote_file url do
     path cached_file
@@ -93,7 +93,7 @@ action :install do
   if platform?('windows')
     powershell_script "unzip #{filename}" do
       code "Add-Type -A 'System.IO.Compression.FileSystem';" \
-        " [IO.Compression.ZipFile]::ExtractToDirectory('#{cached_file}', '#{new_resource.root}');"
+        " [IO.Compression.ZipFile]::ExtractToDirectory('#{cached_file}', '#{new_resource.path}');"
       action :nothing
       notifies(:run, "batch[install #{new_resource.servicename} service]", :immediately)
     end
@@ -105,8 +105,8 @@ action :install do
     end
   else
     execute "untar #{filename}" do
-      command "tar -xzf #{cached_file} -C #{new_resource.root} " \
-      "&& chown -R #{usr}:#{grp} #{new_resource.root}"
+      command "tar -xzf #{cached_file} -C #{new_resource.path} " \
+      "&& chown -R #{usr}:#{grp} #{new_resource.path}"
       action :nothing
       notifies(:restart, "service[#{new_resource.servicename}]")
     end
@@ -174,7 +174,7 @@ action :uninstall do
   service new_resource.servicename do # ~FC021
     action [:stop, :disable]
     ignore_failure true
-    only_if { ::File.exist?(new_resource.root) }
+    only_if { ::File.exist?(new_resource.path) }
   end
 
   execute 'rm -fr nexus-*' do
@@ -199,7 +199,7 @@ action :uninstall do
     end
   end
 
-  execute "rm -fr #{new_resource.root}" do
-    only_if { ::File.exist?(new_resource.root) }
+  execute "rm -fr #{new_resource.path}" do
+    only_if { ::File.exist?(new_resource.path) }
   end
 end

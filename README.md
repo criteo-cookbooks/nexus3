@@ -44,9 +44,11 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 Nexus Repository Manager OSS or Nexus Repository Manager Pro. 
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
-- `node['nexus3']['data']` -  Data directory. Default `/opt/repository/data`.
-- `node['nexus3']['root']` -  Root directory. Default `/opt/sonatype`.
-- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['root']}/nexus`.
+- `node['nexus3']['data']` -  Data directory. 
+Default Linux: `/opt/repository/data` Windows: `#{ENV['SYSTEMDRIVE']}/repository/data`.
+- `node['nexus3']['path']` -  Install directory. 
+Default Linux: `/opt/sonatype` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype`.
+- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['path']}/nexus`.
 - `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
 - `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
@@ -90,8 +92,8 @@ Downloads and installs the latest Nexus Repository Manager OSS v3.
 
 ### Actions
 - `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
-- `:uninstall` - Removes service and root directory. Uninstall will not delete the data directory unless the default
-data configuration has changed to place it under the root directory (which is not recommended).
+- `:uninstall` - Removes service and install directory. Uninstall will not delete the data directory unless the default
+data configuration has changed to place it under the install directory (which is not recommended).
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action. 
 When this resource is notified, this resource block is either run immediately or it is queued up to be run 
 at the end of the chef-client run.
@@ -106,7 +108,7 @@ download a specific version of Nexus Repository Manager OSS or Nexus Repository 
 Default `node['nexus3']['url']`.
 - `checksum` (optional) - The checksum of Nexus Repository Manager. Default `node['nexus3']['checksum']`.
 - `data` -  Data directory. Default `node['nexus3']['data']`.
-- `root` -  Root directory. Default `node['nexus3']['root']`.
+- `path` -  Install directory. Default `node['nexus3']['path']`.
 - `home` -  Link to install directory. Default `node['nexus3']['home']`.
 - `cfg_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['cfg_cookbook']`.
 - `cfg_source` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 

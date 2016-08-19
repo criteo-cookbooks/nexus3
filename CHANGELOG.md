@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.7.0 2016-08-19
+
+- Replace root attribute with path
+- Fix #10 nexus3_api ignore_failure attribute defaults to false 
+
 ## 0.6.0 2016-08-15
 
 - Fix #9 Why_run/converge_by causes notifies to fire when no changes
