@@ -67,6 +67,7 @@ action :install do
   group grp do # ~FC021
     members usr
     append true
+    only_if { new_resource.group.nil? }
   end
 
   [new_resource.root, new_resource.data].each do |dir|
