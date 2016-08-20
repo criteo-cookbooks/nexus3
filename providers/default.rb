@@ -57,7 +57,6 @@ action :install do
 
   user usr do # ~FC021
     comment 'Nexus Repository Manager User'
-    home new_resource.path
     shell '/bin/bash'
     password new_resource.password
     system true

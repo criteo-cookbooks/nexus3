@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0 2016-08-20
+
+- Fix #11 Do not set user home to path dir
+
 ## 0.7.0 2016-08-19
 
 - Replace root attribute with path
