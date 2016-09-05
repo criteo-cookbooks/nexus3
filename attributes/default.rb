@@ -6,6 +6,7 @@ default['nexus3']['home'] = "#{node['nexus3']['root']}/nexus3"
 default['nexus3']['cfg_cookbook'] = 'nexus3'
 default['nexus3']['cfg_source'] = 'org.sonatype.nexus.cfg.erb'
 default['nexus3']['cfg_variables'] = {
+  host: '0.0.0.0',
   port: '8081',
   context_path: '/'
 }
