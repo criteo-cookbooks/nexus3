@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.0 2016-09-05
+
+- Make application-host configurable
+
 ## 0.8.0 2016-08-20
 
 - Fix #11 Do not set user home to path dir

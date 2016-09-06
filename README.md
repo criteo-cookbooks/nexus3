@@ -53,7 +53,7 @@ Default Linux: `/opt/sonatype` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype`.
 - `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg` 
 file. Default `org.sonatype.nexus.cfg.erb`.
 - `node['nexus3']['cfg_variables']` -  A Hash of variables that are passed into a template file. 
-Default `{ port: '8081', context_path: '/' }`.
+Default `{ host: '0.0.0.0', port: '8081', context_path: '/' }`.
 - `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
 - `node['nexus3']['vmoptions_source']` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions` 
 file. Default `nexus.vmoptions.erb`.
