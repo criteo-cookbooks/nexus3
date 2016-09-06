@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.1 2016-09-06
+
+- Fix #13 Wrong home folder
+
 ## 0.9.0 2016-09-05
 
 - Make application-host configurable

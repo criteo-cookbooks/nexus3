@@ -6,7 +6,7 @@ description 'Installs/Configures Sonatype Nexus 3 Repository Manager'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 source_url 'https://github.com/dhoer/chef-nexus3' if respond_to?(:source_url)
 issues_url 'https://github.com/dhoer/chef-nexus3/issues' if respond_to?(:issues_url)
-version '0.9.0'
+version '0.9.1'
 
 supports 'centos'
 supports 'debian'

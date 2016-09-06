@@ -125,13 +125,15 @@ be injected into the hash if it is not defined. Default `node['nexus3']['vmoptio
 
 #### Changing the HTTP Port and/or Context Path
 The default value for the HTTP port used to access the repository manager user interface and resources is 8081. 
-To change HTTP Port and Context Path as 9081 and /components/, set the cfg_variables hash with the updated settings:
+To change HTTP Port and Context Path as 9081 and /components/, set the cfg_variables hash with the updated settings 
+and host name:
 
 ```ruby
 include_recipe 'java_se'
 
 nexus3 'nexus' do
   cfg_variables( 
+    host: '0.0.0.0', 
     port: '9081', 
     context_path: '/components/' 
   )

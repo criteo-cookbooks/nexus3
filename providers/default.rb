@@ -59,6 +59,7 @@ action :install do
     comment 'Nexus Repository Manager User'
     shell '/bin/bash'
     password new_resource.password
+    home new_resource.home
     system true
     only_if { new_resource.user.nil? }
   end
