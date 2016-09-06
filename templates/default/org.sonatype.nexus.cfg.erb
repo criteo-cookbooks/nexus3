@@ -1,6 +1,6 @@
 # Jetty section
 application-port=<%=@port%>
-application-host=0.0.0.0
+application-host=<%=@host%>
 nexus-args=${karaf.etc}/jetty.xml,${karaf.etc}/jetty-http.xml,${karaf.etc}/jetty-requestlog.xml
 nexus-context-path=<%=@context_path%>
 
