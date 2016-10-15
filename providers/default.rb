@@ -28,7 +28,7 @@ def filename(download_url)
 end
 
 def version(download_url)
-  /(?<=nexus-)(\d\.\d+.\d-.\d)|(?<=nexus-)(\d+.\d-.\d)/.match(download_url).to_s # http://rubular.com/r/xutlWB31fR
+  /(?<=nexus-)(\d\.\d+.\d-.\d)|(?<=nexus-)(\d+.\d-.\d)/.match(download_url).to_s # http://rubular.com/r/kS3DK4zmQb
 end
 
 def usr
