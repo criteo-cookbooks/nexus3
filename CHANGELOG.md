@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.9.2 2016-10-14
+
+- Fix #16 Fixes version regex that matches host-name when containing digits 
+
 ## 0.9.1 2016-09-06
 
 - Fix #13 Wrong home folder
