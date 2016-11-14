@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0 2016-11-14
+
+- Fix #17 nexus 3.1.0 config file location changed
+
 ## 0.9.2 2016-10-14
 
 - Fix #16 Fixes version regex that matches host-name when containing digits 

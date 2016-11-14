@@ -12,9 +12,6 @@
 This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS
 (http://www.sonatype.com/download-oss-sonatype).
 
-__WARNING!__ Major version zero (0.y.z) is for initial development. Anything may change at any time.
-The public API should not be considered stable.
-
 # Usage
 
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use

@@ -79,7 +79,7 @@ action :install do
   end
 
   install_dir = "#{new_resource.path}/nexus-#{version(url)}"
-  data_dir = "#{new_resource.data}"
+  data_dir = new_resource.data.to_s
 
   remote_file url do
     path cached_file

@@ -38,8 +38,12 @@ describe 'nexus3::default' do
       expect(chef_run).to create_template("/opt/sonatype/nexus-#{VER}/bin/nexus.rc")
     end
 
+    it 'creates etc dir' do
+      expect(chef_run).to create_directory('/opt/repository/data/etc')
+    end
+
     it 'updates org.sonatype.nexus.cfg' do
-      expect(chef_run).to create_template("/opt/sonatype/nexus-#{VER}/etc/org.sonatype.nexus.cfg")
+      expect(chef_run).to create_template('/opt/repository/data/etc/org.sonatype.nexus.cfg')
     end
 
     it 'updates nexus.vmoptions' do
@@ -102,8 +106,12 @@ describe 'nexus3::default' do
       expect(chef_run).to create_template("C:/sonatype/nexus-#{VER}/bin/nexus.rc")
     end
 
+    it 'creates etc dir' do
+      expect(chef_run).to create_directory('C:/repository/data/etc')
+    end
+
     it 'updates org.sonatype.nexus.cfg' do
-      expect(chef_run).to create_template("C:/sonatype/nexus-#{VER}/etc/org.sonatype.nexus.cfg")
+      expect(chef_run).to create_template('C:/repository/data/etc/org.sonatype.nexus.cfg')
     end
 
     it 'updates nexus.vmoptions' do
