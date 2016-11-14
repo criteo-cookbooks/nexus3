@@ -79,6 +79,7 @@ action :install do
   end
 
   install_dir = "#{new_resource.path}/nexus-#{version(url)}"
+  data_dir = "#{new_resource.data}"
 
   remote_file url do
     path cached_file
@@ -132,7 +133,14 @@ action :install do
     notifies(:restart, "service[#{new_resource.servicename}]")
   end
 
-  template "#{install_dir}/etc/org.sonatype.nexus.cfg" do
+  directory "#{data_dir}/etc" do
+    owner usr
+    group grp
+    mode '0755'
+    action :create
+  end
+
+  template "#{data_dir}/etc/org.sonatype.nexus.cfg" do
     source new_resource.cfg_source
     variables new_resource.cfg_variables
     cookbook new_resource.cfg_cookbook
