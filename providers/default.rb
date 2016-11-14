@@ -157,21 +157,23 @@ action :install do
     notifies(:restart, "service[#{new_resource.servicename}]")
   end
 
-  case systype
-  when 'systemd'
-    template "/etc/systemd/system/#{new_resource.servicename}.service" do
-      source 'systemd.erb'
-      cookbook 'nexus3'
-      mode '0755'
-      variables(user: usr, home: new_resource.home)
-      notifies(:restart, "service[#{new_resource.servicename}]")
+  unless platform?('windows')
+    case systype
+    when 'systemd'
+      template "/etc/systemd/system/#{new_resource.servicename}.service" do
+        source 'systemd.erb'
+        cookbook 'nexus3'
+        mode '0755'
+        variables(user: usr, home: new_resource.home)
+        notifies(:restart, "service[#{new_resource.servicename}]")
+      end
+    else
+      link "/etc/init.d/#{new_resource.servicename}" do
+        to "#{new_resource.home}/bin/nexus"
+        notifies(:restart, "service[#{new_resource.servicename}]")
+      end
     end
-  else
-    link "/etc/init.d/#{new_resource.servicename}" do
-      to "#{new_resource.home}/bin/nexus"
-      notifies(:restart, "service[#{new_resource.servicename}]")
-    end
-  end unless platform?('windows')
+  end
 
   service new_resource.servicename do
     action :enable
