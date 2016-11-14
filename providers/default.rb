@@ -134,8 +134,8 @@ action :install do
   end
 
   directory "#{data_dir}/etc" do
-    owner 'nexus'
-    group 'nexus'
+    owner usr
+    group grp
     mode '0755'
     action :create
   end
