@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0 2016-12-17
+
+- Refactor for 3.1
+
 ## 1.0.0 2016-11-14
 
 - Fix #17 nexus 3.1.0 config file location changed

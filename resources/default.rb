@@ -10,9 +10,9 @@ attribute :checksum, kind_of: String, default: lazy { node['nexus3']['checksum']
 attribute :path, kind_of: String, default: lazy { node['nexus3']['path'] }
 attribute :data, kind_of: String, default: lazy { node['nexus3']['data'] }
 attribute :home, kind_of: String, default: lazy { node['nexus3']['home'] }
-attribute :cfg_cookbook, kind_of: String, default: lazy { node['nexus3']['cfg_cookbook'] }
-attribute :cfg_source, kind_of: String, default: lazy { node['nexus3']['cfg_source'] }
-attribute :cfg_variables, kind_of: Hash, default: lazy { node['nexus3']['cfg_variables'] }
+attribute :properties_cookbook, kind_of: String, default: lazy { node['nexus3']['properties_cookbook'] }
+attribute :properties_source, kind_of: String, default: lazy { node['nexus3']['properties_source'] }
+attribute :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['properties_variables'] }
 attribute :vmoptions_cookbook, kind_of: String, default: lazy { node['nexus3']['vmoptions_cookbook'] }
 attribute :vmoptions_source, kind_of: String, default: lazy { node['nexus3']['vmoptions_source'] }
 attribute :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }

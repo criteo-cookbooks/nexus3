@@ -16,8 +16,8 @@ This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS
 
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install
-the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
+the latest Nexus 3.1 Repository Manager OSS.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3.1 Repository Manager.
 
 ## Requirements
 * Chef 12+
@@ -33,23 +33,23 @@ Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to co
 
 ## default
 
-Downloads and installs the latest Nexus 3 Repository Manager OSS.
+Downloads and installs the latest Nexus 3.1 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of Nexus 3 Repository Manager. This can be a specific version of
+- `node['nexus3']['url']` - The download URL of Nexus 3.1 Repository Manager. This can be a specific version of
 Nexus Repository Manager OSS or Nexus Repository Manager Pro.
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
 - `node['nexus3']['data']` -  Data directory.
-Default Linux: `/opt/repository/data` Windows: `#{ENV['SYSTEMDRIVE']}/repository/data`.
+Default Linux: `/opt/sonatype-work/nexus3` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype-work/nexus3`.
 - `node['nexus3']['path']` -  Install directory.
 Default Linux: `/opt/sonatype` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype`.
-- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['path']}/nexus`.
-- `node['nexus3']['cfg_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
-- `node['nexus3']['cfg_source']` -  Template file that will be used to create the `#{data}/etc/org.sonatype.nexus.cfg`
-file. Default `org.sonatype.nexus.cfg.erb`.
-- `node['nexus3']['cfg_variables']` -  A Hash of variables that are passed into a template file.
+- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['path']}/nexus3`.
+- `node['nexus3']['properties_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
+- `node['nexus3']['properties_source']` -  Template file that will be used to create the `#{data}/etc/nexus.properties`
+file. Default `nexus.properties.erb`.
+- `node['nexus3']['properties_variables']` -  A Hash of variables that are passed into a template file.
 Default `{ host: '0.0.0.0', port: '8081', context_path: '/' }`.
 - `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
 - `node['nexus3']['vmoptions_source']` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions`
@@ -61,12 +61,12 @@ data directory will be injected into the hash if it is not defined. Default `{ X
 
 #### Changing the HTTP Port and/or Context Path
 The default value for the HTTP port used to access the repository manager user interface and resources is 8081.
-To change HTTP Port and Context Path as 9081 and /components/, set the cfg_variables hash with the updated settings:
+To change HTTP Port and Context Path as 9081 and /components/, set the properties_variables hash with the updated settings:
 
 ```ruby
 include_recipe 'java_se'
 
-node.default['nexus3']['cfg_variables'] = { port: '9081', context_path: '/components/' }
+node.default['nexus3']['properties_variables'] = { port: '9081', context_path: '/components/' }
 include_recipe 'nexus3'
 ```
 
@@ -85,10 +85,10 @@ include_recipe 'nexus3'
 
 ## nexus3
 
-Downloads and installs the latest Nexus Repository Manager OSS v3.
+Downloads and installs the latest Nexus Repository Manager OSS v3.1.
 
 ### Actions
-- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
+- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.1.  
 - `:uninstall` - Removes service and install directory. Uninstall will not delete the data directory unless the default
 data configuration has changed to place it under the install directory (which is not recommended).
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action.
@@ -107,11 +107,11 @@ Default `node['nexus3']['url']`.
 - `data` -  Data directory. Default `node['nexus3']['data']`.
 - `path` -  Install directory. Default `node['nexus3']['path']`.
 - `home` -  Link to install directory. Default `node['nexus3']['home']`.
-- `cfg_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['cfg_cookbook']`.
-- `cfg_source` -  Template file that will be used to create the `#{home}/etc/org.sonatype.nexus.cfg`
-file. Default `node['nexus3']['cfg_source']`.
-- `cfg_variables` -  A Hash of variables that are passed into a template file.
-Default `node['nexus3']['cfg_variables']`.
+- `properties_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['properties_cookbook']`.
+- `properties_source` -  Template file that will be used to create the `#{data}/etc/nexus.properties`
+file. Default `node['nexus3']['properties_source']`.
+- `properties_variables` -  A Hash of variables that are passed into a template file.
+Default `node['nexus3']['properties_variables']`.
 - `vmoptions_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['vmoptions_cookbook']`.
 - `vmoptions_source` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions`
 file. Default `node['nexus3']['vmoptions_source']`.
@@ -122,14 +122,14 @@ be injected into the hash if it is not defined. Default `node['nexus3']['vmoptio
 
 #### Changing the HTTP Port and/or Context Path
 The default value for the HTTP port used to access the repository manager user interface and resources is 8081.
-To change HTTP Port and Context Path as 9081 and /components/, set the cfg_variables hash with the updated settings
+To change HTTP Port and Context Path as 9081 and /components/, set the properties_variables hash with the updated settings
 and host name:
 
 ```ruby
 include_recipe 'java_se'
 
 nexus3 'nexus' do
-  cfg_variables(
+  properties_variables(
     host: '0.0.0.0',
     port: '9081',
     context_path: '/components/'
@@ -156,7 +156,7 @@ end
 
 ## nexus3_api
 
-Configures Nexus 3 Repository Manager via API.
+Configures Nexus 3.1 Repository Manager via API.
 
 ### Actions
 - `:run` - Default. Run the script on repository manager. If script_source or content attribute is

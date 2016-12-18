@@ -11,11 +11,11 @@ describe 'nexus3::default' do
     end
 
     it 'creates path directory' do
-      expect(chef_run).to create_directory('/opt/sonatype')
+      expect(chef_run).to create_directory('/opt')
     end
 
     it 'creates data directory' do
-      expect(chef_run).to create_directory('/opt/repository/data')
+      expect(chef_run).to create_directory('/opt/sonatype-work/nexus3')
     end
 
     it 'creates group' do
@@ -35,23 +35,23 @@ describe 'nexus3::default' do
     end
 
     it 'updates nexus.rc' do
-      expect(chef_run).to create_template("/opt/sonatype/nexus-#{VER}/bin/nexus.rc")
+      expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.rc")
     end
 
     it 'creates etc dir' do
-      expect(chef_run).to create_directory('/opt/repository/data/etc')
+      expect(chef_run).to create_directory('/opt/sonatype-work/nexus3/etc')
     end
 
-    it 'updates org.sonatype.nexus.cfg' do
-      expect(chef_run).to create_template('/opt/repository/data/etc/org.sonatype.nexus.cfg')
+    it 'updates nexus.properties' do
+      expect(chef_run).to create_template('/opt/sonatype-work/nexus3/etc/nexus.properties')
     end
 
     it 'updates nexus.vmoptions' do
-      expect(chef_run).to create_template("/opt/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.vmoptions")
     end
 
     it 'creates home link' do
-      expect(chef_run).to create_link('/opt/sonatype/nexus')
+      expect(chef_run).to create_link('/opt/nexus3')
     end
 
     it 'does not create init.d link' do
@@ -75,11 +75,11 @@ describe 'nexus3::default' do
     end
 
     it 'creates path directory' do
-      expect(chef_run).to create_directory('C:/sonatype')
+      expect(chef_run).to create_directory('C:')
     end
 
     it 'creates data directory' do
-      expect(chef_run).to create_directory('C:/repository/data')
+      expect(chef_run).to create_directory('C:/sonatype-work/nexus3')
     end
 
     it 'does not create group' do
@@ -103,23 +103,23 @@ describe 'nexus3::default' do
     end
 
     it 'updates nexus.rc' do
-      expect(chef_run).to create_template("C:/sonatype/nexus-#{VER}/bin/nexus.rc")
+      expect(chef_run).to create_template("C:/nexus-#{VER}/bin/nexus.rc")
     end
 
     it 'creates etc dir' do
-      expect(chef_run).to create_directory('C:/repository/data/etc')
+      expect(chef_run).to create_directory('C:/sonatype-work/nexus3/etc')
     end
 
-    it 'updates org.sonatype.nexus.cfg' do
-      expect(chef_run).to create_template('C:/repository/data/etc/org.sonatype.nexus.cfg')
+    it 'updates nexus.properties' do
+      expect(chef_run).to create_template('C:/sonatype-work/nexus3/etc/nexus.properties')
     end
 
     it 'updates nexus.vmoptions' do
-      expect(chef_run).to create_template("C:/sonatype/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run).to create_template("C:/nexus-#{VER}/bin/nexus.vmoptions")
     end
 
     it 'creates home link' do
-      expect(chef_run).to create_link('C:/sonatype/nexus')
+      expect(chef_run).to create_link('C:/nexus3')
     end
 
     it 'does not create init.d link' do

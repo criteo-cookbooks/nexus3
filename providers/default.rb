@@ -140,10 +140,10 @@ action :install do
     action :create
   end
 
-  template "#{data_dir}/etc/org.sonatype.nexus.cfg" do
-    source new_resource.cfg_source
-    variables new_resource.cfg_variables
-    cookbook new_resource.cfg_cookbook
+  template "#{data_dir}/etc/nexus.properties" do
+    source new_resource.properties_source
+    variables new_resource.properties_variables
+    cookbook new_resource.properties_cookbook
     mode '0644'
     owner usr
     group grp
