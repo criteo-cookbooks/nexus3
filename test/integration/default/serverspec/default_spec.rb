@@ -2,16 +2,11 @@ require 'serverspec_helper'
 
 describe 'nexus::default' do
   if os[:family] == 'windows'
-    describe file('C:/sonatype') do
-      it { should be_directory }
+    describe file('C:/sonatype-work/nexus3') do
       it { should be_owned_by 'nexus' }
     end
 
-    describe file('C:/sonatype/nexus') do
-      it { should be_owned_by 'nexus' }
-    end
-
-    describe file('C:/repository/data') do
+    describe file('C:/sonatype-work/nexus3/etc') do
       it { should be_directory }
       it { should be_owned_by 'nexus' }
     end
@@ -31,17 +26,17 @@ EOF
       its(:stdout) { should contain('pong') }
     end
   else
-    describe file('/opt/sonatype') do
+    describe file('/opt/sonatype-work/nexus3') do
       it { should be_directory }
       it { should be_owned_by 'nexus' }
     end
 
-    describe file('/opt/sonatype/nexus') do
+    describe file('/opt/nexus3') do
       it { should be_symlink }
       it { should be_owned_by 'nexus' }
     end
 
-    describe file('/opt/repository/data') do
+    describe file('/opt/sonatype-work/nexus3/etc') do
       it { should be_directory }
       it { should be_owned_by 'nexus' }
     end
