@@ -20,8 +20,7 @@ env:
   - INSTANCE=default-ubuntu-1404
   - INSTANCE=default-ubuntu-1604
   - INSTANCE=default-debian-8
-  - INSTANCE=default-fedora-23
-  - INSTANCE=default-fedora-24
+  - INSTANCE=default-fedora-latest
 
 # Don't `bundle install`
 install: echo "skip bundle install"
