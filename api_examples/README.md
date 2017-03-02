@@ -5,6 +5,5 @@ API Examples demonstrate how to use the *nexus3_api* resource to configure Nexus
 Pull Requests improving or adding additional API Examples are welcome and encouraged.
 
 ## References
-* https://books.sonatype.com/nexus-book/3.0/reference/scripting.html
-* https://github.com/sonatype/nexus-book-examples/tree/nexus-3.0.x/scripting
-* http://www.sonatype.org/nexus/2016/06/08/integrating-nexus-repository-3/
+* https://books.sonatype.com/nexus-book/3.2/reference/scripting.html
+* https://github.com/sonatype/nexus-book-examples
