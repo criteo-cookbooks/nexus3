@@ -30,7 +30,7 @@ before_script:
   # https://github.com/zuazo/kitchen-in-travis-native/issues/1#issuecomment-142230889
   - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
   - eval "$(/opt/chefdk/bin/chef shell-init bash)"
-  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken -v 1.1.0
 
 script:
   - /opt/chefdk/embedded/bin/chef --version
