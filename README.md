@@ -9,15 +9,15 @@
 [win]: https://ci.appveyor.com/project/dhoer/chef-nexus3
 
 
-This cookbook installs and configures Sonatype Nexus 3.1 Repository Manager OSS
+This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS
 (http://www.sonatype.com/download-oss-sonatype).
 
 # Usage
 
 Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use
 [nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install
-the latest Nexus 3.1 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3.1 Repository Manager.
+the latest Nexus 3 Repository Manager OSS.
+Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
 
 ## Requirements
 * Chef 12+
@@ -33,11 +33,11 @@ Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to co
 
 ## default
 
-Downloads and installs the latest Nexus 3.1 Repository Manager OSS.
+Downloads and installs the latest Nexus 3 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of Nexus 3.1 Repository Manager. This can be a specific version of
+- `node['nexus3']['url']` - The download URL of Nexus 3 Repository Manager. This can be a specific version of
 Nexus Repository Manager OSS or Nexus Repository Manager Pro.
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
@@ -85,10 +85,10 @@ include_recipe 'nexus3'
 
 ## nexus3
 
-Downloads and installs the latest Nexus Repository Manager OSS v3.1.
+Downloads and installs the latest Nexus Repository Manager OSS v3.
 
 ### Actions
-- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.1.  
+- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
 - `:uninstall` - Removes service and install directory. Uninstall will not delete the data directory unless the default
 data configuration has changed to place it under the install directory (which is not recommended).
 - `:nothing` - Define this resource block to do nothing until notified by another resource to take action.
@@ -156,7 +156,7 @@ end
 
 ## nexus3_api
 
-Configures Nexus 3.1 Repository Manager via API.
+Configures Nexus 3 Repository Manager via API.
 
 ### Actions
 - `:run` - Default. Run the script on repository manager. If script_source or content attribute is
