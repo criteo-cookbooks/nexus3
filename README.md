@@ -9,8 +9,9 @@
 [win]: https://ci.appveyor.com/project/dhoer/chef-nexus3
 
 
-This cookbook installs and configures Sonatype Nexus 3 Repository Manager OSS
-(http://www.sonatype.com/download-oss-sonatype).
+This cookbook installs and configures 
+[Sonatype Nexus 3 Repository Manager OSS](http://www.sonatype.com/download-oss-sonatype) 
+according to https://books.sonatype.com/nexus-book/reference3/install.html
 
 # Usage
 
@@ -37,25 +38,36 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of Nexus 3 Repository Manager. This can be a specific version of
-Nexus Repository Manager OSS or Nexus Repository Manager Pro.
+- `node['nexus3']['url']` - The download URL of Nexus 3 Repository 
+Manager. This can be a specific version of Nexus Repository Manager OSS 
+or Nexus Repository Manager Pro.
 Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
-- `node['nexus3']['checksum']` (optional) - The checksum of Nexus Repository Manager. Default `nil`.
-- `node['nexus3']['data']` -  Data directory.
-Default Linux: `/opt/sonatype-work/nexus3` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype-work/nexus3`.
+- `node['nexus3']['checksum']` (optional) - The checksum of Nexus 
+Repository Manager. Default `nil`.
 - `node['nexus3']['path']` -  Install directory.
-Default Linux: `/opt/sonatype` Windows: `#{ENV['SYSTEMDRIVE']}/sonatype`.
-- `node['nexus3']['home']` -  Link to install directory. Default `#{node['nexus3']['path']}/nexus3`.
-- `node['nexus3']['properties_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
-- `node['nexus3']['properties_source']` -  Template file that will be used to create the `#{data}/etc/nexus.properties`
+Default Linux: `/opt` Windows: `#{ENV['SYSTEMDRIVE']}`.
+- `node['nexus3']['data']` -  Data directory. Default 
+Linux: `/opt/sonatype-work/nexus3` 
+Windows: `#{ENV['SYSTEMDRIVE']}/sonatype-work/nexus3`.
+- `node['nexus3']['home']` -  Link to install directory. 
+Default `#{node['nexus3']['path']}/nexus3`.
+- `node['nexus3']['properties_cookbook']` -  Cookbook that contains the 
+template to use. Default `nexus3`.
+- `node['nexus3']['properties_source']` -  Template file that will be 
+used to create the `#{data}/etc/nexus.properties`
 file. Default `nexus.properties.erb`.
-- `node['nexus3']['properties_variables']` -  A Hash of variables that are passed into a template file.
+- `node['nexus3']['properties_variables']` -  A Hash of variables that 
+are passed into a template file.
 Default `{ host: '0.0.0.0', port: '8081', context_path: '/' }`.
-- `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the template to use. Default `nexus3`.
-- `node['nexus3']['vmoptions_source']` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions`
+- `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the 
+template to use. Default `nexus3`.
+- `node['nexus3']['vmoptions_source']` -  Template file that will be 
+used to create the `#{home}/bin/nexus.vmoptions`
 file. Default `nexus.vmoptions.erb`.
-- `node['nexus3']['vmoptions_variables']` -  A Hash of variables that are passed into a template file. Note that
-data directory will be injected into the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
+- `node['nexus3']['vmoptions_variables']` -  A Hash of variables that 
+are passed into a template file. Note that
+data directory will be injected into the hash if it is not defined. 
+Default `{ Xms: '1200M', Xmx: '1200M' }`.
 
 ### Examples
 
