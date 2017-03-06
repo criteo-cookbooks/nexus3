@@ -9,9 +9,9 @@
 [win]: https://ci.appveyor.com/project/dhoer/chef-nexus3
 
 
-This cookbook installs and configures 
-[Sonatype Nexus 3 Repository Manager OSS](http://www.sonatype.com/download-oss-sonatype) 
-according to https://books.sonatype.com/nexus-book/reference3/install.html
+This cookbook installs and configures Sonatype Nexus 3 Repository 
+Manager OSS according to 
+https://books.sonatype.com/nexus-book/reference3/install.html
 
 # Usage
 
