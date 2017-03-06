@@ -46,9 +46,8 @@ Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
 Repository Manager. Default `nil`.
 - `node['nexus3']['path']` -  Install directory.
 Default Linux: `/opt` Windows: `#{ENV['SYSTEMDRIVE']}`.
-- `node['nexus3']['data']` -  Data directory. Default 
-Linux: `/opt/sonatype-work/nexus3` 
-Windows: `#{ENV['SYSTEMDRIVE']}/sonatype-work/nexus3`.
+- `node['nexus3']['data']` -  Data directory. 
+Default `#{node['nexus3']['path']}/sonatype-work/nexus3`.
 - `node['nexus3']['home']` -  Link to install directory. 
 Default `#{node['nexus3']['path']}/nexus3`.
 - `node['nexus3']['properties_cookbook']` -  Cookbook that contains the 
