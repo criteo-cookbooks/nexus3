@@ -107,7 +107,7 @@ action :install do
   else
     execute "untar #{filename}" do
       command "tar -xzf #{cached_file} -C #{new_resource.path} " \
-      "&& chown -R #{usr}:#{grp} #{new_resource.path}"
+      "&& chown -R #{usr}:#{grp} #{install_dir} #{data_dir}"
       action :nothing
       notifies(:restart, "service[#{new_resource.servicename}]")
     end
@@ -181,10 +181,13 @@ action :install do
 end
 
 action :uninstall do
+  url = download_url(new_resource.url)
+  install_dir = "#{new_resource.path}/nexus-#{version(url)}"
+
   service new_resource.servicename do # ~FC021
     action [:stop, :disable]
     ignore_failure true
-    only_if { ::File.exist?(new_resource.path) }
+    only_if { ::File.exist?(install_dir) }
   end
 
   execute 'rm -fr nexus-*' do
@@ -209,7 +212,7 @@ action :uninstall do
     end
   end
 
-  execute "rm -fr #{new_resource.path}" do
-    only_if { ::File.exist?(new_resource.path) }
+  execute "rm -fr #{install_dir} #{new_resource.home}" do
+    only_if { ::File.exist?(install_dir) }
   end
 end
