@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 2017-03-08
+
+- Update uninstall so it doesn't delete the entire contents of /opt
+
 ## 2.0.0 2016-12-17
 
 - Refactor for 3.1
