@@ -57,7 +57,7 @@ used to create the `#{data}/etc/nexus.properties`
 file. Default `nexus.properties.erb`.
 - `node['nexus3']['properties_variables']` -  A Hash of variables that 
 are passed into a template file.
-Default `{ host: '0.0.0.0', port: '8081', context_path: '/' }`.
+Default `{ host: '0.0.0.0', port: '8081', args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml', context_path: '/' }`.
 - `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the 
 template to use. Default `nexus3`.
 - `node['nexus3']['vmoptions_source']` -  Template file that will be 
@@ -131,10 +131,9 @@ be injected into the hash if it is not defined. Default `node['nexus3']['vmoptio
 
 ### Examples
 
-#### Changing the HTTP Port and/or Context Path
+#### Changing the HTTP Port and/or Context Path and/or HTTP vs HTTPS
 The default value for the HTTP port used to access the repository manager user interface and resources is 8081.
-To change HTTP Port and Context Path as 9081 and /components/, set the properties_variables hash with the updated settings
-and host name:
+To change HTTP Port to 8443, Context Path to /components/ and serve HTTPS directly, set the properties_variables hash with the updated settings:
 
 ```ruby
 include_recipe 'java_se'
@@ -142,7 +141,8 @@ include_recipe 'java_se'
 nexus3 'nexus' do
   properties_variables(
     host: '0.0.0.0',
-    port: '9081',
+    port: '8443',
+    args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml',
     context_path: '/components/'
   )
   action :install
