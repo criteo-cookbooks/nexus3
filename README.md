@@ -72,12 +72,12 @@ Default `{ Xms: '1200M', Xmx: '1200M' }`.
 
 #### Changing the HTTP Port and/or Context Path
 The default value for the HTTP port used to access the repository manager user interface and resources is 8081.
-To change HTTP Port and Context Path as 9081 and /components/, set the properties_variables hash with the updated settings:
+To change HTTP Port to 8443, Context Path to /components/ and serve HTTPS directly set the properties_variables hash with the updated settings:
 
 ```ruby
 include_recipe 'java_se'
 
-node.default['nexus3']['properties_variables'] = { port: '9081', context_path: '/components/' }
+node.default['nexus3']['properties_variables'] = { port: '8443', args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-https.xml,${jetty.etc}/jetty-requestlog.xml', context_path: '/components/' }
 include_recipe 'nexus3'
 ```
 
