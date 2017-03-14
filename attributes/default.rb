@@ -14,7 +14,7 @@ default['nexus3']['properties_source'] = 'nexus.properties.erb'
 default['nexus3']['properties_variables'] = {
   host: '0.0.0.0',
   port: '8081',
-  args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml'
+  args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
   context_path: '/'
 }
 
