@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0 2017-03-14
+
+- Add another variable to nexus.properties.erb to configure nexus-args
+
 ## 2.0.1 2017-03-08
 
 - Update uninstall so it doesn't delete the entire contents of /opt
