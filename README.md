@@ -1,13 +1,11 @@
 # Nexus3 Cookbook
 
-[![Cookbook Version](http://img.shields.io/cookbook/v/nexus3.svg?style=flat-square)][cookbook]
-[![linux](http://img.shields.io/travis/dhoer/chef-nexus3/master.svg?label=linux&style=flat-square)][linux]
-[![win](https://img.shields.io/appveyor/ci/dhoer/chef-nexus3/master.svg?label=windows&style=flat-square)][win]
+[![Cookbook Version][cookbook_version]][cookbook]
+[![Build Status][build_status]][build_status]
 
 [cookbook]: https://supermarket.chef.io/cookbooks/nexus3
-[linux]: https://travis-ci.org/dhoer/chef-nexus3
-[win]: https://ci.appveyor.com/project/dhoer/chef-nexus3
-
+[cookbook_version]: https://img.shields.io/cookbook/v/nexus3.svg
+[build_status]: https://api.travis-ci.org/criteo-cookbooks/nexus3.svg?branch=master
 
 This cookbook installs and configures Sonatype Nexus 3 Repository 
 Manager OSS according to 
@@ -15,10 +13,10 @@ https://books.sonatype.com/nexus-book/reference3/install.html
 
 # Usage
 
-Include [default](https://github.com/dhoer/chef-nexus3#default) recipe or use
-[nexus3](https://github.com/dhoer/chef-nexus3#nexus3) resource to download and install
+Include [default](https://github.com/criteo-cookbooks/nexus3#default) recipe or use
+[nexus3](https://github.com/criteo-cookbooks/nexus3#nexus3) resource to download and install
 the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/dhoer/chef-nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
+Use [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
 
 ## Requirements
 * Chef 12+
@@ -202,7 +200,7 @@ Default `node['nexus3']['api']['live_stream']`.
 
 ### Examples
 
-See [api_examples](https://github.com/dhoer/chef-nexus3/tree/master/api_examples) for more examples of using
+See [api_examples](https://github.com/criteo-cookbooks/nexus3/tree/master/api_examples) for more examples of using
 *nexus3_api* resource to configure Nexus Repository Manager.  Pull Requests improving or adding additional
 API Examples are welcome and encouraged.
 
@@ -242,12 +240,14 @@ Nexus3 Cookbook Matchers
 ## Getting Help
 
 - Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus3).
-- Report bugs and discuss potential features in [Github issues](https://github.com/dhoer/chef-nexus3/issues).
+- Report bugs and discuss potential features in [Github issues](https://github.com/criteo-cookbooks/nexus3/issues).
 
 ## Contributing
 
-Please refer to [CONTRIBUTING](https://github.com/dhoer/chef-nexus3/blob/master/CONTRIBUTING.md).
+Please refer to [CONTRIBUTING](https://github.com/criteo-cookbooks/nexus3/blob/master/CONTRIBUTING.md).
 
-## License
+## License and Authors
 
-MIT - see the accompanying [LICENSE](https://github.com/dhoer/chef-nexus3/blob/master/LICENSE.md) file for details.
+Authors: [Denis Hoer](https://github.com/dhoer) (<dennis.hoer@gmail.com>)
+
+License: MIT - see the accompanying [LICENSE](https://github.com/criteo-cookbooks/nexus3/blob/master/LICENSE.md) file for details.

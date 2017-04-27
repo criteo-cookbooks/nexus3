@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2016-2017 [CONTRIBUTORS](https://github.com/dhoer/chef-nexus3/graphs/contributors)
+Copyright (c) 2016-2017 [CONTRIBUTORS](https://github.com/criteo-cookbooks/nexus3/graphs/contributors)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in
