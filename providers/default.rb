@@ -10,7 +10,8 @@ end
 # http://download.sonatype.com/nexus/3/nexus-3.0.1-01-unix.tar.gz
 def download_url(url)
   uri = URI(url)
-  response = Net::HTTP.start(uri.host) { |http| http.get uri.request_uri }
+  options = { use_ssl: uri.scheme == 'https' }
+  response = Net::HTTP.start(uri.host, uri.port, options) { |http| http.get uri.request_uri }
 
   unless response.is_a?(Net::HTTPRedirection)
     return response['location'].nil? ? url : response['location']
