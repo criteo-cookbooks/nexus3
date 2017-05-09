@@ -37,6 +37,6 @@ suites:
     attributes:
        nexus3:
          api:
-           sensitive: false
+           is_sensitive: false
            live_stream: false
            fail: false

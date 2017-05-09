@@ -14,7 +14,7 @@ def health_check
         powershell_script "wait for #{new_resource.endpoint} to respond" do
           code "#{win_api_prefix} -Uri #{new_resource.endpoint}"
           live_stream new_resource.live_stream
-          sensitive new_resource.sensitive
+          sensitive new_resource.is_sensitive
           retries retries
           action :run
         end
@@ -22,7 +22,7 @@ def health_check
         execute "wait for #{new_resource.endpoint} to respond" do
           command "curl --fail -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'"
           live_stream new_resource.live_stream
-          sensitive new_resource.sensitive
+          sensitive new_resource.is_sensitive
           retries retries
           action :run
         end
@@ -69,7 +69,7 @@ def create_script
         " -InFile '#{scripts_dir}/#{new_resource.script_name}.json'"
       returns fail_silently
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   else
@@ -78,7 +78,7 @@ def create_script
         " --header \"Content-Type: application/json\" '#{new_resource.endpoint}' -d @#{new_resource.script_name}.json"
       cwd scripts_dir
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   end
@@ -86,9 +86,9 @@ end
 
 def fail_silently
   if platform?('windows')
-    new_resource.ignore_failure ? [0, 1] : 0
+    new_resource.ignore_failures ? [0, 1] : 0
   else
-    new_resource.ignore_failure ? '' : '--fail'
+    new_resource.ignore_failures ? '' : '--fail'
   end
 end
 
@@ -115,7 +115,7 @@ def run_script
         " -ContentType 'text/plain' #{args}"
       returns fail_silently
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   else
@@ -123,7 +123,7 @@ def run_script
       command "curl -v #{fail_silently} -X POST -u #{new_resource.username}:#{new_resource.password}" \
         " --header \"Content-Type: text/plain\" '#{new_resource.endpoint}/#{new_resource.script_name}/run' #{args}"
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   end
@@ -135,7 +135,7 @@ def delete_script
       code "#{win_api_prefix} -Uri #{new_resource.endpoint}/#{new_resource.script_name} -Method Delete"
       returns [0, 1]
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   else
@@ -143,7 +143,7 @@ def delete_script
       command "curl -v -X DELETE -u #{new_resource.username}:#{new_resource.password}" \
         " '#{new_resource.endpoint}/#{new_resource.script_name}'"
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   end
@@ -168,7 +168,7 @@ def list_scripts
       code "#{win_api_prefix} -Uri #{new_resource.endpoint} -OutFile '#{list_file}'"
       returns [0, 1]
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   else
@@ -176,7 +176,7 @@ def list_scripts
       command "curl -v -X GET -u #{new_resource.username}:#{new_resource.password} '#{new_resource.endpoint}'" \
         " -o '#{list_file}'"
       live_stream new_resource.live_stream
-      sensitive new_resource.sensitive
+      sensitive new_resource.is_sensitive
       action :run
     end
   end

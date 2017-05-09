@@ -11,10 +11,10 @@ attribute :args, kind_of: [Array, String, NilClass]
 attribute :type, kind_of: String
 attribute :host, kind_of: String
 attribute :endpoint, kind_of: String
-attribute :ignore_failure, kind_of: [TrueClass, FalseClass]
+attribute :ignore_failures, kind_of: [TrueClass, FalseClass]
 attribute :live_stream, kind_of: [TrueClass, FalseClass]
 attribute :wait, kind_of: Integer
-attribute :sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
+attribute :is_sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
 
 def initialize(*args)
   super
@@ -22,9 +22,9 @@ def initialize(*args)
   @type = lazy { node['nexus3']['api']['type'] }
   @host = lazy { node['nexus3']['api']['host'] }
   @endpoint = lazy { node['nexus3']['api']['endpoint'] }
-  @ignore_failure = lazy { node['nexus3']['api']['ignore_failure'] }
+  @ignore_failures = lazy { node['nexus3']['api']['ignore_failures'] }
   @live_stream = lazy { node['nexus3']['api']['live_stream'] }
   @wait = lazy { node['nexus3']['api']['wait'] }
-  # Chef will override sensitive back to its global value, so set default to true in init
-  @sensitive = lazy { node['nexus3']['api']['sensitive'] }
+  # Chef will override is_sensitive back to its global value, so set default to true in init
+  @is_sensitive = lazy { node['nexus3']['api']['is_sensitive'] }
 end

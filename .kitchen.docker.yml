@@ -82,4 +82,4 @@ suites:
   attributes:
     nexus3:
       api:
-        sensitive: false
+        is_sensitive: false
