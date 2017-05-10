@@ -4,6 +4,7 @@ gem 'berkshelf'
 gem 'chef', '~> 12.0'
 gem 'chefspec'
 gem 'foodcritic'
+gem 'webmock'
 
 group :integration do
   gem 'kitchen-dokken'
