@@ -2,14 +2,14 @@ module Nexus3
   class Api
     require 'json'
 
-    def initialize(url, user, password)
-      @http_client = HTTPClient.new(url).tap do |client|
+    def initialize(base_url, user, password)
+      @http_client = HTTPClient.new(base_url: base_url).tap do |client|
         # Authentication
         client.set_auth(nil, user, password)
+        client.force_basic_auth
         # Debugging
         client.debug_dev = STDOUT if ::Chef::Log.debug? || (ENV['HTTPCLIENT_LOG'] == 'stdout')
       end
-      @url = url
     end
 
     attr_reader :http_client
