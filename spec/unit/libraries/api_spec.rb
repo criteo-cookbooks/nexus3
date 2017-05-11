@@ -30,6 +30,7 @@ describe 'Nexus3::Api' do
       # TODO: if we add the Authorization header, the test fails, so
       # it may mean that the api http_client does not send the header.
       stub_request(:get, 'http://localhost/sample/api')
+        .with(basic_auth: ['admin', 'admin123'])
         .to_return(body: json_response(repo_list), headers: { 'Content-Type' => 'application/json' })
 
       expect(api_client.list_repositories).to eq(repo_list)
