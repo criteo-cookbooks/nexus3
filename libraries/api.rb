@@ -1,4 +1,5 @@
 module Nexus3
+  # Interact with the Nexus3 API
   class Api
     require 'json'
 
@@ -6,7 +7,7 @@ module Nexus3
       @http_client = HTTPClient.new(base_url: base_url).tap do |client|
         # Authentication
         client.set_auth(base_url, user, password)
-        client.force_basic_auth=true
+        client.force_basic_auth = true
         # Debugging
         client.debug_dev = STDOUT if ::Chef::Log.debug? || (ENV['HTTPCLIENT_LOG'] == 'stdout')
       end
