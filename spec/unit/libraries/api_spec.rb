@@ -29,7 +29,7 @@ describe 'Nexus3::Api' do
   describe 'list_repositories' do
     it 'returns repos' do
       stub_request(:get, 'http://localhost/sample/api')
-        .with(basic_auth: %w[admin admin123])
+        .with(basic_auth: %w(admin admin123))
         .to_return(body: json_response(repo_list), headers: { 'Content-Type' => 'application/json' })
 
       expect(api_client.list_repositories).to eq(repo_list)
