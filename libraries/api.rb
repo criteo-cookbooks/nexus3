@@ -5,8 +5,8 @@ module Nexus3
     def initialize(base_url, user, password)
       @http_client = HTTPClient.new(base_url: base_url).tap do |client|
         # Authentication
-        client.set_auth(nil, user, password)
-        client.force_basic_auth
+        client.set_auth(base_url, user, password)
+        client.force_basic_auth=true
         # Debugging
         client.debug_dev = STDOUT if ::Chef::Log.debug? || (ENV['HTTPCLIENT_LOG'] == 'stdout')
       end
@@ -27,7 +27,7 @@ module Nexus3
 
     # Query Nexus3 API for list of repos, returns struct (parsed JSON)
     def list_repositories
-      JSON.parse(request(:get, @url))
+      JSON.parse(request(:get, ''))
     end
   end
 end
