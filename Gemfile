@@ -4,7 +4,6 @@ gem 'berkshelf'
 gem 'chef', '~> 12.0'
 gem 'chefspec'
 gem 'foodcritic'
-gem 'rubocop'
 
 group :integration do
   gem 'kitchen-dokken'
@@ -13,3 +12,6 @@ group :integration do
   gem 'test-kitchen'
   gem 'winrm-fs'
 end
+
+# Other gems should go after this comment
+gem 'rubocop', '=0.47.1'
