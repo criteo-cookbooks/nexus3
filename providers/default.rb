@@ -160,11 +160,16 @@ action :install do
   unless platform?('windows')
     case systype
     when 'systemd'
+      execute 'daemon-reload' do
+        command 'systemctl daemon-reload'
+        action :nothing
+      end
       template "/etc/systemd/system/#{new_resource.servicename}.service" do
         source 'systemd.erb'
         cookbook 'nexus3'
         mode '0755'
         variables(user: usr, home: new_resource.home)
+        notifies :run, 'execute[daemon-reload]', :immediately
         notifies(:restart, "service[#{new_resource.servicename}]")
       end
     else
