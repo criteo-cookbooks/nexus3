@@ -186,7 +186,7 @@ action :uninstall do
 
   service new_resource.servicename do # ~FC021
     action [:stop, :disable]
-    ignore_failures true
+    ignore_failure true
     only_if { ::File.exist?(install_dir) }
   end
 
