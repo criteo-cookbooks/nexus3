@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'berkshelf'
-gem 'chef', '~> 12.0'
+gem 'chef', '>= 12.10.27'
 gem 'chefspec'
 gem 'foodcritic'
 gem 'webmock'
