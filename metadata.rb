@@ -8,7 +8,7 @@ source_url 'https://github.com/criteo-cookbooks/chef-nexus3' if respond_to?(:sou
 issues_url 'https://github.com/criteo-cookbooks/chef-nexus3/issues' if respond_to?(:issues_url)
 version '2.1.0'
 
-chef_version '>= 12.0'
+chef_version '>= 12.10.27'
 
 supports 'centos'
 supports 'debian'

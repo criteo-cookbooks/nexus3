@@ -160,12 +160,23 @@ action :install do
   unless platform?('windows')
     case systype
     when 'systemd'
-      template "/etc/systemd/system/#{new_resource.servicename}.service" do
-        source 'systemd.erb'
-        cookbook 'nexus3'
-        mode '0755'
-        variables(user: usr, home: new_resource.home)
-        notifies(:restart, "service[#{new_resource.servicename}]")
+      systemd_unit "#{new_resource.servicename}.service" do
+        content <<-EOU.gsub(/^\s+/, '')
+        [Unit]
+        Description=nexus service
+        After=network.target
+
+        [Service]
+        Type=forking
+        ExecStart=#{install_dir}/bin/nexus start
+        ExecStop=#{install_dir}/bin/nexus stop
+        User=#{usr}
+        Restart=on-abort
+
+        [Install]
+        WantedBy=multi-user.target
+        EOU
+        action [:create, :enable]
       end
     else
       link "/etc/init.d/#{new_resource.servicename}" do

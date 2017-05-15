@@ -19,7 +19,7 @@ the latest Nexus 3 Repository Manager OSS.
 Use [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
 
 ## Requirements
-* Chef 12+
+* Chef 12.10.27+
 * Java 8+ from Oracle (Java is not installed by this cookbook and OpenJDK is not supported)
 
 ### Platforms
