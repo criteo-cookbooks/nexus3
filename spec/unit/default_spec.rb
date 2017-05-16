@@ -54,10 +54,6 @@ describe 'nexus3::default' do
       expect(chef_run).to create_link('/opt/nexus3')
     end
 
-    it 'does not create init.d link' do
-      expect(chef_run).to create_link('/etc/init.d/nexus')
-    end
-
     it 'creates service' do
       expect(chef_run).to enable_service('nexus')
     end
