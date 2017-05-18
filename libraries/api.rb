@@ -1,10 +1,11 @@
 module Nexus3
   # Interact with the Nexus3 API
   class Api
-    require 'json'
-
     def initialize(base_url, user, password)
-      @http_client = HTTPClient.new(base_url: base_url).tap do |client|
+      require 'httpclient'
+      require 'json'
+
+      @http_client = ::HTTPClient.new(base_url: base_url).tap do |client|
         # Authentication
         client.set_auth(base_url, user, password)
         client.force_basic_auth = true
@@ -15,20 +16,27 @@ module Nexus3
 
     attr_reader :http_client
 
-    def request(method, path, data = nil)
-      response = http_client.request(method, path, data)
+    def request(method, path, ct = 'application/json', data = nil)
+      data = case data
+             when Hash, Array
+               JSON.generate(data)
+             else
+               data
+             end
+      response = http_client.request(method, path, nil, data, 'Content-Type' => ct)
 
-      raise "HTTP_STATUS=#{response.status_code}#{response.body}" unless response.ok?
+      raise "HTTP_STATUS=#{response.status_code} #{response.body}" unless response.ok?
 
-      @response = response.body
+      response.body
     rescue => e
       error_message = " with following error\n#{e.response.body}" if e.respond_to? 'response'
       raise "Nexus API: '#{e}' #{error_message}"
     end
 
-    # Query Nexus3 API for list of repos, returns struct (parsed JSON)
-    def list_repositories
-      JSON.parse(request(:get, ''))
+    # Runs a specific script with parameters
+    def run_script(scriptname, params)
+      body = request(:post, "#{scriptname}/run", 'text/plain', params)
+      JSON.parse(body)['result']
     end
   end
 end

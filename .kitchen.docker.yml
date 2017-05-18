@@ -36,7 +36,7 @@ platforms:
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
+      - RUN /usr/bin/apt-get install apt-transport-https net-tools curl -y
 
 - name: fedora-latest
   driver:
@@ -53,7 +53,7 @@ platforms:
     pid_one_command: /sbin/init
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
+      - RUN /usr/bin/apt-get install apt-transport-https net-tools curl -y
 
 - name: ubuntu-14.04
   driver:
@@ -61,7 +61,7 @@ platforms:
     pid_one_command: /sbin/init
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
+      - RUN /usr/bin/apt-get install apt-transport-https net-tools curl -y
 
 - name: ubuntu-16.04
   driver:
@@ -69,7 +69,7 @@ platforms:
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
-      - RUN /usr/bin/apt-get install apt-transport-https net-tools -y
+      - RUN /usr/bin/apt-get install apt-transport-https net-tools curl -y
 
 suites:
 - name: default
@@ -78,7 +78,6 @@ suites:
     - nexus3_test::create_script
     - nexus3_test::delete_script
     - nexus3_test::run_script
-    - nexus3_test::list_scripts
   attributes:
     nexus3:
       api:
