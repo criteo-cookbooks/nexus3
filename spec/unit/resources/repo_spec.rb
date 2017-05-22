@@ -15,15 +15,11 @@ describe 'nexus3_test::create_repo' do
     end
 
     it 'retrieves a repo configuration' do
-      expect(chef_run).to create_script('get_repo').with(
-        repo_name: 'foo'
-      )
+      expect(chef_run).to create_script('get_repo').with(repo_name: 'foo')
     end
 
     it 'deletes a repo' do
-      expect(chef_run).to create_script('delete_repo').with(
-        repo_name: 'foo'
-      )
+      expect(chef_run).to create_script('delete_repo').with(repo_name: 'foo')
     end
   end
 end

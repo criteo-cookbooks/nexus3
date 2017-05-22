@@ -2,8 +2,6 @@
 
 require_relative '../../spec_helper'
 
-require 'json'
-
 describe 'Nexus3::Api' do
   let(:api_client) do
     Nexus3::Api.new('http://localhost/sample/api/', 'admin', 'admin123')

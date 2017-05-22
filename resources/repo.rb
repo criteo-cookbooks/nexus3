@@ -66,7 +66,6 @@ if (conf != null) {
       content <<-EOS
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-
 import org.sonatype.nexus.repository.config.Configuration
 
 def params = new JsonSlurper().parseText(args)
@@ -83,7 +82,7 @@ if (repo == null) { // create
   repository.createRepository(conf)
 } else { // update
   conf = repo.getConfiguration()
-  / TODO: exit with an error and handle the error in the lib.
+  // TODO: exit with an error and handle the error in the lib.
   if (conf.getRecipeName() != params.type) {
     log.warn("Tried to change recipe for repo ${params.name} to ${params.type}")
   }

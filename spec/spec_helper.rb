@@ -1,6 +1,5 @@
 require 'chefspec'
 require 'chefspec/berkshelf'
-require 'json'
 require 'webmock/rspec'
 
 WebMock.allow_net_connect!
