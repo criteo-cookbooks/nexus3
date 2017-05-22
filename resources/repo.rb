@@ -111,13 +111,19 @@ action :delete do
   chef_gem 'httpclient'
 
   nexus3_api 'delete_repo' do
-    action :create, :run
+    action %i(create run)
     endpoint new_resource.api_url
     username new_resource.api_user
     password new_resource.api_password
     args new_resource.repo_name
 
-    content 'repository.repositoryManager.delete(args)'
+    content <<EOS
+try {
+  repository.repositoryManager.delete(args)
+} catch (Exception e) {
+  log.warn("Repository ${args} could not be deleted, caught ${e}")
+}
+EOS
   end
 end
 
