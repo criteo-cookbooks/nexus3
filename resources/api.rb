@@ -1,30 +1,57 @@
-actions :run, :create, :delete, :list
-default_action :run
+property :script_name, String, name_attribute: true
+property :content, String, default: ''.freeze
+property :args, [Hash, String, NilClass], desired_state: false
+property :endpoint, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
+property :username, String, desired_state: false, identity: true, default: 'admin'.freeze
+property :password, String, desired_state: false, identity: true, default: 'admin123'.freeze
 
-attribute :script_name, kind_of: String, name_attribute: true
-attribute :username, kind_of: String, default: 'admin'
-attribute :password, kind_of: String, default: 'admin123'
-attribute :content, kind_of: [String, NilClass]
-attribute :script_cookbook, kind_of: String
-attribute :script_source, kind_of: [String, NilClass]
-attribute :args, kind_of: [Array, String, NilClass]
-attribute :type, kind_of: String
-attribute :host, kind_of: String
-attribute :endpoint, kind_of: String
-attribute :ignore_failure, kind_of: [TrueClass, FalseClass]
-attribute :live_stream, kind_of: [TrueClass, FalseClass]
-attribute :wait, kind_of: Integer
-attribute :sensitive, kind_of: [TrueClass, FalseClass] # , default: true - see initialize below
+def apiclient
+  @apiclient ||= ::Nexus3::Api.new(endpoint, username, password)
+end
 
-def initialize(*args)
-  super
-  @script_cookbook = lazy { node['nexus3']['api']['script_cookbook'] }
-  @type = lazy { node['nexus3']['api']['type'] }
-  @host = lazy { node['nexus3']['api']['host'] }
-  @endpoint = lazy { node['nexus3']['api']['endpoint'] }
-  @ignore_failure = lazy { node['nexus3']['api']['ignore_failure'] }
-  @live_stream = lazy { node['nexus3']['api']['live_stream'] }
-  @wait = lazy { node['nexus3']['api']['wait'] }
-  # Chef will override sensitive back to its global value, so set default to true in init
-  @sensitive = lazy { node['nexus3']['api']['sensitive'] }
+load_current_value do |desired|
+  endpoint desired.endpoint
+  username desired.username
+  password desired.password
+
+  begin
+    response = JSON.parse(apiclient.request(:get, desired.script_name))
+    content response['content'] if response.is_a?(Hash) && response.key?('content')
+  rescue LoadError, StandardError => e
+    ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
+    current_value_does_not_exist!
+  end
+end
+
+action :create do
+  chef_gem 'httpclient'
+
+  converge_if_changed do
+    apiclient.request(:delete, script_name) unless current_resource.nil?
+    apiclient.request(:post, '', 'application/json', name: script_name, type: 'groovy', content: content)
+  end
+end
+
+action :run do
+  chef_gem 'httpclient'
+
+  converge_by "running script #{script_name}" do
+    apiclient.run_script(script_name, args)
+  end
+end
+
+action :delete do
+  chef_gem 'httpclient'
+
+  unless current_resource.nil?
+    converge_by "deleting script #{script_name}" do
+      apiclient.request(:delete, script_name)
+    end
+  end
+end
+
+action_class.class_eval do
+  def whyrun_supported?
+    true
+  end
 end

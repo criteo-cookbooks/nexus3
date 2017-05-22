@@ -1,19 +1,20 @@
 # creates script, then deletes it
-nexus3_api 'create bar' do
-  script_name 'bar'
+nexus3_api 'bar' do
   content "repository.createMavenHosted('bar')"
-  ignore_failure false
+  username 'admin'
+  password 'admin123'
+
   action :create
+  retries 10
+  retry_delay 10
 end
 
-nexus3_api 'list bar' do
-  script_name 'bar'
-  ignore_failure false
-  action :list
-end
+nexus3_api 'bar' do
+  content ''
+  username 'admin'
+  password 'admin123'
 
-nexus3_api 'delete bar' do
-  script_name 'bar'
-  ignore_failure false
   action :delete
+  retries 10
+  retry_delay 10
 end

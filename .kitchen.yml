@@ -33,7 +33,6 @@ suites:
       - nexus3_test::create_script
       - nexus3_test::delete_script
       - nexus3_test::run_script
-      - nexus3_test::list_scripts
     attributes:
        nexus3:
          api:
