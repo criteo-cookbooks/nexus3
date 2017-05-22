@@ -1,15 +1,10 @@
 property :repo_name, String, name_attribute: true
-property :repo_type, String, default: 'maven-hosted'
+property :repo_type, String, default: 'maven2-hosted'.freeze
 property :attributes, Hash, default: lazy { Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_url, String, required: true, identity: true
-property :api_user, String, required: true, identity: true
-property :api_password, String, required: true, identity: true
-
-def textify(args)
-  require 'json'
-  JSON.generate(args)
-end
+property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
+property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
+property :api_password, String, desired_state: false, identity: true, default: 'admin123'.freeze
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(api_url, api_user, api_password)
@@ -58,11 +53,11 @@ if (conf != null) {
 
   converge_if_changed do
     nexus3_api 'upsert_repo' do
-      # TODO: Current nexus3_api passes a string and text/plain, change this back to a Hash later
-      args textify(name: new_resource.repo_name,
-                   type: new_resource.repo_type,
-                   online: new_resource.online,
-                   attributes: new_resource.attributes)
+      args name: new_resource.repo_name,
+           type: new_resource.repo_type,
+           online: new_resource.online,
+           attributes: new_resource.attributes
+
       action %i(create run)
       endpoint new_resource.api_url
       username new_resource.api_user
@@ -88,9 +83,7 @@ if (repo == null) { // create
   repository.createRepository(conf)
 } else { // update
   conf = repo.getConfiguration()
-  if (conf.getRepositoryName() != params.name) {
-    log.warn("Tried to change the repository name to ${params.name}")
-  }
+  / TODO: exit with an error and handle the error in the lib.
   if (conf.getRecipeName() != params.type) {
     log.warn("Tried to change recipe for repo ${params.name} to ${params.type}")
   }
@@ -112,18 +105,12 @@ action :delete do
 
   nexus3_api 'delete_repo' do
     action %i(create run)
+    content 'repository.repositoryManager.delete(args)'
+    args new_resource.repo_name
+
     endpoint new_resource.api_url
     username new_resource.api_user
     password new_resource.api_password
-    args new_resource.repo_name
-
-    content <<EOS
-try {
-  repository.repositoryManager.delete(args)
-} catch (Exception e) {
-  log.warn("Repository ${args} could not be deleted, caught ${e}")
-}
-EOS
   end
 end
 
