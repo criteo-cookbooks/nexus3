@@ -86,19 +86,20 @@ if (repo == null) { // create
     attributes: params.attributes
   )
   repository.createRepository(conf)
-  } else { // update
-    conf = repo.getConfiguration()
-    if (conf.getRepositoryName() != params.name) {
-      log.warn('Tried to change the repository name to ${params.name}')
-    }
-    if (conf.getRecipeName() != params.type) {
-      // TODO: throw an exception
-      log.warn('Tried to change recipe for repo ${params.name} to ${params.type}')
-    }
-    conf.setOnline(params.online)
-    conf.setAttributes(params.attributes)
-    repo.update(conf)
+} else { // update
+  conf = repo.getConfiguration()
+  if (conf.getRepositoryName() != params.name) {
+    log.warn("Tried to change the repository name to ${params.name}")
   }
+  if (conf.getRecipeName() != params.type) {
+    log.warn("Tried to change recipe for repo ${params.name} to ${params.type}")
+  }
+  conf.setOnline(params.online)
+  conf.setAttributes(params.attributes)
+  repo.stop()
+  repo.update(conf)
+  repo.start()
+}
 
   true
     EOS
