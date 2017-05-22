@@ -16,11 +16,11 @@ load_current_value do |desired|
   api_password desired.api_password
 
   begin
-    config = apiclient.run_script('get_repo', desired.repo_name)
+    config = JSON.parse(apiclient.run_script('get_repo', desired.repo_name))
     ::Chef::Log.warn "Config is: #{config}"
     repo_name config['repositoryName']
     repo_type config['recipeName']
-    attributes attributes.merge(config['attributes'])
+    attributes config['attributes']
     online config['online']
   # We rescue here because during the first run, the repository will not exist yet, so we let Chef know that
   # the resource has to be created.
