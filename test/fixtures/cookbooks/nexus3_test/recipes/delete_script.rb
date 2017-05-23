@@ -26,6 +26,10 @@ nexus3_api 'bar again' do
   password 'admin123'
 
   action :delete
-  retries 10
-  retry_delay 10
+  notifies :run, 'ruby_block[fail if bar is deleted again]', :immediately
+end
+
+ruby_block 'fail if bar is deleted again' do
+  action :nothing
+  block { raise 'nexus3_api is not idempotent!' }
 end
