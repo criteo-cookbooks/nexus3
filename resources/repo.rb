@@ -105,7 +105,12 @@ action :delete do
 
   nexus3_api 'delete_repo' do
     action %i(create run)
-    content 'repository.repositoryManager.delete(args)'
+    content <<-EOS
+def repo = repository.repositoryManager.get(args)
+if (repo != null) {
+  repository.repositoryManager.delete(args)
+}
+    EOS
     args new_resource.repo_name
 
     endpoint new_resource.api_url

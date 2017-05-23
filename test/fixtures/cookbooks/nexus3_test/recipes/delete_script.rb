@@ -18,3 +18,14 @@ nexus3_api 'bar' do
   retries 10
   retry_delay 10
 end
+
+nexus3_api 'bar again' do
+  script_name 'bar'
+  content ''
+  username 'admin'
+  password 'admin123'
+
+  action :delete
+  retries 10
+  retry_delay 10
+end
