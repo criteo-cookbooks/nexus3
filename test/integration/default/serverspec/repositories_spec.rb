@@ -14,7 +14,7 @@ describe 'nexus::repositories' do
 
   describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script/get_repo/run ' \
                    '-X POST -H "Content-Type: text/plain" -d foo') do
-    its(:stdout) { should contain('result').before("name='foo'") }
+    its(:stdout) { should contain('result').before('repositoryName=').before('foo') }
   end
 
   describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script/get_repo/run ' \
