@@ -31,27 +31,7 @@ load_current_value do |desired|
 end
 
 action :create do
-  chef_gem 'httpclient'
-
-  nexus3_api 'get_repo' do
-    action :create
-    endpoint new_resource.api_url
-    username new_resource.api_user
-    password new_resource.api_password
-
-    content <<-EOS
-import groovy.json.JsonOutput
-conf = repository.repositoryManager.get(args)?.getConfiguration()
-if (conf != null) {
-  JsonOutput.toJson([
-    repositoryName: conf.getRepositoryName(),
-    recipeName: conf.getRecipeName(),
-    online: conf.isOnline(),
-    attributes: conf.getAttributes()
-  ])
-}
-    EOS
-  end
+  init
 
   converge_if_changed do
     nexus3_api 'upsert_repo' do
@@ -101,7 +81,7 @@ if (repo == null) { // create
 end
 
 action :delete do
-  chef_gem 'httpclient'
+  init
 
   nexus3_api 'delete_repo' do
     action %i(create run)
@@ -122,6 +102,32 @@ if (repo != null) {
 end
 
 action_class.class_eval do
+  def init
+    chef_gem 'httpclient' do
+      compile_time true
+    end
+
+    nexus3_api 'get_repo' do
+      action :create
+      endpoint new_resource.api_url
+      username new_resource.api_user
+      password new_resource.api_password
+
+      content <<-EOS
+import groovy.json.JsonOutput
+conf = repository.repositoryManager.get(args)?.getConfiguration()
+if (conf != null) {
+  JsonOutput.toJson([
+    repositoryName: conf.getRepositoryName(),
+    recipeName: conf.getRecipeName(),
+    online: conf.isOnline(),
+    attributes: conf.getAttributes()
+  ])
+}
+    EOS
+    end
+  end
+
   def whyrun_supported?
     true
   end
