@@ -10,14 +10,16 @@ describe 'nexus3_test::repositories' do
     before do
       stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
         .with(basic_auth: %w(admin admin123))
-        .with(body: 'foo', headers: { 'Content-Type' => 'application/json' })
-        .to_return(api_response(404), api_response(200, result: 'foo'))
+        .with(body: 'foo', headers: { 'Content-Type' => 'text/plain' })
+        .to_return(api_response(404),
+                   script_response('foo'))
 
       stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
         .with(basic_auth: %w(admin admin123))
-        .with(body: 'bar', headers: { 'Content-Type' => 'application/json' })
-        .to_return(api_response(404), api_response(200, result: 'bar'),
-                   api_response(200, result: 'bar'))
+        .with(body: 'bar', headers: { 'Content-Type' => 'text/plain' })
+        .to_return(api_response(404),
+                   script_response('bar'),
+                   script_response('bar'))
     end
 
     it 'creates a repo' do
