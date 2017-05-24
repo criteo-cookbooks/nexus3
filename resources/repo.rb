@@ -35,7 +35,8 @@ action :create do
   init
 
   converge_if_changed do
-    nexus3_api 'upsert_repo' do
+    nexus3_api "upsert_repo #{repo_name}" do
+      script_name 'upsert_repo'
       args name: new_resource.repo_name,
            type: new_resource.repo_type,
            online: new_resource.online,
@@ -84,8 +85,9 @@ end
 action :delete do
   init
 
-  nexus3_api 'delete_repo' do
+  nexus3_api "delete_repo #{repo_name}" do
     action %i(create run)
+    script_name 'delete_repo'
     content <<-EOS
 def repo = repository.repositoryManager.get(args)
 if (repo == null) {
@@ -94,7 +96,7 @@ if (repo == null) {
 repository.repositoryManager.delete(args)
 true
     EOS
-    args new_resource.repo_name
+    args repo_name
 
     endpoint new_resource.api_url
     username new_resource.api_user
@@ -110,8 +112,9 @@ action_class.class_eval do
       compile_time true
     end
 
-    nexus3_api 'get_repo' do
+    nexus3_api "get_repo #{repo_name}" do
       action :create
+      script_name 'get_repo'
       endpoint new_resource.api_url
       username new_resource.api_user
       password new_resource.api_password

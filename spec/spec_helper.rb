@@ -9,8 +9,9 @@ def api_response(code, result = {})
   { status: code, headers: { 'Content-Type' => 'application/json' }, body: JSON.generate(result) }
 end
 
-def script_response(result)
-  api_response(200, result: JSON.generate(result))
+def repo_response(reponame)
+  api_response(200, result: JSON.generate(repositoryName: reponame,
+                                          recipeName: 'maven2-hosted', online: true, attributes: {}))
 end
 
 RSpec.configure do |config|
