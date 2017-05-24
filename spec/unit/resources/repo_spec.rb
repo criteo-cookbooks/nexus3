@@ -7,12 +7,20 @@ describe 'nexus3_test::repositories' do
                                file_cache_path: CACHE).converge(described_recipe)
     end
 
-    it 'creates a repo' do
+    before do
       stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'foo', headers: { 'Content-Type' => 'application/json' })
-        .to_return({ status: 200, body: '' }, status: 200, body: 'foo')
+        .to_return(api_response(404), api_response(200, result: 'foo'))
 
+      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
+        .with(basic_auth: %w(admin admin123))
+        .with(body: 'bar', headers: { 'Content-Type' => 'application/json' })
+        .to_return(api_response(404), api_response(200, result: 'bar'),
+                   api_response(200, result: 'bar'))
+    end
+
+    it 'creates a repo' do
       expect(chef_run).to create_nexus3_repo('bar')
       expect(chef_run).to create_nexus3_api('get_repo')
       expect(chef_run).to create_nexus3_api('upsert_repo')
@@ -23,11 +31,6 @@ describe 'nexus3_test::repositories' do
     end
 
     it 'deletes a repo' do
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
-        .with(basic_auth: %w(admin admin123))
-        .with(body: 'bar', headers: { 'Content-Type' => 'application/json' })
-        .to_return(status: 200, body: 'bar')
-
       expect(chef_run).to delete_nexus3_repo('bar')
       expect(chef_run).to create_nexus3_api('get_repo')
       expect(chef_run).to create_nexus3_api('delete_repo')
