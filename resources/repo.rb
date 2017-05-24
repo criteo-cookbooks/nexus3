@@ -116,6 +116,8 @@ if (repo != null) {
     endpoint new_resource.api_url
     username new_resource.api_user
     password new_resource.api_password
+
+    not_if { current_resource.nil? }
   end
 end
 
