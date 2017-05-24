@@ -32,3 +32,14 @@ nexus3_repo 'bar' do
   retries 10
   retry_delay 10
 end
+
+nexus3_repo 'bar again' do
+  repo_name 'bar'
+  action :delete
+  notifies :run, 'ruby_block[fail if bar is deleted again]', :immediately
+end
+
+ruby_block 'fail if bar is deleted again' do
+  action :nothing
+  block { raise 'nexus_repo is not idempotent!' }
+end
