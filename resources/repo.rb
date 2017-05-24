@@ -87,9 +87,11 @@ action :delete do
     action %i(create run)
     content <<-EOS
 def repo = repository.repositoryManager.get(args)
-if (repo != null) {
-  repository.repositoryManager.delete(args)
+if (repo == null) {
+   return false
 }
+repository.repositoryManager.delete(args)
+true
     EOS
     args new_resource.repo_name
 
