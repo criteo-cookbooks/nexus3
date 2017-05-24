@@ -17,7 +17,6 @@ load_current_value do |desired|
 
   begin
     config = JSON.parse(apiclient.run_script('get_repo', desired.repo_name))
-    ::Chef::Log.warn "Config is: #{config}"
     repo_name config['repositoryName']
     repo_type config['recipeName']
     attributes config['attributes']
@@ -31,7 +30,9 @@ load_current_value do |desired|
 end
 
 action :create do
-  chef_gem 'httpclient'
+  chef_gem 'httpclient' do
+    compile_time false
+  end
 
   nexus3_api 'get_repo' do
     action :create
@@ -101,7 +102,9 @@ if (repo == null) { // create
 end
 
 action :delete do
-  chef_gem 'httpclient'
+  chef_gem 'httpclient' do
+    compile_time false
+  end
 
   nexus3_api 'delete_repo' do
     action %i(create run)
@@ -111,6 +114,8 @@ action :delete do
     endpoint new_resource.api_url
     username new_resource.api_user
     password new_resource.api_password
+
+    not_if { current_resource.nil? }
   end
 end
 
