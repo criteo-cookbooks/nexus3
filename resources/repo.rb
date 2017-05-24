@@ -24,7 +24,7 @@ load_current_value do |desired|
     online config['online']
   # We rescue here because during the first run, the repository will not exist yet, so we let Chef know that
   # the resource has to be created.
-  rescue LoadError, StandardError => e
+  rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
     current_value_does_not_exist!
   end

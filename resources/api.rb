@@ -17,7 +17,7 @@ load_current_value do |desired|
   begin
     response = JSON.parse(apiclient.request(:get, desired.script_name))
     content response['content'] if response.is_a?(Hash) && response.key?('content')
-  rescue LoadError, StandardError => e
+  rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
     current_value_does_not_exist!
   end
