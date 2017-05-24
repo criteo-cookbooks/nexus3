@@ -11,7 +11,7 @@ conf = Mash.new(
 
 nexus3_repo 'foo' do
   attributes conf
-  retries 10
+  retries node['nexus3_test']['connection_retries']
   retry_delay 10
 end
 
@@ -29,6 +29,17 @@ end
 nexus3_repo 'bar' do
   action %i(create delete)
   attributes conf
-  retries 10
+  retries node['nexus3_test']['connection_retries']
   retry_delay 10
+end
+
+nexus3_repo 'bar again' do
+  repo_name 'bar'
+  action :delete
+  notifies :run, 'ruby_block[fail if bar is deleted again]', :immediately
+end
+
+ruby_block 'fail if bar is deleted again' do
+  action :nothing
+  block { raise 'nexus3_repo is not idempotent!' }
 end

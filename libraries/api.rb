@@ -1,4 +1,7 @@
 module Nexus3
+  class ApiError < RuntimeError
+  end
+
   # Interact with the Nexus3 API
   class Api
     def initialize(base_url, user, password)
@@ -23,14 +26,14 @@ module Nexus3
              else
                data
              end
-      response = http_client.request(method, path, nil, data, 'Content-Type' => ct)
+      res = http_client.request(method, path, nil, data, 'Content-Type' => ct)
 
-      raise "HTTP_STATUS=#{response.status_code} #{response.body}" unless response.ok?
-
-      response.body
+      res.body
     rescue => e
       error_message = " with following error\n#{e.response.body}" if e.respond_to? 'response'
       raise "Nexus API: '#{e}' #{error_message}"
+    ensure
+      raise ApiError, "HTTP_STATUS=#{res.status_code} #{res.body}" unless res.nil? || res.ok?
     end
 
     # Runs a specific script with parameters

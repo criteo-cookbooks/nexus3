@@ -17,6 +17,7 @@ load_current_value do |desired|
 
   begin
     config = JSON.parse(apiclient.run_script('get_repo', desired.repo_name))
+    current_value_does_not_exist! if config.nil?
     ::Chef::Log.warn "Config is: #{config}"
     repo_name config['repositoryName']
     repo_type config['recipeName']
@@ -24,37 +25,18 @@ load_current_value do |desired|
     online config['online']
   # We rescue here because during the first run, the repository will not exist yet, so we let Chef know that
   # the resource has to be created.
-  rescue LoadError, StandardError => e
+  rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
     current_value_does_not_exist!
   end
 end
 
 action :create do
-  chef_gem 'httpclient'
-
-  nexus3_api 'get_repo' do
-    action :create
-    endpoint new_resource.api_url
-    username new_resource.api_user
-    password new_resource.api_password
-
-    content <<-EOS
-import groovy.json.JsonOutput
-conf = repository.repositoryManager.get(args)?.getConfiguration()
-if (conf != null) {
-  JsonOutput.toJson([
-    repositoryName: conf.getRepositoryName(),
-    recipeName: conf.getRecipeName(),
-    online: conf.isOnline(),
-    attributes: conf.getAttributes()
-  ])
-}
-    EOS
-  end
+  init
 
   converge_if_changed do
-    nexus3_api 'upsert_repo' do
+    nexus3_api "upsert_repo #{repo_name}" do
+      script_name 'upsert_repo'
       args name: new_resource.repo_name,
            type: new_resource.repo_type,
            online: new_resource.online,
@@ -101,20 +83,57 @@ if (repo == null) { // create
 end
 
 action :delete do
-  chef_gem 'httpclient'
+  init
 
-  nexus3_api 'delete_repo' do
+  nexus3_api "delete_repo #{repo_name}" do
     action %i(create run)
-    content 'repository.repositoryManager.delete(args)'
-    args new_resource.repo_name
+    script_name 'delete_repo'
+    content <<-EOS
+def repo = repository.repositoryManager.get(args)
+if (repo == null) {
+   return false
+}
+repository.repositoryManager.delete(args)
+true
+    EOS
+    args repo_name
 
     endpoint new_resource.api_url
     username new_resource.api_user
     password new_resource.api_password
+
+    not_if { current_resource.nil? }
   end
 end
 
 action_class.class_eval do
+  def init
+    chef_gem 'httpclient' do
+      compile_time true
+    end
+
+    nexus3_api "get_repo #{repo_name}" do
+      action :create
+      script_name 'get_repo'
+      endpoint new_resource.api_url
+      username new_resource.api_user
+      password new_resource.api_password
+
+      content <<-EOS
+import groovy.json.JsonOutput
+conf = repository.repositoryManager.get(args)?.getConfiguration()
+if (conf != null) {
+  JsonOutput.toJson([
+    repositoryName: conf.getRepositoryName(),
+    recipeName: conf.getRecipeName(),
+    online: conf.isOnline(),
+    attributes: conf.getAttributes()
+  ])
+}
+    EOS
+    end
+  end
+
   def whyrun_supported?
     true
   end
