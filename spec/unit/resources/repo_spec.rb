@@ -11,7 +11,7 @@ describe 'nexus3_test::repositories' do
       stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'foo', headers: { 'Content-Type' => 'application/json' })
-        .to_return({ status: 200, body: '' }, { status: 200, body: 'foo' })
+        .to_return({ status: 200, body: '' }, status: 200, body: 'foo')
 
       expect(chef_run).to create_nexus3_repo('bar')
       expect(chef_run).to create_nexus3_api('get_repo')
@@ -26,7 +26,7 @@ describe 'nexus3_test::repositories' do
       stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_repo/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'bar', headers: { 'Content-Type' => 'application/json' })
-        .to_return({ status: 200, body: 'bar' })
+        .to_return(status: 200, body: 'bar')
 
       expect(chef_run).to delete_nexus3_repo('bar')
       expect(chef_run).to create_nexus3_api('get_repo')
