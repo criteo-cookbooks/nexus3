@@ -15,7 +15,7 @@ end
 
 RSpec.configure do |config|
   # Disable all http requests
-  WebMock.disable_net_connect!(allow_localhost: true, allow: /supermarket.chef.io/i)
+  WebMock.disable_net_connect!(allow_localhost: true, allow: /supermarket.chef.io|files.opscode.com/i)
   config.before(:each) do
     # Reset http stubs
     WebMock.reset!
