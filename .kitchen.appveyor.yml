@@ -23,6 +23,8 @@ suites:
     - nexus3_test::run_script
     - nexus3_test::repositories
   attributes:
+    nexus3_test:
+      connection_retries: 10
     nexus3:
       api:
         sensitive: false
