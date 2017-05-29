@@ -16,7 +16,9 @@ load_current_value do |desired|
   api_password desired.api_password
 
   begin
-    config = JSON.parse(apiclient.run_script('get_repo', desired.repo_name))
+    res = apiclient.run_script('get_repo', desired.repo_name)
+    current_value_does_not_exist! if res == 'null'
+    config = JSON.parse(res)
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.warn "Config is: #{config}"
     repo_name config['repositoryName']
@@ -66,7 +68,7 @@ if (repo == null) { // create
   repository.createRepository(conf)
 } else { // update
   conf = repo.getConfiguration()
- if (conf.getRecipeName() != params.type) {
+  if (conf.getRecipeName() != params.type) {
     throw new Exception("Tried to change recipe for repo ${params.name} to ${params.type}")
   }
   conf.setOnline(params.online)
