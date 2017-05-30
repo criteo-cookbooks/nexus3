@@ -24,7 +24,8 @@ resource to configure Nexus 3 repositories.
 
 ## Requirements
 * Chef 12.14.34+
-* Java 8+ from Oracle or OpenJDK
+* ark cookbook
+* Java 8+ from Oracle or OpenJDK (not installed, pick your own)
 
 ### Platforms
 
