@@ -4,7 +4,7 @@ default_action :install
 attribute :servicename, kind_of: String, name_attribute: true
 attribute :user, kind_of: [String, NilClass]
 attribute :group, kind_of: [String, NilClass]
-attribute :password, kind_of: [String, NilClass]
+attribute :password, kind_of: [String, NilClass], sensitive: true
 attribute :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 attribute :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
 attribute :path, kind_of: String, default: lazy { node['nexus3']['path'] }

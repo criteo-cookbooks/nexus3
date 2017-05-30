@@ -4,7 +4,7 @@ property :attributes, Hash, default: lazy { Mash.new } # Not mandatory but stron
 property :online, [true, false], default: true
 property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
 property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
-property :api_password, String, desired_state: false, identity: true, default: 'admin123'.freeze
+property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(api_url, api_user, api_password)
