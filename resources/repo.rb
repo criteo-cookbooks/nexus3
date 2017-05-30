@@ -19,7 +19,6 @@ load_current_value do |desired|
     res = apiclient.run_script('get_repo', desired.repo_name)
     current_value_does_not_exist! if res == 'null'
     config = JSON.parse(res)
-    current_value_does_not_exist! if config.nil?
     ::Chef::Log.warn "Config is: #{config}"
     repo_name config['repositoryName']
     repo_type config['recipeName']
