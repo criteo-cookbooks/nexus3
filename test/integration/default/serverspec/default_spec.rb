@@ -11,7 +11,7 @@ describe 'nexus::default' do
       it { should be_owned_by 'nexus' }
     end
 
-    describe service('nexus') do
+    describe service('nexus3') do
       it { should be_enabled }
       it { should be_running }
     end
@@ -41,7 +41,7 @@ EOF
       it { should be_owned_by 'nexus' }
     end
 
-    describe service('nexus') do
+    describe service('nexus3') do
       it { should be_enabled } unless os[:family] == 'debian'
       it { should be_running }
     end

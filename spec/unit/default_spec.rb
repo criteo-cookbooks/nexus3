@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe 'nexus3::default' do
@@ -16,15 +17,19 @@ describe 'nexus3::default' do
     end
 
     it 'installs nexus3' do
-      expect(chef_run).to install_nexus3('nexus')
+      expect(chef_run).to put_ark("nexus-#{VER}")
     end
 
     it 'creates path directory' do
-      expect(chef_run).to create_directory('/opt')
+      expect(chef_run).to create_directory("/opt/nexus-#{VER}")
     end
 
     it 'creates data directory' do
       expect(chef_run).to create_directory('/opt/sonatype-work/nexus3')
+    end
+
+    it 'creates bin directory' do
+      expect(chef_run).to create_directory("/opt/nexus-#{VER}/bin")
     end
 
     it 'creates group' do
@@ -33,14 +38,6 @@ describe 'nexus3::default' do
 
     it 'creates user' do
       expect(chef_run).to create_user('nexus')
-    end
-
-    it 'downloads server' do
-      expect(chef_run).to create_remote_file("http://download.sonatype.com/nexus/3/nexus-#{VER}-unix.tar.gz")
-    end
-
-    it 'extracts server' do
-      expect(chef_run).to_not run_execute("untar nexus-#{VER}-unix.tar.gz")
     end
 
     it 'updates nexus.rc' do
@@ -63,8 +60,12 @@ describe 'nexus3::default' do
       expect(chef_run).to create_link('/opt/nexus3')
     end
 
+    it 'creates a systemd unit' do
+      expect(chef_run).to create_systemd_unit('nexus3.service')
+    end
+
     it 'creates service' do
-      expect(chef_run).to enable_service('nexus')
+      expect(chef_run).to enable_service('nexus3')
     end
   end
 
@@ -76,11 +77,15 @@ describe 'nexus3::default' do
     end
 
     it 'installs nexus3' do
-      expect(chef_run).to install_nexus3('nexus')
+      expect(chef_run).to put_ark("nexus-#{VER}")
     end
 
     it 'creates path directory' do
-      expect(chef_run).to create_directory('C:')
+      expect(chef_run).to create_directory("C:/nexus-#{VER}")
+    end
+
+    it 'creates data directory' do
+      expect(chef_run).to create_directory('C:/sonatype-work/nexus3')
     end
 
     it 'creates data directory' do
@@ -88,15 +93,11 @@ describe 'nexus3::default' do
     end
 
     it 'does not create group' do
-      expect(chef_run).to create_group('Administrators')
+      expect(chef_run).to create_group('nexus')
     end
 
     it 'creates user' do
       expect(chef_run).to create_user('nexus')
-    end
-
-    it 'downloads server' do
-      expect(chef_run).to create_remote_file("http://download.sonatype.com/nexus/3/nexus-#{VER}-win64.zip")
     end
 
     it 'extracts server' do
@@ -129,10 +130,6 @@ describe 'nexus3::default' do
 
     it 'does not create init.d link' do
       expect(chef_run).to_not create_link('/etc/init.d/nexus')
-    end
-
-    it 'creates service' do
-      expect(chef_run).to enable_service('nexus')
     end
   end
 end

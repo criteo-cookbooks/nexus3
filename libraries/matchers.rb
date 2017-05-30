@@ -1,10 +1,6 @@
 if defined?(ChefSpec)
-  def install_nexus3(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:nexus3, :install, resource_name)
-  end
-
-  def uninstall_nexus3(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:nexus3, :uninstall, resource_name)
+  def put_ark(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:ark, :put, resource_name)
   end
 
   def run_nexus3_api(resource_name)
