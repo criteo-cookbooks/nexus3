@@ -4,11 +4,7 @@ default_action :install
 attribute :servicename, kind_of: String, name_attribute: true
 attribute :user, kind_of: [String, NilClass]
 attribute :group, kind_of: [String, NilClass]
-if ::Gem::Requirement.new('>= 12.14.34').satisfied_by?(::Gem::Version.new(::Chef::VERSION))
-  attribute :password, kind_of: [String, NilClass], sensitive: true
-else
-  attribute :password, kind_of: [String, NilClass]
-end
+attribute :password, kind_of: [String, NilClass], sensitive: true
 attribute :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 attribute :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
 attribute :path, kind_of: String, default: lazy { node['nexus3']['path'] }

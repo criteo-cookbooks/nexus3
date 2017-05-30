@@ -3,11 +3,7 @@ property :content, String, default: ''.freeze
 property :args, [Hash, String, NilClass], desired_state: false
 property :endpoint, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
 property :username, String, desired_state: false, identity: true, default: 'admin'.freeze
-if ::Gem::Requirement.new('>= 12.14.34').satisfied_by?(::Gem::Version.new(::Chef::VERSION))
-  property :password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
-else
-  property :password, String, desired_state: false, identity: true, default: 'admin123'.freeze
-end
+property :password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(endpoint, username, password)

@@ -4,11 +4,7 @@ property :attributes, Hash, default: lazy { Mash.new } # Not mandatory but stron
 property :online, [true, false], default: true
 property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
 property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
-if ::Gem::Requirement.new('>= 12.14.34').satisfied_by?(::Gem::Version.new(::Chef::VERSION))
-  property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
-else
-  property :api_password, String, desired_state: false, identity: true, default: 'admin123'.freeze
-end
+property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(api_url, api_user, api_password)
