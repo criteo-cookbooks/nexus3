@@ -16,11 +16,15 @@ https://books.sonatype.com/nexus-book/reference3/install.html
 Include [default](https://github.com/criteo-cookbooks/nexus3#default) recipe or use
 [nexus3](https://github.com/criteo-cookbooks/nexus3#nexus3) resource to download and install
 the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api) resource to configure Nexus 3 Repository Manager.
+Use [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api)
+resource to configure Nexus 3 Repository Manager via its REST API.
+
+Use the [nexus3_repo](https://github/com/criteo-cookbooks/nexus3#nexus3_repo)
+resource to configure Nexus 3 repositories.
 
 ## Requirements
-* Chef 12.10.27+
-* Java 8+ from Oracle (Java is not installed by this cookbook and OpenJDK is not supported)
+* Chef 12.14.34+
+* Java 8+ from Oracle or OpenJDK
 
 ### Platforms
 
@@ -168,35 +172,25 @@ end
 Configures Nexus 3 Repository Manager via API.
 
 ### Actions
-- `:run` - Default. Run the script on repository manager. If script_source or content attribute is
-provided, the script will be created or updated on repository manager before running.
-- `:create` - Creates or updates script on repository manager.
-- `:delete` - Deletes script from repository manager.
-- `:list` - Returns a list of scripts, including content, stored on the repository manager. If the script name matches
-resource name, then only its script content is returned from repository manager.  
-- `:nothing` - Define this resource block to do nothing until notified by another resource to take action.
-When this resource is notified, this resource block is either run immediately or it is queued up to be run
-at the end of the chef-client run.
+- `:run` - Default. Run the named script on the repository manager. The script
+  must already have been created.
+- `:create` - Creates or updates the named script on the repository manager
+  (default action).
+- `:delete` - Deletes the named script from the repository manager.
 
-### Attributes
+### Properties
 
 - `script_name` - Name of script. Default value is the name of the resource block.
+- `content` - Content of script. This is usually Groovy, see [Sonatype Nexus 3
+  documentation](https://books.sonatype.com/nexus-book/3.1/reference/scripting.html) for
+  more information, or see the example scripts in the `repo` resource.
+- `args` - Hash or Array arguments passed when `:run` is called.
+- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
 - `username` - Username to run the script as. Default `admin`.
-- `password` - Password of username.  Default `admin123`.  
-- `content` - Content of script. Ignored if script_source attribute provided. Default `nil`.
+- `password` - Password of username.  Default `admin123`.
 - `script_cookbook` - Cookbook that contains the file to use. Default `node['nexus3']['api']['script_cookbook']`.
 - `script_source` - Name of the file in `#{script_cookbook}/files/default` or the path to a file located
 in `#{script_cookbook}/files`. The path must include the file name and its extension. . Default `nil`.
-- `args` - String argument or Array of arguments to be used in script. Default `nil`.
-- `type` - Type of script. Default `node['nexus3']['api']['type']`.
-- `host` - Nexus host url (including port if necessary). Default `node['nexus3']['api']['host']`.
-- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
-- `ignore_failure` - Fail silently on script errors. This is mostly done to enable scripts to better deal with
-failed attempts, e.g., creating a repo that already exists. Default `node['nexus3']['api']['ignore_failure']`.
-- `live_stream` - Use for debugging REST API output. Output suppressed when sensitive is true.
-Default `node['nexus3']['api']['live_stream']`.
-- `wait` - Wait time in seconds for Nexus Rest API endpoint to come up. Default `node['nexus3']['api']['wait']`.
-- `sensitive` - Suppress output. Default `node['nexus3']['api']['sensitive']`.
 
 ### Examples
 
@@ -214,6 +208,26 @@ nexus3_api 'private' do
   action :run
 end
 ```
+
+## nexus3_repo
+
+Configures Nexus 3 repositories via API.
+
+### Actions
+- `:create` - Creates or updates a repository, passing a configuration via
+  `args`.
+- `:delete` - Deletes a repository.
+
+### Properties
+- `repo_name` - Name of repository to act on, defaults to resource attribute name.
+- `repo_type` - Type (or recipe in Nexus 3 words) of repository to create,
+  among `maven2-hosted`, `maven2-proxy`, 'npm-hosted`, ... (default: 'maven2-hosted')
+- `attributes` - Hash of attributes passed to the `:create` action, used to
+  specify repository attributes for creation or update.
+- `online` - Whether to put the repository online or not (default: true).
+- `api_url` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
+- `api_user` - Nexus 3 API user name (default: 'admin').
+- `api_password` - Nexus 3 API password (default: 'admin123').
 
 ## ChefSpec Matchers
 
@@ -236,6 +250,8 @@ Nexus3 Cookbook Matchers
 - create_nexus3_api(resource_name)
 - delete_nexus3_api(resource_name)
 - list_nexus3_api(resource_name)
+- create_nexus3_repo(resource_name)
+- delete_nexus3_repo(resource_name)
 
 ## Getting Help
 
