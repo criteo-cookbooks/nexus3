@@ -5,6 +5,8 @@ describe 'nexus3::default' do
   # TODO: stub requests and remove this.
   before do
     WebMock.allow_net_connect!
+
+    allow_any_instance_of(Chef::Node).to receive(:systype).and_return('systemd')
   end
 
   after do
