@@ -5,8 +5,6 @@ describe 'nexus3::default' do
   # TODO: stub requests and remove this.
   before do
     WebMock.allow_net_connect!
-
-    allow_any_instance_of(Chef::Node).to receive(:systype).and_return('systemd')
   end
 
   after do
@@ -62,11 +60,7 @@ describe 'nexus3::default' do
       expect(chef_run).to create_link('/opt/nexus3')
     end
 
-    it 'creates a systemd unit' do
-      expect(chef_run).to create_systemd_unit('nexus3.service')
-    end
-
-    it 'creates service' do
+    it 'enables the service' do
       expect(chef_run).to enable_service('nexus3')
     end
   end
