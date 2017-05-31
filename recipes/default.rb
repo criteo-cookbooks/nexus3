@@ -43,7 +43,7 @@ if platform?('windows')
   batch 'install Nexus service' do
     code "#{install_dir}/bin/nexus.exe /install"
     action :nothing
-    notifies(:restart, 'service[nexus3]')
+    notifies(:write, 'log[nexus3 is restarting]')
   end
 end
 
@@ -54,7 +54,7 @@ template ::File.join(install_dir, 'bin', 'nexus.rc') do
   mode '0644'
   owner usr
   group grp
-  notifies(:restart, 'service[nexus3]')
+  notifies(:write, 'log[nexus3 is restarting]')
 end
 
 vmoptions = {}
@@ -67,7 +67,7 @@ template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
   mode '0644'
   owner usr
   group grp
-  notifies(:restart, 'service[nexus3]')
+  notifies(:write, 'log[nexus3 is restarting]')
 end
 
 template ::File.join(node['nexus3']['data'], 'etc', 'nexus.properties') do
@@ -76,7 +76,7 @@ template ::File.join(node['nexus3']['data'], 'etc', 'nexus.properties') do
   mode '0644'
   user usr
   group grp
-  notifies(:restart, 'service[nexus3]')
+  notifies(:write, 'log[nexus3 is restarting]')
 end
 
 link homedir do
@@ -115,7 +115,7 @@ WantedBy=multi-user.target
   else
     link '/etc/init.d/nexus3' do
       to ::File.join(homedir, 'bin', 'nexus')
-      notifies(:restart, 'service[nexus3]')
+      notifies(:write, 'log[nexus3 is restarting]')
     end
   end
 end
@@ -123,6 +123,14 @@ end
 # TODO: define servicename in attributes?
 service 'nexus3' do
   action :enable
+end
+
+# This is in case a configuration file change triggers a restart of
+# the service; we want to wait until it is ready.
+log 'nexus3 is restarting' do
+  notifies :restart, 'service[nexus3]', :immediately
+  notifies :create, 'ruby_block[block until operational]', :immediately
+  action :nothing
 end
 
 # Allow for Nexus to fully start before moving on.
