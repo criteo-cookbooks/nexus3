@@ -5,14 +5,16 @@ install_dir = ::File.join(node['nexus3']['path'], "nexus-#{node['nexus3']['versi
 data_dir = node['nexus3']['data']
 
 ## Create user, group and directories
-group grp
-
 user usr do
   comment 'Nexus 3 user'
   home homedir
   manage_home false # is linked to install_dir below
   shell '/bin/bash'
-  group grp
+end
+
+group grp do
+  members usr
+  append true
 end
 
 [install_dir, data_dir, ::File.join(install_dir, 'bin'), ::File.join(data_dir, 'etc')].each do |dir|
@@ -87,15 +89,20 @@ end
 
 ## Install Unix service
 def systype
+  return 'windows' if platform?('windows')
   return 'systemd' if ::File.exist?('/proc/1/comm') && ::File.open('/proc/1/comm').gets.chomp == 'systemd'
   'sysvinit'
 end
 
-unless platform?('windows')
-  case systype
-  when 'systemd'
-    systemd_unit 'nexus3.service' do
-      content <<-EOU
+case systype
+when 'windows'
+  batch 'install Windows service' do
+    code "#{install_dir}/bin/nexus.exe /install nexus3"
+    action :run
+  end
+when 'systemd'
+  systemd_unit 'nexus3.service' do
+    content <<-EOU
 [Unit]
 Description=nexus service
 After=network.target
@@ -109,15 +116,19 @@ Restart=on-abort
 
 [Install]
 WantedBy=multi-user.target
-      EOU
-      action [:create]
-    end
-  else
-    link '/etc/init.d/nexus3' do
-      to ::File.join(homedir, 'bin', 'nexus')
-      notifies(:write, 'log[nexus3 is restarting]')
-    end
+    EOU
+    action [:create]
   end
+else
+  link '/etc/init.d/nexus3' do
+    to ::File.join(homedir, 'bin', 'nexus')
+    notifies(:write, 'log[nexus3 is restarting]')
+  end
+end
+
+windows_service 'nexus3' do
+  run_as_user usr
+  only_if platform?('windows')
 end
 
 # TODO: define servicename in attributes?

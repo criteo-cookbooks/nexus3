@@ -8,4 +8,6 @@ end
 
 # On Debian-style systems, curl is not installed on the kitchen
 # images. Install it here since we only need it for testing.
-package 'curl'
+package 'curl' do
+  only_if { platform_family?('debian') }
+end
