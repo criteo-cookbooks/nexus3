@@ -126,9 +126,10 @@ else
   end
 end
 
-windows_service 'nexus3' do
-  run_as_user usr
-  only_if platform?('windows')
+if platform?('windows')
+  windows_service 'nexus3' do
+    run_as_user usr
+  end
 end
 
 # TODO: define servicename in attributes?
