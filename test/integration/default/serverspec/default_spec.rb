@@ -25,6 +25,18 @@ EOF
     describe command("powershell -command { #{ping.strip} }") do
       its(:stdout) { should contain('pong') }
     end
+
+    script_foo = <<-EOF
+$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
+Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
+-URI http://localhost:8081/service/siesta/rest/v1/script/foo
+EOF
+
+    describe command("powershell -command { #{script_foo.strip} }") do
+      its(:stdout) { should match(/name.*foo/) }
+      its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
+      its(:stdout) { should match(/type.*groovy/) }
+    end
   else
     describe file('/opt/sonatype-work/nexus3') do
       it { should be_directory }
@@ -46,17 +58,14 @@ EOF
       it { should be_running }
     end
 
-    script_foo = <<-EOF
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
-Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
--URI http://localhost:8081/service/siesta/rest/v1/script/foo
-EOF
+    describe command('curl -u admin:admin123 http://localhost:8081/service/metrics/ping') do
+      its(:stdout) { should contain('pong') }
+    end
 
-    describe command("powershell -command { #{script_foo.strip} }") do
+    describe command('curl -u admin:admin123 http://localhost:8081/service/siesta/rest/v1/script/foo') do
       its(:stdout) { should match(/name.*foo/) }
       its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
       its(:stdout) { should match(/type.*groovy/) }
     end
-
   end
 end
