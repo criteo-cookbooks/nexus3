@@ -1,8 +1,4 @@
 if defined?(ChefSpec)
-  def put_ark(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:ark, :put, resource_name)
-  end
-
   def run_nexus3_api(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:nexus3_api, :run, resource_name)
   end
