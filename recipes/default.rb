@@ -1,27 +1,25 @@
-usr = node['nexus3']['user']
-grp = node['nexus3']['group']
-homedir = node['nexus3']['home']
 install_dir = ::File.join(node['nexus3']['path'], "nexus-#{node['nexus3']['version']}")
-data_dir = node['nexus3']['data']
 
 ## Create user, group and directories
-user usr do
+user node['nexus3']['user'] do
   comment 'Nexus 3 user'
-  home homedir
+  home node['nexus3']['home']
   manage_home false # is linked to install_dir below
   shell '/bin/bash'
 end
 
-group grp do
-  members usr
+group node['nexus3']['group'] do
+  members node['nexus3']['user']
   append true
 end
 
-[install_dir, data_dir, ::File.join(install_dir, 'bin'), ::File.join(data_dir, 'etc')].each do |dir|
+[install_dir, node['nexus3']['data'],
+ ::File.join(install_dir, 'bin'),
+ ::File.join(node['nexus3']['data'], 'etc')].each do |dir|
   directory dir do
     recursive true
-    owner usr
-    group grp
+    owner node['nexus3']['user']
+    group node['nexus3']['group']
     mode '0755'
   end
 end
@@ -35,28 +33,18 @@ ark "nexus-#{node['nexus3']['version']}" do
   url node['nexus3']['url']
   checksum node['nexus3']['checksum']
   path node['nexus3']['path']
-  owner usr
-  group grp
-
-  notifies(:run, 'batch[install Nexus service]', :immediately) if platform?('windows')
-end
-
-if platform?('windows')
-  batch 'install Nexus service' do
-    code "#{install_dir}/bin/nexus.exe /install"
-    action :nothing
-    notifies(:write, 'log[nexus3 is restarting]')
-  end
+  owner node['nexus3']['user']
+  group node['nexus3']['group']
 end
 
 ## Install configuration from templates
 template ::File.join(install_dir, 'bin', 'nexus.rc') do
   source 'nexus.rc.erb'
-  variables(user: usr)
+  variables(user: node['nexus3']['user'])
   mode '0644'
-  owner usr
-  group grp
-  notifies(:write, 'log[nexus3 is restarting]')
+  owner node['nexus3']['user']
+  group node['nexus3']['group']
+  notifies(:write, "log[#{node['nexus3']['servicename']} is restarting]", :delayed)
 end
 
 vmoptions = {}
@@ -67,80 +55,37 @@ template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
   source 'nexus.vmoptions.erb'
   variables vmoptions
   mode '0644'
-  owner usr
-  group grp
-  notifies(:write, 'log[nexus3 is restarting]')
+  owner node['nexus3']['user']
+  group node['nexus3']['group']
+  notifies(:write, "log[#{node['nexus3']['servicename']} is restarting]", :delayed)
 end
 
 template ::File.join(node['nexus3']['data'], 'etc', 'nexus.properties') do
   source 'nexus.properties.erb'
   variables node['nexus3']['properties_variables']
   mode '0644'
-  user usr
-  group grp
-  notifies(:write, 'log[nexus3 is restarting]')
+  user node['nexus3']['user']
+  group node['nexus3']['group']
+  notifies(:write, "log[#{node['nexus3']['servicename']} is restarting]", :delayed)
 end
 
-link homedir do
+link node['nexus3']['home'] do
   to install_dir
-  owner usr
-  group grp
+  owner node['nexus3']['user']
+  group node['nexus3']['group']
 end
 
-## Install Unix service
-def systype
-  return 'windows' if platform?('windows')
-  return 'systemd' if ::File.exist?('/proc/1/comm') && ::File.open('/proc/1/comm').gets.chomp == 'systemd'
-  'sysvinit'
-end
+include_recipe '::_service_windows' if platform?('windows')
+include_recipe '::_service_linux' if !platform?('windows')
 
-case systype
-when 'windows'
-  batch 'install Windows service' do
-    code "#{install_dir}/bin/nexus.exe /install nexus3"
-    action :run
-  end
-when 'systemd'
-  systemd_unit 'nexus3.service' do
-    content <<-EOU
-[Unit]
-Description=nexus service
-After=network.target
-
-[Service]
-Type=forking
-ExecStart=#{install_dir}/bin/nexus start
-ExecStop=#{install_dir}/bin/nexus stop
-User=#{usr}
-Restart=on-abort
-
-[Install]
-WantedBy=multi-user.target
-    EOU
-    action [:create]
-  end
-else
-  link '/etc/init.d/nexus3' do
-    to ::File.join(homedir, 'bin', 'nexus')
-    notifies(:write, 'log[nexus3 is restarting]')
-  end
-end
-
-if platform?('windows')
-  windows_service 'nexus3' do
-    run_as_user usr
-  end
-end
-
-# TODO: define servicename in attributes?
-service 'nexus3' do
-  action :enable
+service node['nexus3']['servicename'].to_s do
+  action [:enable, :start]
 end
 
 # This is in case a configuration file change triggers a restart of
 # the service; we want to wait until it is ready.
-log 'nexus3 is restarting' do
-  notifies :restart, 'service[nexus3]', :immediately
+log "#{node['nexus3']['servicename']} is restarting" do
+  notifies :restart, "service[#{node['nexus3']['servicename']}]", :immediately
   notifies :create, 'ruby_block[block until operational]', :immediately
   action :nothing
 end
@@ -154,7 +99,11 @@ ruby_block 'block until operational' do
   action :nothing
 end
 
+# We wait until Nexus is ready to handle queries, as it can take
+# around 100s on Kitchen test VMs (Vagrant, EC2, Docker), and tests
+# would start failing. It is a good idea to be ready before other
+# recipes start creating repositories.
 log 'ensure nexus is running' do
-  notifies :start, 'service[nexus3]', :immediately
+  notifies :start, "service[#{node['nexus3']['servicename']}]", :immediately
   notifies :create, 'ruby_block[block until operational]', :immediately
 end

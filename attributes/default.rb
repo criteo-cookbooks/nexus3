@@ -11,7 +11,10 @@ end
 default['nexus3']['checksum'] = nil # optional
 default['nexus3']['home'] = "#{node['nexus3']['path']}/nexus3"
 default['nexus3']['data'] = "#{node['nexus3']['path']}/sonatype-work/nexus3"
+# Nexus username (do not run as root)
 default['nexus3']['user'] = 'nexus'
+# Name of Linux/Windows service used to run Nexus in service resources.
+default['nexus3']['servicename'] = 'nexus3'
 
 default['nexus3']['properties_variables'] = {
   host: '0.0.0.0',

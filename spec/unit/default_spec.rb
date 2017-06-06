@@ -2,9 +2,9 @@
 require 'spec_helper'
 
 describe 'nexus3::default' do
-  # TODO: stub requests and remove this.
   before do
     WebMock.allow_net_connect!
+    stub_command('sc.exe query nexus3 | find /i "EnumQueryServicesStatus:OpenService FAILED"').and_return(true)
   end
 
   after do
@@ -16,8 +16,12 @@ describe 'nexus3::default' do
       ChefSpec::SoloRunner.new(platform: 'centos', version: '7.0', step_into: 'nexus3').converge(described_recipe)
     end
 
-    it 'installs nexus3' do
-      expect(chef_run).to put_ark("nexus-#{VER}")
+    it 'creates group' do
+      expect(chef_run).to create_group('nexus')
+    end
+
+    it 'creates user' do
+      expect(chef_run).to create_user('nexus')
     end
 
     it 'creates path directory' do
@@ -32,20 +36,16 @@ describe 'nexus3::default' do
       expect(chef_run).to create_directory("/opt/nexus-#{VER}/bin")
     end
 
-    it 'creates group' do
-      expect(chef_run).to create_group('nexus')
+    it 'creates etc dir' do
+      expect(chef_run).to create_directory('/opt/sonatype-work/nexus3/etc')
     end
 
-    it 'creates user' do
-      expect(chef_run).to create_user('nexus')
+    it 'installs nexus3' do
+      expect(chef_run).to put_ark("nexus-#{VER}")
     end
 
     it 'updates nexus.rc' do
       expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.rc")
-    end
-
-    it 'creates etc dir' do
-      expect(chef_run).to create_directory('/opt/sonatype-work/nexus3/etc')
     end
 
     it 'updates nexus.properties' do
@@ -60,6 +60,10 @@ describe 'nexus3::default' do
       expect(chef_run).to create_link('/opt/nexus3')
     end
 
+    it 'creates a systemd unit' do
+      expect(chef_run).to create_systemd_unit('nexus3.service')
+    end
+
     it 'enables the service' do
       expect(chef_run).to enable_service('nexus3')
     end
@@ -70,6 +74,14 @@ describe 'nexus3::default' do
       ChefSpec::SoloRunner.new(platform: 'windows', version: '2012R2', step_into: 'nexus3') do
         ENV['SYSTEMDRIVE'] = 'C:'
       end.converge(described_recipe)
+    end
+
+    it 'creates/updates group' do
+      expect(chef_run).to create_group('Administrators')
+    end
+
+    it 'creates user' do
+      expect(chef_run).to create_user('nexus')
     end
 
     it 'installs nexus3' do
@@ -84,32 +96,20 @@ describe 'nexus3::default' do
       expect(chef_run).to create_directory('C:/sonatype-work/nexus3')
     end
 
-    it 'creates data directory' do
-      expect(chef_run).to create_directory('C:/sonatype-work/nexus3')
+    it 'creates bin directory' do
+      expect(chef_run).to create_directory("C:/nexus-#{VER}/bin")
     end
 
-    it 'does not create group' do
-      expect(chef_run).to create_group('Administrators')
-    end
-
-    it 'creates user' do
-      expect(chef_run).to create_user('nexus')
+    it 'creates etc dir' do
+      expect(chef_run).to create_directory('C:/sonatype-work/nexus3/etc')
     end
 
     it 'extracts server' do
       expect(chef_run).to_not run_powershell_script("unzip nexus-#{VER}-win64.zip")
     end
 
-    it 'installs server' do
-      expect(chef_run).to_not run_batch('install nexus service')
-    end
-
     it 'updates nexus.rc' do
       expect(chef_run).to create_template("C:/nexus-#{VER}/bin/nexus.rc")
-    end
-
-    it 'creates etc dir' do
-      expect(chef_run).to create_directory('C:/sonatype-work/nexus3/etc')
     end
 
     it 'updates nexus.properties' do
@@ -126,6 +126,14 @@ describe 'nexus3::default' do
 
     it 'does not create init.d link' do
       expect(chef_run).to_not create_link('/etc/init.d/nexus')
+    end
+
+    it 'installs service' do
+      expect(chef_run).to run_batch('install Windows service nexus3')
+    end
+
+    it 'starts service' do
+      expect(chef_run).to enable_service('nexus3')
     end
   end
 end
