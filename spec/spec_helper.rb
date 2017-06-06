@@ -2,8 +2,6 @@ require 'chefspec'
 require 'chefspec/berkshelf'
 require 'webmock/rspec'
 
-require 'support/matchers'
-
 VER = '3.3.1-01'.freeze
 CACHE = Chef::Config[:file_cache_path]
 
