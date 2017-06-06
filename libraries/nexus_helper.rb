@@ -4,8 +4,6 @@ require 'timeout'
 module Nexus3
   # Helper library for testing Nexus3 responses
   module Helper
-    class Nexus3Timeout < Timeout::Error; end
-
     # Raise an error in case Nexus takes a really long time to start.
     class Nexus3NotReady < StandardError
       def initialize(endpoint, timeout)
@@ -30,13 +28,13 @@ EOH
                OpenURI::HTTPError => e
           # Getting 403 is ok since it means we reached the endpoint and
           # it's asking us for authentication.
-          return if e.message =~ /^403/
+          break if e.message =~ /^403/
           Chef::Log.debug("Nexus3 is not accepting requests - #{e.message}")
           sleep 1
           retry
         end
       end
-    rescue Nexus3Timeout
+    rescue Timeout::Error
       raise Nexus3NotReady.new(endpoint, nexus_timeout)
     end
   end

@@ -76,7 +76,7 @@ link node['nexus3']['home'] do
 end
 
 include_recipe '::_service_windows' if platform?('windows')
-include_recipe '::_service_linux' if !platform?('windows')
+include_recipe '::_service_linux' unless platform?('windows')
 
 service node['nexus3']['servicename'].to_s do
   action [:enable, :start]
