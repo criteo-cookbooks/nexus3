@@ -18,7 +18,7 @@ EOH
 
     def self.wait_until_ready!(url)
       nexus_timeout = 15 * 60
-      Timeout.timeout(nexus_timeout, Nexus3Timeout) do
+      Timeout.timeout(nexus_timeout, Timeout::Error) do
         begin
           open(url)
         rescue SocketError,
