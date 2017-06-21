@@ -16,3 +16,5 @@ supports 'fedora'
 supports 'redhat'
 supports 'ubuntu'
 supports 'windows'
+
+depends 'ark'
