@@ -94,7 +94,7 @@ describe 'nexus3_test::default' do
 
     it 'creates data dir' do
       expect(chef_run).to create_directory('C:\Nexus3/sonatype-work/nexus3')
- end
+    end
 
     it 'creates etc dir' do
       expect(chef_run).to create_directory('C:\Nexus3/sonatype-work/nexus3/etc')
