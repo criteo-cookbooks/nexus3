@@ -1,16 +1,6 @@
 require 'spec_helper'
 
 describe 'nexus3::default' do
-  # TODO: move this under resources/default.rb
-  # TODO: stub requests and remove this.
-  before do
-    WebMock.allow_net_connect!
-  end
-
-  after do
-    WebMock.disable_net_connect!
-  end
-
   context 'linux' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new(platform: 'centos', version: '7.0', step_into: 'nexus3').converge(described_recipe)
