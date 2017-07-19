@@ -1,5 +1,5 @@
 if platform?('windows')
-  default['nexus3']['path'] = ENV['SYSTEMDRIVE']
+  default['nexus3']['path'] = 'C:\Nexus3'
   default['nexus3']['group'] = 'Administrators'
 else
   default['nexus3']['path'] = '/opt'
