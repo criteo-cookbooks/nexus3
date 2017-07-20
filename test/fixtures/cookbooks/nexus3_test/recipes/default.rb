@@ -25,6 +25,7 @@ unless platform_family?('windows')
     nexus3_group 'nexusbar'
     nexus3_home '/home/nexusbar'
     version '3.4.0-02'
+    service_name '3.4.0-02'
     properties_variables(
       host: '0.0.0.0',
       port: '8082',

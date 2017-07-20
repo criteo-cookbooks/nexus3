@@ -38,7 +38,7 @@ describe 'nexus3_test::default' do
     it 'creates rc template' do
       expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.rc")
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.rc"))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.rc"))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -46,7 +46,7 @@ describe 'nexus3_test::default' do
     it 'creates vmoptions template' do
       expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.vmoptions")
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -54,7 +54,7 @@ describe 'nexus3_test::default' do
     it 'creates properties template' do
       expect(chef_run).to create_template('/opt/sonatype-work/nexus3/etc/nexus.properties')
       expect(chef_run.template('/opt/sonatype-work/nexus3/etc/nexus.properties'))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template('/opt/sonatype-work/nexus3/etc/nexus.properties'))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -64,8 +64,8 @@ describe 'nexus3_test::default' do
     end
 
     it 'enables nexus service' do
-      expect(chef_run).to enable_nexus3_service('nexus3_foo')
-      expect(chef_run).to enable_nexus3_service('nexus3_bar')
+      expect(chef_run).to enable_nexus3_service('foo')
+      expect(chef_run).to enable_nexus3_service('3.4.0-02')
     end
 
     it 'blocks until operational does nothing' do
@@ -110,7 +110,7 @@ describe 'nexus3_test::default' do
     it 'creates rc template' do
       expect(chef_run).to create_template("C:\\Nexus3/nexus-#{VER}/bin/nexus.rc")
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.rc"))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.rc"))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -118,7 +118,7 @@ describe 'nexus3_test::default' do
     it 'creates vmoptions template' do
       expect(chef_run).to create_template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions")
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -126,7 +126,7 @@ describe 'nexus3_test::default' do
     it 'creates properties template' do
       expect(chef_run).to create_template('C:\Nexus3/sonatype-work/nexus3/etc/nexus.properties')
       expect(chef_run.template('C:\Nexus3/sonatype-work/nexus3/etc/nexus.properties'))
-        .to notify('nexus3_service[nexus3_foo]').to(:restart).delayed
+        .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template('C:\Nexus3/sonatype-work/nexus3/etc/nexus.properties'))
         .to notify('ruby_block[block until operational]').to(:create).delayed
     end
@@ -136,7 +136,7 @@ describe 'nexus3_test::default' do
     end
 
     it 'enables nexus service' do
-      expect(chef_run).to enable_nexus3_service('nexus3_foo')
+      expect(chef_run).to enable_nexus3_service('foo')
     end
 
     it 'blocks until operational does nothing' do
