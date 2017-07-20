@@ -32,8 +32,6 @@ action :install do
   end
 
   # Install Nexus3 software
-  include_recipe 'ark'
-
   ark "nexus-#{new_resource.version}" do
     action :put
     url download_url
@@ -61,21 +59,21 @@ action :install do
     owner nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies(:write, "log[#{instance_name} is restarting]", :delayed)
+    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :create, 'ruby_block[block until operational]', :delayed
   end
-
-  vmoptions = {}
-  vmoptions.merge!(vmoptions_variables)
-  vmoptions['data'] = data if vmoptions['data'].nil?
 
   template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
     source 'nexus.vmoptions.erb'
-    variables vmoptions
+    variables(
+      vmoptions_variables.merge(data: new_resource.data)
+    )
     mode '0644'
     owner nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies(:write, "log[#{instance_name} is restarting]", :delayed)
+    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :create, 'ruby_block[block until operational]', :delayed
   end
 
   template ::File.join(data, 'etc', 'nexus.properties') do
@@ -85,7 +83,8 @@ action :install do
     user nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies(:write, "log[#{instance_name} is restarting]", :delayed)
+    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :create, 'ruby_block[block until operational]', :delayed
   end
 
   link nexus3_home do
@@ -94,17 +93,11 @@ action :install do
     group nexus3_group
   end
 
-  nexus3_service instance_name.to_s do
+  nexus3_service "nexus3_#{new_resource.instance_name}" do
     install_dir install_dir
     nexus3_user new_resource.nexus3_user
     nexus3_group new_resource.nexus3_group
     action :enable
-  end
-
-  log "#{new_resource.instance_name} is restarting" do
-    notifies :restart, "nexus3_service[#{new_resource.instance_name}]", :immediately
-    notifies :create, 'ruby_block[block until operational]', :immediately
-    action :nothing
   end
 
   # Allow for Nexus to fully start before moving on.
@@ -130,41 +123,5 @@ action_class do
     url
   end
 
-  # Raise an error in case Nexus takes a really long time to start.
-  class Nexus3NotReady < StandardError
-    def initialize(endpoint, timeout)
-      super <<-EOH
-The Nexus server at #{endpoint} did not become ready within #{timeout}
-seconds. On large Nexus instances (or on smaller hardware), you may need
-to increase the timeout to #{timeout * 4} seconds. Alternatively, Nexus
-may have failed to start.
-EOH
-    end
-  end
-
-  def wait_until_ready!(endpoint)
-    require 'timeout'
-    require 'open-uri'
-
-    nexus_timeout = 15 * 60
-    Timeout.timeout(nexus_timeout, Timeout::Error) do
-      begin
-        open(endpoint)
-      rescue SocketError,
-             Errno::ECONNREFUSED,
-             Errno::ECONNRESET,
-             Errno::ENETUNREACH,
-             Errno::EADDRNOTAVAIL,
-             OpenURI::HTTPError => e
-        # Getting 403 is ok since it means we reached the endpoint and
-        # it's asking us for authentication.
-        break if e.message =~ /^403/
-        Chef::Log.debug("Nexus3 is not accepting requests - #{e.message}")
-        sleep 1
-        retry
-      end
-    end
-  rescue Timeout::Error
-    raise Nexus3NotReady.new(endpoint, nexus_timeout)
-  end
+  include Nexus3::Helper
 end

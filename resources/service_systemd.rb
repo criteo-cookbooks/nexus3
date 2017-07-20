@@ -1,7 +1,7 @@
 provides :nexus3_service_systemd
 
 provides :nexus3_service, os: 'linux' do |_node|
-  Chef::Platform::ServiceHelpers.service_resource_providers.include?(:systemd)
+  ::Chef::Platform::ServiceHelpers.service_resource_providers.include?(:systemd)
 end
 
 property :instance_name, String, name_property: true
@@ -13,7 +13,6 @@ action :start do
   create_init
 
   service "nexus3_#{new_resource.instance_name}" do
-    provider Chef::Provider::Service::Systemd
     supports restart: true, status: true
     action :start
     only_if 'command -v java >/dev/null 2>&1 || exit 1'
@@ -22,7 +21,6 @@ end
 
 action :stop do
   service "nexus3_#{new_resource.instance_name}" do
-    provider Chef::Provider::Service::Systemd
     supports status: true
     action :stop
     only_if { ::File.exist?("/etc/systemd/system/nexus3_#{new_resource.instance_name}.service") }
@@ -31,7 +29,6 @@ end
 
 action :restart do
   service "nexus3_#{new_resource.instance_name}" do
-    provider Chef::Provider::Service::Systemd
     supports status: true
     action :restart
   end
@@ -39,7 +36,6 @@ end
 
 action :disable do
   service "nexus3_#{new_resource.instance_name}" do
-    provider Chef::Provider::Service::Systemd
     supports status: true
     action :disable
     only_if { ::File.exist?("/etc/systemd/system/nexus3_#{new_resource.instance_name}.service") }
@@ -50,7 +46,6 @@ action :enable do
   create_init
 
   service "nexus3_#{new_resource.instance_name}" do
-    provider Chef::Provider::Service::Systemd
     supports status: true
     action :enable
     only_if { ::File.exist?("/etc/systemd/system/nexus3_#{new_resource.instance_name}.service") }
