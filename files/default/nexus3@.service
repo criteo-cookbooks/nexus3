@@ -1,0 +1,14 @@
+[Unit]
+Description=nexus service (%i)
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/nexus3/%i.env
+Type=forking
+ExecStart=/bin/sh -c $START_COMMAND
+ExecStop=/bin/sh -c $STOP_COMMAND
+User=$NEXUS3_USER
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

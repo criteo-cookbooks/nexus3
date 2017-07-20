@@ -8,6 +8,9 @@ property :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] 
 property :nexus3_home, kind_of: String, default: lazy { node['nexus3']['home'] }
 property :path, kind_of: String, default: lazy { node['nexus3']['path'] }
 property :data, kind_of: String, default: lazy { node['nexus3']['data'] }
+# Name of service used as property for nexus3_service; can be instance_name or something different
+# like version number.
+property :service_name, kind_of: String, default: lazy { instance_name }
 property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 
@@ -59,7 +62,7 @@ action :install do
     owner nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :create, 'ruby_block[block until operational]', :delayed
   end
 
@@ -72,7 +75,7 @@ action :install do
     owner nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :create, 'ruby_block[block until operational]', :delayed
   end
 
@@ -83,7 +86,7 @@ action :install do
     user nexus3_user
     group nexus3_group
     cookbook 'nexus3'
-    notifies :restart, "nexus3_service[nexus3_#{new_resource.instance_name}]", :delayed
+    notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :create, 'ruby_block[block until operational]', :delayed
   end
 
@@ -93,7 +96,7 @@ action :install do
     group nexus3_group
   end
 
-  nexus3_service "nexus3_#{new_resource.instance_name}" do
+  nexus3_service new_resource.service_name.to_s do
     install_dir install_dir
     nexus3_user new_resource.nexus3_user
     nexus3_group new_resource.nexus3_group
