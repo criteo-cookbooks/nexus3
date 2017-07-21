@@ -14,11 +14,6 @@ property :service_name, kind_of: String, default: lazy { instance_name }
 property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 
-load_current_value do
-  # TODO: check if user, group, etc. exist for each property or so. But: do we need to do so?
-end
-
-# TODO: use helpers to make this section smaller?
 action :install do
   install_dir = ::File.join(path, "nexus-#{version}")
 
