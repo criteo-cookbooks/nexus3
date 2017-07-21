@@ -56,30 +56,15 @@ end
 
 action_class do
   def create_init
-    # TODO: create /etc/nexus3 dir, use instance_name.env template, use systemd service "instance"
-    # TODO: Use https://coreos.com/os/docs/latest/using-environment-variables-in-systemd-units.html
-    # create cookbook_file /etc/systemd/system/nexus3@.service
-    # TODO: template /etc/nexus3/%i.env with INSTALL_DIR, NEXUS3_USER
-    directory '/etc/nexus3' do
-      owner new_resource.nexus3_user
-      group new_resource.nexus3_group
-      mode '0755'
-    end
-
-    cookbook_file '/etc/systemd/system/nexus3@.service' do
-      source 'nexus3@.service'
-      cookbook 'nexus3'
-      notifies :run, 'execute[Load systemd unit file]', :immediately
-    end
-
-    template "/etc/nexus3/#{new_resource.instance_name}.env" do
-      source 'systemd_instance_env.erb'
+    template "/etc/systemd/system/nexus3_#{new_resource.instance_name}.service" do
+      source 'systemd_unit.erb'
       variables(
-        install_dir: install_dir,
+        instance_name: new_resource.instance_name,
+        install_dir: new_resource.install_dir,
         nexus3_user: new_resource.nexus3_user
       )
       cookbook 'nexus3'
-      notifies :restart, "service[nexus3_#{new_resource.instance_name}]"
+      notifies :run, 'execute[Load systemd unit file]', :immediately
     end
 
     execute 'Load systemd unit file' do
