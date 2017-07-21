@@ -1,12 +1,5 @@
 include_recipe 'java_se'
 
-# The default Kitchen image may not be up-to-date.
-apt_update 'update' do
-  action :update
-end
-
-# On Debian-style systems, curl is not installed on the kitchen
-# images. Install it here since we only need it for testing.
 package 'curl'
 
 # Installation with default settings
