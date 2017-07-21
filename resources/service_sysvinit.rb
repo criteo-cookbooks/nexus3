@@ -6,12 +6,6 @@ property :install_dir, String
 property :nexus3_user, String
 property :nexus3_group, String
 
-# TODO: easy
-# http://www.sonatype.org/nexus/2017/01/25/how-to-install-latest-sonatype-nexus-3-on-linux/
-# sudo ln -s /app/nexus/bin/nexus /etc/init.d/nexus
-# sudo chkconfig --add nexus
-# sudo chkconfig --levels 345 nexus on
-
 action :start do
   create_init
 

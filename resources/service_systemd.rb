@@ -13,7 +13,6 @@ action :start do
   create_init
 
   service "nexus3_#{new_resource.instance_name}" do
-    service_name "nexus3@#{new_resource.instance_name}"
     supports restart: true, status: true
     action :start
     only_if 'command -v java >/dev/null 2>&1 || exit 1'
@@ -22,7 +21,6 @@ end
 
 action :stop do
   service "nexus3_#{new_resource.instance_name}" do
-    service_name "nexus3@#{new_resource.instance_name}"
     supports status: true
     action :stop
   end
@@ -30,7 +28,6 @@ end
 
 action :restart do
   service "nexus3_#{new_resource.instance_name}" do
-    service_name "nexus3@#{new_resource.instance_name}"
     supports status: true
     action :restart
   end
@@ -38,7 +35,6 @@ end
 
 action :disable do
   service "nexus3_#{new_resource.instance_name}" do
-    service_name "nexus3@#{new_resource.instance_name}"
     supports status: true
     action :disable
   end
@@ -48,7 +44,6 @@ action :enable do
   create_init
 
   service "nexus3_#{new_resource.instance_name}" do
-    service_name "nexus3@#{new_resource.instance_name}"
     supports status: true
     action :enable
   end
