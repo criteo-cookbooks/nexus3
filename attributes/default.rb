@@ -7,7 +7,7 @@ else
 end
 # Download URL is defined in the resource but you can override it with the default['nexus3']['url'] attribute
 default['nexus3']['version'] = '3.2.1-01'
-default['nexus3']['url'] = 'https://download.sonatype.com/nexus/3/nexus-3.2.1-01-unix.tar.gz'
+default['nexus3']['url'] = "https://download.sonatype.com/nexus/3/nexus-#{node['nexus3']['version']}-unix.tar.gz"
 default['nexus3']['checksum'] = nil # optional
 default['nexus3']['home'] = "#{node['nexus3']['path']}/nexus3"
 default['nexus3']['data'] = "#{node['nexus3']['path']}/sonatype-work/nexus3"
