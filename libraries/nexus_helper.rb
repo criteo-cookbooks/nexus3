@@ -16,9 +16,8 @@ EOH
       end
     end
 
-    def wait_until_ready!(endpoint)
-      nexus_timeout = 15 * 60
-      Timeout.timeout(nexus_timeout, Timeout::Error) do
+    def wait_until_ready!(endpoint, timeout = 15 * 60)
+      Timeout.timeout(timeout, Timeout::Error) do
         begin
           open(endpoint)
         rescue SocketError,

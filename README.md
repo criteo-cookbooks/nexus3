@@ -25,6 +25,8 @@ resource to configure Nexus 3 repositories.
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
+  * Note: `include_recipe 'ark'` is required for Windows servers, as it is not
+    implicit.
 * Java 8+ from Oracle or OpenJDK (not installed, pick your own)
 
 ### Platforms
