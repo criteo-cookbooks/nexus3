@@ -1,7 +1,7 @@
 property :script_name, String, name_attribute: true
 property :content, String, default: ''.freeze
 property :args, [Hash, String, NilClass], desired_state: false
-property :endpoint, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
+property :endpoint, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
 property :username, String, desired_state: false, identity: true, default: 'admin'.freeze
 property :password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
 
