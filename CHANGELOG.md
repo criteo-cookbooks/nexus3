@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1 2017-08-26
+
+- Add support for SSL when testing for redirects
+
 ## 2.1.0 2017-03-14
 
 - Add another variable to nexus.properties.erb to configure nexus-args
