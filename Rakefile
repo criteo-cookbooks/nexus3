@@ -8,4 +8,4 @@ end
 RuboCop::RakeTask.new(:rubocop)
 FoodCritic::Rake::LintTask.new(:foodcritic)
 
-task default: [:rubocop, :foodcritic, :spec]
+task default: %i[rubocop foodcritic spec]

@@ -17,9 +17,9 @@ describe 'nexus::default' do
     end
 
     ping = <<-EOF
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
-Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
--URI http://localhost:8081/service/metrics/ping
+  $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
+  Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
+  -URI http://localhost:8081/service/metrics/ping
 EOF
 
     describe command("powershell -command { #{ping.strip} }") do

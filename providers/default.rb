@@ -186,7 +186,7 @@ action :uninstall do
   install_dir = "#{new_resource.path}/nexus-#{version(url)}"
 
   service new_resource.servicename do # ~FC021
-    action [:stop, :disable]
+    action %i[stop disable]
     ignore_failure true
     only_if { ::File.exist?(install_dir) }
   end
