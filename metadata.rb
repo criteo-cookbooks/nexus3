@@ -11,6 +11,7 @@ version '2.1.0'
 chef_version '>= 12.14.34'
 
 depends 'ark'
+depends 'build-essential'
 
 supports 'centos'
 supports 'debian'
