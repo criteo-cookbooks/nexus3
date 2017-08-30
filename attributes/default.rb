@@ -1,16 +1,19 @@
 if platform?('windows')
-  default['nexus3']['url'] = 'http://download.sonatype.com/nexus/3/latest-win64.zip'
-  default['nexus3']['path'] = ENV['SYSTEMDRIVE']
+  default['nexus3']['path'] = 'C:\Nexus3'
+  default['nexus3']['group'] = 'Administrators'
 else
-  default['nexus3']['url'] = 'http://download.sonatype.com/nexus/3/latest-unix.tar.gz'
   default['nexus3']['path'] = '/opt'
+  default['nexus3']['group'] = 'nexus'
 end
+# Download URL is defined in the resource but you can override it with the default['nexus3']['url'] attribute
+default['nexus3']['version'] = '3.2.1-01'
+default['nexus3']['url'] = "https://download.sonatype.com/nexus/3/nexus-#{node['nexus3']['version']}-unix.tar.gz"
 default['nexus3']['checksum'] = nil # optional
 default['nexus3']['home'] = "#{node['nexus3']['path']}/nexus3"
 default['nexus3']['data'] = "#{node['nexus3']['path']}/sonatype-work/nexus3"
+# Nexus username (do not run as root)
+default['nexus3']['user'] = 'nexus'
 
-default['nexus3']['properties_cookbook'] = 'nexus3'
-default['nexus3']['properties_source'] = 'nexus.properties.erb'
 default['nexus3']['properties_variables'] = {
   host: '0.0.0.0',
   port: '8081',
@@ -18,8 +21,6 @@ default['nexus3']['properties_variables'] = {
   context_path: '/'
 }
 
-default['nexus3']['vmoptions_cookbook'] = 'nexus3'
-default['nexus3']['vmoptions_source'] = 'nexus.vmoptions.erb'
 default['nexus3']['vmoptions_variables'] = {
   Xms: '1200M',
   Xmx: '1200M'

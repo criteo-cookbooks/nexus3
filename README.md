@@ -13,18 +13,20 @@ https://books.sonatype.com/nexus-book/reference3/install.html
 
 # Usage
 
-Include [default](https://github.com/criteo-cookbooks/nexus3#default) recipe or use
-[nexus3](https://github.com/criteo-cookbooks/nexus3#nexus3) resource to download and install
-the latest Nexus 3 Repository Manager OSS.
-Use [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api)
+Use the [nexus3](https://github.com/criteo-cookbooks/nexus3#nexus3) resource
+to download and install the latest Nexus 3 Repository Manager OSS.
+
+Use the [nexus3_api](https://github.com/criteo-cookbooks/nexus3#nexus3_api)
 resource to configure Nexus 3 Repository Manager via its REST API.
 
-Use the [nexus3_repo](https://github/com/criteo-cookbooks/nexus3#nexus3_repo)
+Use the [nexus3_repo](https://github.com/criteo-cookbooks/nexus3#nexus3_repo)
 resource to configure Nexus 3 repositories.
 
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
+  * Note: `include_recipe 'ark'` is required for Windows servers, as it is not
+    implicit.
 * Java 8+ from Oracle or OpenJDK (not installed, pick your own)
 
 ### Platforms
