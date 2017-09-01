@@ -6,3 +6,5 @@ default['nexus3']['api']['ignore_failure'] = true
 default['nexus3']['api']['live_stream'] = false
 default['nexus3']['api']['wait'] = 600 # 10 minutes
 default['nexus3']['api']['sensitive'] = true
+default['nexus3']['api']['username'] = 'admin'
+default['nexus3']['api']['password'] = 'admin123'

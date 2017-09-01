@@ -57,11 +57,11 @@ EOH
       it { should be_running }
     end
 
-    describe command('curl -u admin:admin123 http://localhost:8081/service/metrics/ping') do
+    describe command('curl -u admin:admin456 http://localhost:8081/service/metrics/ping') do
       its(:stdout) { should contain('pong') }
     end
 
-    describe command('curl -u admin:admin123 http://localhost:8081/service/siesta/rest/v1/script/foo') do
+    describe command('curl -u admin:admin456 http://localhost:8081/service/siesta/rest/v1/script/foo') do
       its(:stdout) { should match(/name.*foo/) }
       its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
       its(:stdout) { should match(/type.*groovy/) }

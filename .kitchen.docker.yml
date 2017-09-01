@@ -85,11 +85,4 @@ suites:
     nexus3:
       api:
         sensitive: false
-- name: admin
-  run_list:
-    - nexus3_test::default
-    - nexus3_test::admin
-  attributes:
-    nexus3:
-      api:
-        sensitive: false
+      nexus3_password: admin456
