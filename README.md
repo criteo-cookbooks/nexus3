@@ -232,6 +232,26 @@ Configures Nexus 3 repositories via API.
 - `api_user` - Nexus 3 API user name (default: 'admin').
 - `api_password` - Nexus 3 API password (default: 'admin123').
 
+## nexus3_admin
+
+This resource consists for now of a single action used to change the default
+admin password. Since no other method is available to create users for now, it
+is advised to not use it to change any password other than admin's.
+
+You are advised to change the `api_password` attribute in your recipe once
+this has run.
+
+### Actions
+- `:run` - Updates the admin password.
+
+### Properties
+- `username` - Username to change password for. Defaults to 'admin' which is
+  just as well.
+- `new_password` - New password to set.
+- `api_url` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
+- `api_user` - Nexus 3 API user name (default: 'admin').
+- `api_password` - Nexus 3 API password (default: 'admin123').
+
 ## ChefSpec Matchers
 
 The nexus3 cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test

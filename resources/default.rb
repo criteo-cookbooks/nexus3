@@ -1,7 +1,6 @@
 property :instance_name, kind_of: String, name_attribute: true
 property :nexus3_user, kind_of: [String, NilClass], default: lazy { node['nexus3']['user'] }
 property :nexus3_group, kind_of: [String, NilClass], default: lazy { node['nexus3']['group'] }
-# property :nexus3_password, kind_of: [String, NilClass], sensitive: true # Admin password
 property :version, kind_of: String, default: lazy { node['nexus3']['version'] }
 property :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 property :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
