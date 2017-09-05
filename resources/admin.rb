@@ -1,12 +1,8 @@
 property :username, String, desired_state: false, identity: true, default: 'admin'.freeze
 property :new_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
-property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
+property :api_endpoint, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
 property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
 property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
-
-# TODO: add load_current_resource, by testing the
-# /service/metrics/ping API endpoint with the new_password. If
-# successful, no need to change the password.
 
 action :run do
   nexus3_api 'change_user_password' do
@@ -15,7 +11,7 @@ action :run do
          new_password: new_resource.new_password
 
     action %i(create run)
-    endpoint new_resource.api_url
+    endpoint new_resource.api_endpoint
     username new_resource.api_user
     password new_resource.api_password
 

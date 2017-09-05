@@ -242,7 +242,7 @@ Changing the admin password is supported right after installation
 ### Properties
 - `username` - Username to change password for. Defaults to 'admin'.
 - `new_password` - New password to set.
-- `api_url` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
+- `api_endpoint` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
 - `api_user` - Nexus 3 API user name (default: 'admin').
 - `api_password` - Nexus 3 API password (default: 'admin123').
 
