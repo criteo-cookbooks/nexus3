@@ -35,7 +35,7 @@ EOH
         end
       end
     rescue Timeout::Error
-      raise Nexus3NotReady.new(endpoint, nexus_timeout)
+      raise Nexus3NotReady.new(endpoint, timeout)
     end
   end
 end
