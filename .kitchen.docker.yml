@@ -78,6 +78,7 @@ suites:
     - nexus3_test::create_script
     - nexus3_test::delete_script
     - nexus3_test::run_script
+    - nexus3_test::user
     - nexus3_test::repositories
   attributes:
     nexus3_test:

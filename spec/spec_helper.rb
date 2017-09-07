@@ -15,9 +15,13 @@ def repo_response(reponame)
                                           recipeName: 'maven2-hosted', online: true, attributes: {}))
 end
 
+def user_response(username)
+  api_response(200, result: username)
+end
+
 RSpec.configure do |config|
   # Disable all http requests
-  WebMock.disable_net_connect!(allow_localhost: true, allow: /supermarket.chef.io|files.opscode.com/i)
+  WebMock.disable_net_connect!(allow: /supermarket.chef.io|files.opscode.com/i)
   config.before(:each) do
     # Reset http stubs
     WebMock.reset!
