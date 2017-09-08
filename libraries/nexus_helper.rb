@@ -17,7 +17,7 @@ EOH
     end
 
     def wait_until_ready!(endpoint, timeout = 15 * 60)
-      Timeout.timeout(timeout, Timeout::Error) do
+      Timeout.timeout(timeout, ::Timeout::Error) do
         begin
           open(endpoint)
         rescue SocketError,

@@ -15,7 +15,7 @@ property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['p
 property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 
 action :install do
-  install_dir = ::File.join(new_resource.path, "nexus-#{version}")
+  install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
 
   user new_resource.nexus3_user do
     comment 'Nexus 3 user'

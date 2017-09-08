@@ -53,11 +53,4 @@ action_class do
       group new_resource.nexus3_group
     end
   end
-
-  def platform_sysv_init_class
-    value_for_platform_family(
-      'debian' => Chef::Provider::Service::Init::Debian,
-      'default' => Chef::Provider::Service::Init::Redhat
-    )
-  end
 end
