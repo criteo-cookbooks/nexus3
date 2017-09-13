@@ -4,7 +4,7 @@ describe 'nexus3::default' do
   context 'linux' do
     let(:chef_run) do
       ChefSpec::SoloRunner.new(platform: 'centos', version: CENTOS_VERSION, step_into: 'nexus3')
-        .converge(described_recipe)
+                          .converge(described_recipe)
     end
 
     it 'converges successfully' do
