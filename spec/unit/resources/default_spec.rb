@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'nexus3_test::default' do
   context 'linux' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'centos', version: '7.0', step_into: 'nexus3',
+      ChefSpec::SoloRunner.new(platform: 'centos', version: CENTOS_VERSION, step_into: 'nexus3',
                                file_cache_path: CACHE).converge(described_recipe)
     end
 

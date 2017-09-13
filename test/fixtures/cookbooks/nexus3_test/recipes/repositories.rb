@@ -11,8 +11,6 @@ conf = Mash.new(
 
 nexus3_repo 'foo' do
   attributes conf
-  retries node['nexus3_test']['connection_retries']
-  retry_delay 10
 end
 
 nexus3_repo 'foo again' do
@@ -29,8 +27,6 @@ end
 nexus3_repo 'bar' do
   action %i(create delete)
   attributes conf
-  retries node['nexus3_test']['connection_retries']
-  retry_delay 10
 end
 
 nexus3_repo 'bar again' do
