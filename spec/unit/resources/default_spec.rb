@@ -71,6 +71,12 @@ describe 'nexus3_test::default' do
     it 'blocks until operational does nothing' do
       expect(chef_run.ruby_block('block until operational')).to do_nothing
     end
+
+    it 'updates admin password' do
+      expect(chef_run.nexus3_admin('change admin password')).to do_nothing
+      expect(chef_run.nexus3_admin('change admin password'))
+        .to subscribe_to('ruby_block[block until operational]').immediately
+    end
   end
 
   context 'windows' do

@@ -85,3 +85,4 @@ suites:
     nexus3:
       api:
         sensitive: false
+      nexus3_password: admin456

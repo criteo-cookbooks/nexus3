@@ -1,7 +1,7 @@
 property :instance_name, kind_of: String, name_attribute: true
 property :nexus3_user, kind_of: [String, NilClass], default: lazy { node['nexus3']['user'] }
 property :nexus3_group, kind_of: [String, NilClass], default: lazy { node['nexus3']['group'] }
-# property :nexus3_password, kind_of: [String, NilClass], sensitive: true # Admin password
+property :nexus3_password, kind_of: [String, NilClass], sensitive: true, default: 'admin123'.freeze
 property :version, kind_of: String, default: lazy { node['nexus3']['version'] }
 property :url, kind_of: String, default: lazy { node['nexus3']['url'] }
 property :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
@@ -13,9 +13,17 @@ property :data, kind_of: String, default: lazy { node['nexus3']['data'] }
 property :service_name, kind_of: String, default: lazy { instance_name }
 property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
+property :api_endpoint, kind_of: String, default: lazy { node['nexus3']['api']['endpoint'] }
+property :api_wait, kind_of: Integer, default: lazy { node['nexus3']['api']['wait'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
+
+  node.run_state[:initial_install] = false
+  # This flag determines if we can change the admin password.
+  unless ::File.exist?(::File.join(new_resource.data, 'tmp'))
+    node.run_state[:initial_install] = true
+  end
 
   user new_resource.nexus3_user do
     comment 'Nexus 3 user'
@@ -98,11 +106,29 @@ action :install do
     action :enable
   end
 
+  # Set admin password to the one stored in the `nexus3_password`
+  # attribute; only on initial installation of Nexus3: it is slightly
+  # more difficult to do so after without also dynamically changing
+  # the `api::password` property at the same time.
+  if node.run_state[:initial_install]
+    nexus3_admin 'change admin password' do
+      username 'admin'.freeze
+      new_password new_resource.nexus3_password
+      api_endpoint new_resource.api_endpoint
+      api_user 'admin'.freeze
+      api_password 'admin123'.freeze
+      action :nothing
+
+      subscribes :run, 'ruby_block[block until operational]', :immediately
+    end
+    node.run_state[:initial_install] = false
+  end
+
   # Allow for Nexus to fully start before moving on.
   ruby_block 'block until operational' do
     block do
-      Chef::Log.info "Waiting until Nexus is listening on port #{node['nexus3']['properties_variables']['port']}"
-      wait_until_ready!(node['nexus3']['api']['endpoint'], node['nexus3']['api']['wait'])
+      Chef::Log.info "Waiting until Nexus is listening on port #{new_resource.properties_variables['port']}"
+      wait_until_ready!(new_resource.api_endpoint, new_resource.api_wait)
     end
     action :nothing
   end

@@ -104,35 +104,31 @@ include_recipe 'nexus3'
 Downloads and installs the latest Nexus Repository Manager OSS v3.
 
 ### Actions
-- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
-- `:uninstall` - Removes service and install directory. Uninstall will not delete the data directory unless the default
-data configuration has changed to place it under the install directory (which is not recommended).
-- `:nothing` - Define this resource block to do nothing until notified by another resource to take action.
-When this resource is notified, this resource block is either run immediately or it is queued up to be run
-at the end of the chef-client run.
+- `:install` - Default and only action. Downloads and installs the latest
+  Nexus Repository Manager OSS v3.
 
 ### Attributes
 
-- `servicename` - Name of service. Default value is the name of the resource block.
-- `user` - The owner of nexus3. Creates a nexus user when nil or uses value passed in. Default `nil`.
-- `group` - The group of nexus3. Creates a nexus group when nil or uses value passed in. Default `nil`.
+- `instance_name` - Name of service. Default value is the name of the resource block.
+- `nexus3_user` - The owner of nexus3. Creates a Unix user. Default `node['nexus3']['user']`.
+- `nexus3_group` - The group of nexus3. Creates a Unix group. Default
+  `node['nexus3']['group']`.
+- `nexus3_password` - Password for the admin account on Nexus. Will be set
+  during installation. Default 'admin123'; we advise you to set it from a
+  Vault in your recipe.
+- `version` - The version of Nexus3 to install. Default `node['nexus3']['version']`
 - `url` - The download URL of latest Nexus 3 Repository Manager OSS. This can be updated to
 download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro.
 Default `node['nexus3']['url']`.
 - `checksum` (optional) - The checksum of Nexus Repository Manager. Default `node['nexus3']['checksum']`.
-- `data` -  Data directory. Default `node['nexus3']['data']`.
+- `nexus3_home` - The Unix homedir of the nexus3 user. Default `node['nexus3']['home']`.
 - `path` -  Install directory. Default `node['nexus3']['path']`.
-- `home` -  Link to install directory. Default `node['nexus3']['home']`.
-- `properties_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['properties_cookbook']`.
-- `properties_source` -  Template file that will be used to create the `#{data}/etc/nexus.properties`
-file. Default `node['nexus3']['properties_source']`.
-- `properties_variables` -  A Hash of variables that are passed into a template file.
-Default `node['nexus3']['properties_variables']`.
-- `vmoptions_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['vmoptions_cookbook']`.
-- `vmoptions_source` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions`
-file. Default `node['nexus3']['vmoptions_source']`.
-- `vmoptions_variables` -  A Hash of variables that are passed into a template file. Note that data directory will
-be injected into the hash if it is not defined. Default `node['nexus3']['vmoptions_variables']`.
+- `data` -  Data directory. Default `node['nexus3']['data']`.
+- `properties_variables` - A Hash of variables that are passed into a template
+  file. Default `node['nexus3']['properties_variables']`.
+- `vmoptions_variables` - A Hash of variables that are passed into a template
+  file. Note that data directory will be injected into the hash if it is not
+  defined. Default `node['nexus3']['vmoptions_variables']`.
 
 ### Examples
 
@@ -229,6 +225,24 @@ Configures Nexus 3 repositories via API.
   specify repository attributes for creation or update.
 - `online` - Whether to put the repository online or not (default: true).
 - `api_url` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
+- `api_user` - Nexus 3 API user name (default: 'admin').
+- `api_password` - Nexus 3 API password (default: 'admin123').
+
+## nexus3_admin
+
+This resource consists for now of a single action used to change a user's
+password. Since no other method is available to create users for now, it is
+not very useful
+
+Changing the admin password is supported right after installation
+
+### Actions
+- `:run` - Updates the password.
+
+### Properties
+- `username` - Username to change password for. Defaults to 'admin'.
+- `new_password` - New password to set.
+- `api_endpoint` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
 - `api_user` - Nexus 3 API user name (default: 'admin').
 - `api_password` - Nexus 3 API password (default: 'admin123').
 

@@ -2,9 +2,14 @@ property :repo_name, String, desired_state: false, identity: true, name_attribut
 property :repo_type, String, desired_state: false, identity: true, default: 'maven2-hosted'.freeze
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
-property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
-property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
+property :api_url, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
+property :api_user, String, desired_state: false, identity: true, default: node['nexus3']['api']['username']
+property :api_password,
+         kind_of:       String,
+         desired_state: false,
+         identity:      true,
+         sensitive:     true,
+         default:       node['nexus3']['api']['password']
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(api_url, api_user, api_password)

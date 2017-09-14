@@ -2,8 +2,10 @@ include_recipe 'java_se'
 
 package 'curl'
 
-# Installation with default settings
-nexus3 'foo'
+# Installation with default settings but updated admin password
+nexus3 'foo' do
+  nexus3_password node['nexus3']['api']['password']
+end
 
 # Second installation on the same machine with altered settings (not
 # tested on Windows).
@@ -11,6 +13,7 @@ nexus3 'foo'
 # that one must not miss changing any property or files will be
 # overwritten.
 unless platform_family?('windows')
+  # node.default['nexus3']['api']['endpoint'] = 'http://localhost:8082'
   nexus3 'bar' do
     path '/usr/local/nexusbar'
     data '/usr/local/nexusdata'
@@ -25,5 +28,6 @@ unless platform_family?('windows')
       args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
       context_path: '/'
     )
+    api_endpoint 'http://localhost:8082/service/siesta/rest/v1/script/'
   end
 end

@@ -2,8 +2,13 @@ property :script_name, String, name_attribute: true
 property :content, String, default: ''.freeze
 property :args, [Hash, String, NilClass], desired_state: false
 property :endpoint, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
-property :username, String, desired_state: false, identity: true, default: 'admin'.freeze
-property :password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
+property :username, String, desired_state: false, identity: true, default: node['nexus3']['api']['username']
+property :password,
+         kind_of:       String,
+         desired_state: false,
+         identity:      true,
+         sensitive:     true,
+         default:       node['nexus3']['api']['password']
 
 def apiclient
   @apiclient ||= ::Nexus3::Api.new(endpoint, username, password)
