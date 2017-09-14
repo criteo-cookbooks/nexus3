@@ -15,7 +15,7 @@ property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['p
 property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 
 action :install do
-  install_dir = ::File.join(new_resource.path, "nexus-#{version}")
+  install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
 
   user new_resource.nexus3_user do
     comment 'Nexus 3 user'
@@ -40,7 +40,7 @@ action :install do
   end
 
   # Setup directories
-  [install_dir, data, ::File.join(new_resource.data, 'etc')].each do |dir|
+  [install_dir, new_resource.data, ::File.join(new_resource.data, 'etc')].each do |dir|
     directory dir do
       recursive true
       owner new_resource.nexus3_user
@@ -64,7 +64,7 @@ action :install do
   template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
     source 'nexus.vmoptions.erb'
     variables(
-      vmoptions_variables.merge(data: new_resource.data)
+      new_resource.vmoptions_variables.merge(data: new_resource.data)
     )
     mode '0644'
     owner new_resource.nexus3_user

@@ -1,6 +1,6 @@
-property :repo_name, String, name_attribute: true
-property :repo_type, String, default: 'maven2-hosted'.freeze
-property :attributes, Hash, default: lazy { Mash.new } # Not mandatory but strongly recommended in the generic case.
+property :repo_name, String, desired_state: false, identity: true, name_attribute: true
+property :repo_type, String, desired_state: false, identity: true, default: 'maven2-hosted'.freeze
+property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
 property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
 property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
@@ -36,7 +36,7 @@ action :create do
   init
 
   converge_if_changed do
-    nexus3_api "upsert_repo #{repo_name}" do
+    nexus3_api "upsert_repo #{new_resource.repo_name}" do
       script_name 'upsert_repo'
       args name: new_resource.repo_name,
            type: new_resource.repo_type,
@@ -86,7 +86,7 @@ end
 action :delete do
   init
 
-  nexus3_api "delete_repo #{repo_name}" do
+  nexus3_api "delete_repo #{new_resource.repo_name}" do
     action %i(create run)
     script_name 'delete_repo'
     content <<-EOS
@@ -97,7 +97,7 @@ if (repo == null) {
 repository.repositoryManager.delete(args)
 true
     EOS
-    args repo_name
+    args new_resource.repo_name
 
     endpoint new_resource.api_url
     username new_resource.api_user
@@ -113,7 +113,7 @@ action_class.class_eval do
       compile_time true
     end
 
-    nexus3_api "get_repo #{repo_name}" do
+    nexus3_api "get_repo #{new_resource.repo_name}" do
       action :create
       script_name 'get_repo'
       endpoint new_resource.api_url
