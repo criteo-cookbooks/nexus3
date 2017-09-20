@@ -2,17 +2,18 @@ property :repo_name, String, desired_state: false, identity: true, name_attribut
 property :repo_type, String, desired_state: false, identity: true, default: 'maven2-hosted'.freeze
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_url, String, desired_state: false, identity: true, default: 'http://localhost:8081/service/siesta/rest/v1/script/'.freeze
-property :api_user, String, desired_state: false, identity: true, default: 'admin'.freeze
-property :api_password, String, desired_state: false, identity: true, sensitive: true, default: 'admin123'.freeze
+property :api_endpoint, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
+property :api_username, String, desired_state: false, identity: true, default: node['nexus3']['api']['username']
+property :api_password, String, desired_state: false, identity: true, sensitive: true,
+                                default: node['nexus3']['api']['password']
 
 def apiclient
-  @apiclient ||= ::Nexus3::Api.new(api_url, api_user, api_password)
+  @apiclient ||= ::Nexus3::Api.new(api_endpoint, api_username, api_password)
 end
 
 load_current_value do |desired|
-  api_url desired.api_url
-  api_user desired.api_user
+  api_endpoint desired.api_endpoint
+  api_username desired.api_username
   api_password desired.api_password
 
   begin
@@ -44,8 +45,8 @@ action :create do
            attributes: new_resource.attributes
 
       action %i(create run)
-      endpoint new_resource.api_url
-      username new_resource.api_user
+      endpoint new_resource.api_endpoint
+      username new_resource.api_username
       password new_resource.api_password
 
       content <<-EOS
@@ -99,8 +100,8 @@ true
     EOS
     args new_resource.repo_name
 
-    endpoint new_resource.api_url
-    username new_resource.api_user
+    endpoint new_resource.api_endpoint
+    username new_resource.api_username
     password new_resource.api_password
 
     not_if { current_resource.nil? }
@@ -116,8 +117,8 @@ action_class.class_eval do
     nexus3_api "get_repo #{new_resource.repo_name}" do
       action :create
       script_name 'get_repo'
-      endpoint new_resource.api_url
-      username new_resource.api_user
+      endpoint new_resource.api_endpoint
+      username new_resource.api_username
       password new_resource.api_password
 
       content <<-EOS
@@ -133,9 +134,5 @@ if (conf != null) {
 }
     EOS
     end
-  end
-
-  def whyrun_supported?
-    true
   end
 end
