@@ -1,20 +1,22 @@
 property :repo_name, String, desired_state: false, identity: true, name_attribute: true
-property :repo_type, String, desired_state: false, identity: true, default: 'maven2-hosted'.freeze
+property :repo_type, String, desired_state: false, identity: true, default: 'maven2-hosted'
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_endpoint, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
-property :api_username, String, desired_state: false, identity: true, default: node['nexus3']['api']['username']
+property :api_endpoint, String, desired_state: false, identity: true,
+                                default: lazy { node['nexus3']['api']['endpoint'] }
+property :api_username, String, desired_state: false, identity: true,
+                                default: lazy { node['nexus3']['api']['username'] }
 property :api_password, String, desired_state: false, identity: true, sensitive: true,
-                                default: node['nexus3']['api']['password']
-
-def apiclient
-  @apiclient ||= ::Nexus3::Api.new(api_endpoint, api_username, api_password)
-end
+                                default: lazy { node['nexus3']['api']['password'] }
 
 load_current_value do |desired|
   api_endpoint desired.api_endpoint
   api_username desired.api_username
   api_password desired.api_password
+
+  def apiclient
+    @apiclient ||= ::Nexus3::Api.new(api_endpoint, api_username, api_password)
+  end
 
   begin
     res = apiclient.run_script('get_repo', desired.repo_name)
@@ -108,7 +110,7 @@ true
   end
 end
 
-action_class.class_eval do
+action_class do
   def init
     chef_gem 'httpclient' do
       compile_time true
