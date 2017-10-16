@@ -16,7 +16,12 @@ def repo_response(reponame)
 end
 
 def user_response(username)
-  api_response(200, result: username)
+  api_response(200, result: JSON.generate(username: username,
+                                          password: 'test-1',
+                                          first_name: '',
+                                          last_name: '',
+                                          email: '',
+                                          roles: []))
 end
 
 RSpec.configure do |config|
