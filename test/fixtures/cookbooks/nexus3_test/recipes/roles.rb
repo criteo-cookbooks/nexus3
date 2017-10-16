@@ -1,3 +1,4 @@
+# Test role creation
 nexus3_role 'foo'
 
 nexus3_role 'foo again' do
@@ -10,6 +11,7 @@ ruby_block 'fail if foo is created again' do
   block { raise 'nexus3_role is not idempotent!' }
 end
 
+# Test role deletion
 nexus3_role 'bar' do
   action %i(create delete)
 end
@@ -23,4 +25,12 @@ end
 ruby_block 'fail if bar is deleted again' do
   action :nothing
   block { raise 'nexus3_role is not idempotent!' }
+end
+
+# Test role modification
+nexus3_role 'baz'
+
+nexus3_role 'baz again' do
+  role_name 'baz'
+  privileges ['nx-blobstores-read', 'nx-ldap-read']
 end

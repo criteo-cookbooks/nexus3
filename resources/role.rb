@@ -1,22 +1,13 @@
-property :role_name, String, desired_state: false, identity: true, name_attribute: true
-property :description, String, desired_state: false, identity: true, default: ''.freeze
-property :roles, Array, desired_state: false, identity: true, default: []
-property :privileges, Array, desired_state: false, identity: true, default: []
-property :api_endpoint, String, desired_state: false, identity: true,
-                                default: lazy { node['nexus3']['api']['endpoint'] }
-property :api_username, String, desired_state: false, identity: true,
-                                default: lazy { node['nexus3']['api']['username'] }
-property :api_password, String, desired_state: false, identity: true, sensitive: true,
-                                default: lazy { node['nexus3']['api']['password'] }
+property :role_name, String, name_property: true
+property :description, String, default: ''.freeze
+property :roles, Array, default: []
+property :privileges, Array, default: []
+property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
+property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
+property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
 
 load_current_value do |desired|
-  api_endpoint desired.api_endpoint
-  api_username desired.api_username
-  api_password desired.api_password
-
-  def apiclient
-    @apiclient ||= ::Nexus3::Api.new(api_endpoint, api_username, api_password)
-  end
+  apiclient = ::Nexus3::Api.new(api_endpoint, api_username, api_password)
 
   begin
     res = apiclient.run_script('get_role', desired.role_name)
@@ -25,8 +16,8 @@ load_current_value do |desired|
     ::Chef::Log.warn "Role config is #{config}"
     role_name config['role']
     description config['description']
-    roles config['roles']
-    privileges config['privileges']
+    roles config['roles'].sort!
+    privileges config['privileges'].sort!
   rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occurred: #{e.message}"
     current_value_does_not_exist!
@@ -37,8 +28,8 @@ action :create do
   init
 
   converge_if_changed do
-    nexus3_api "create_role #{new_resource.role_name}" do
-      script_name 'create_role'
+    nexus3_api "upsert_role #{new_resource.role_name}" do
+      script_name 'upsert_role'
       args rolename: new_resource.role_name,
            description: new_resource.description,
            role_list: new_resource.roles,
@@ -66,18 +57,20 @@ try {
     // Could not find role, ignoring.
 }
 
-privileges = (params.privileges == null ? new HashSet() : params.privileges.toSet());
-roles = (params.roles == null ? new HashSet() : params.roles.toSet());
+privileges = (params.privilege_list == null ? new HashSet() : params.privilege_list.toSet());
+roles = (params.role_list == null ? new HashSet() : params.role_list.toSet());
 
 if (existingRole != null) {
-   existingRole.setName(params.rolename);
-   existingRole.setDescription(params.description);
-   existingRole.setPrivileges(privileges);
-   existingRole.setRoles(roles);
-   authManager.updateRole(existingRole);
+    existingRole.setName(params.rolename);
+    existingRole.setDescription(params.description);
+    existingRole.setPrivileges(privileges);
+    existingRole.setRoles(roles);
+    authManager.updateRole(existingRole);
+    log.info("Updated role ${params.rolename} from Chef");
 } else {
-   // Let's make role ID == role name by convention.
-   security.addRole(params.rolename, params.rolename, params.description, privileges.toList(), roles.toList());
+    // Let's make role ID == role name by convention.
+    security.addRole(params.rolename, params.rolename, params.description, privileges.toList(), roles.toList());
+    log.info("Added role ${params.rolename} from Chef");
 }
       EOS
     end
@@ -137,17 +130,20 @@ import groovy.json.JsonOutput;
 authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
 try {
     role = authManager.getRole(args);
-    log.info("found role ${role.getName()}");
     return JsonOutput.toJson([
       role: role.getName(),
       description: role.getDescription(),
-      roles: role.getRoles().toList(),
-      privileges: role.getPrivileges().toList()
+      roles: role.getRoles().toSorted(),
+      privileges: role.getPrivileges().toSorted()
     ]);
 } catch (NoSuchRoleException) {
     return null;
 }
       EOS
     end
+  end
+
+  def whyrun_supported?
+    true
   end
 end
