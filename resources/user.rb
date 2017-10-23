@@ -3,7 +3,7 @@ property :password, String, sensitive: true, required: true
 property :first_name, String, default: ''
 property :last_name, String, default: ''
 property :email, String, default: ''
-property :roles, Array, default: []
+property :roles, Array, default: lazy { [] }
 property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
 property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
 property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
@@ -15,20 +15,19 @@ load_current_value do |desired|
     res = apiclient.run_script('get_user', username)
     current_value_does_not_exist! if res == 'null'
     config = JSON.parse(res)
-    ::Chef::Log.warn "User config is #{config}"
+    current_value_does_not_exist! if config.nil?
+    ::Chef::Log.debug "User config is #{config}"
     first_name config['first_name']
     last_name config['last_name']
     email config['email']
     roles config['roles']
 
     # Check if we need to change the password.
-    apiwithuser = ::Nexus3::Api.new(api_endpoint, username, desired.password)
     begin
-      apiwithuser.request(:get, '/service/metrics/ping')
+      ::Nexus3::Api.new(api_endpoint, username, desired.password).request(:get, '/service/metrics/ping')
+      password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
     rescue ::Nexus3::ApiError
       password desired.password
-    else
-      password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
     end
   rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occurred: #{e.message}"
@@ -74,7 +73,7 @@ params.roles.each { role ->
         def newRole = authManager.getRole(role);
         roleList.add(newRole);
     } catch (NoSuchRoleException e) {
-        log.info("No such role: ${role}, trying to set for ${params.username} from Chef");
+        log.warn("No such role: ${role}, trying to set for ${params.username} from Chef");
     }
 }
 
@@ -113,7 +112,9 @@ action :delete do
     password new_resource.api_password
 
     content <<-EOS
-security.securitySystem.deleteUser(args, "default")
+import org.sonatype.nexus.security.user.UserManager;
+
+security.securitySystem.deleteUser(args, UserManager.DEFAULT_SOURCE);
     EOS
   end
 end
