@@ -1,19 +1,22 @@
 property :role_name, String, name_property: true
 property :description, String, default: ''.freeze
-property :roles, Array, default: []
-property :privileges, Array, default: []
+property :roles, Array, default: lazy { [] }
+property :privileges, Array, default: lazy { [] }
 property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
 property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
 property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
 
 load_current_value do |desired|
-  apiclient = ::Nexus3::Api.new(api_endpoint, api_username, api_password)
+  api_endpoint desired.api_endpoint
+  api_username desired.api_username
+  api_password desired.api_password
 
   begin
-    res = apiclient.run_script('get_role', desired.role_name)
+    res = ::Nexus3::Api.new(api_endpoint, api_username, api_password).run_script('get_role', desired.role_name)
     current_value_does_not_exist! if res == 'null'
     config = JSON.parse(res)
-    ::Chef::Log.warn "Role config is #{config}"
+    current_value_does_not_exist! if config.nil?
+    ::Chef::Log.debug "Role config is #{config}"
     role_name config['role']
     description config['description']
     roles config['roles'].sort!
