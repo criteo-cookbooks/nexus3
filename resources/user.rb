@@ -53,48 +53,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import org.sonatype.nexus.security.role.NoSuchRoleException;
-import org.sonatype.nexus.security.role.RoleIdentifier;
-import org.sonatype.nexus.security.user.User;
-import org.sonatype.nexus.security.user.UserManager;
-import org.sonatype.nexus.security.user.UserNotFoundException;
-import org.sonatype.nexus.security.SecuritySystem;
-
-import groovy.json.JsonSlurper;
-
-def params = new JsonSlurper().parseText(args)
-
-authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
-// Create a list of available from the list of passed roles. May end up empty if no role exists.
-Set<RoleIdentifier> roleList = new HashSet<RoleIdentifier>();
-params.roles.each { role ->
-    try {
-        def newRole = authManager.getRole(role);
-        roleList.add(newRole);
-    } catch (NoSuchRoleException e) {
-        log.warn("No such role: ${role}, trying to set for ${params.username} from Chef");
-    }
-}
-
-try {
-    // Update
-    User user = security.securitySystem.getUser(params.username, UserManager.DEFAULT_SOURCE);
-
-    user.setFirstName(params.first_name);
-    user.setLastName(params.last_name);
-    user.setEmailAddress(params.email);
-    user.setRoles(roleList);
-
-    security.securitySystem.updateUser(user);
-    security.securitySystem.changePassword(params.username, params.password);
-    log.info("Udpdated information for ${params.username} from Chef")
-} catch (UserNotFoundException e) {
-    // Create
-    security.addUser(params.username, params.first_name, params.last_name, params.email, true, params.password, params.roles)
-    log.info("Created user ${params.username} from Chef")
-}
-      EOS
+      content ::File.read(groovy_script_location('upsert_user'))
     end
   end
 end
@@ -111,11 +70,7 @@ action :delete do
     username new_resource.api_username
     password new_resource.api_password
 
-    content <<-EOS
-import org.sonatype.nexus.security.user.UserManager;
-
-security.securitySystem.deleteUser(args, UserManager.DEFAULT_SOURCE);
-    EOS
+    content ::File.read groovy_script_location('delete_user')
   end
 end
 
@@ -132,28 +87,13 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import org.sonatype.nexus.security.user.UserManager;
-import org.sonatype.nexus.security.user.UserNotFoundException;
-
-import groovy.json.JsonOutput;
-
-try {
-    def user = security.securitySystem.getUser(args, UserManager.DEFAULT_SOURCE);
-    if (user) {
-        return JsonOutput.toJson([
-            username: user.getUserId(),
-            first_name: user.getFirstName(),
-            last_name: user.getLastName(),
-            email: user.getEmailAddress(),
-            roles: user.getRoles().collect { role -> role.getRoleId() }
-        ])
-    }
-} catch (UserNotFoundException e) {
-    return null;
-}
-      EOS
+      content ::File.read groovy_script_location('get_user')
     end
+  end
+
+  def groovy_script_location(script_name)
+    @cookbook ||= run_context.cookbook_collection['nexus3']
+    @cookbook.preferred_filename_on_disk_location(node, :files, "#{script_name}.groovy")
   end
 
   def whyrun_supported?
