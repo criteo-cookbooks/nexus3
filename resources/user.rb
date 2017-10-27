@@ -53,7 +53,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read(groovy_script_location('upsert_user'))
+      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('upsert_user', node)
     end
   end
 end
@@ -70,7 +70,7 @@ action :delete do
     username new_resource.api_username
     password new_resource.api_password
 
-    content ::File.read groovy_script_location('delete_user')
+    content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('delete_user', node)
   end
 end
 
@@ -87,13 +87,8 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read groovy_script_location('get_user')
+      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('get_user', node)
     end
-  end
-
-  def groovy_script_location(script_name)
-    @cookbook ||= run_context.cookbook_collection['nexus3']
-    @cookbook.preferred_filename_on_disk_location(node, :files, "#{script_name}.groovy")
   end
 
   def whyrun_supported?
