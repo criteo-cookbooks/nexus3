@@ -51,37 +51,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
-import org.sonatype.nexus.repository.config.Configuration
-
-def params = new JsonSlurper().parseText(args)
-
-def repo = repository.repositoryManager.get(params.name)
-Configuration conf
-if (repo == null) { // create
-  conf = new Configuration(
-    repositoryName: params.name,
-    recipeName: params.type,
-    online: params.online,
-    attributes: params.attributes
-  )
-  repository.createRepository(conf)
-} else { // update
-  conf = repo.getConfiguration()
-  if (conf.getRecipeName() != params.type) {
-    throw new Exception("Tried to change recipe for repo ${params.name} to ${params.type}")
-  }
-  conf.setOnline(params.online)
-  conf.setAttributes(params.attributes)
-  repo.stop()
-  repo.update(conf)
-  repo.start()
-}
-
-  true
-    EOS
+      content ::Nexus3::Scripts.groovy_content('upsert_repo', node)
     end
   end
 end
@@ -92,14 +62,7 @@ action :delete do
   nexus3_api "delete_repo #{new_resource.repo_name}" do
     action %i(create run)
     script_name 'delete_repo'
-    content <<-EOS
-def repo = repository.repositoryManager.get(args)
-if (repo == null) {
-   return false
-}
-repository.repositoryManager.delete(args)
-true
-    EOS
+    content ::Nexus3::Scripts.groovy_content('delete_repo', node)
     args new_resource.repo_name
 
     endpoint new_resource.api_endpoint
@@ -123,18 +86,7 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import groovy.json.JsonOutput
-conf = repository.repositoryManager.get(args)?.getConfiguration()
-if (conf != null) {
-  JsonOutput.toJson([
-    repositoryName: conf.getRepositoryName(),
-    recipeName: conf.getRecipeName(),
-    online: conf.isOnline(),
-    attributes: conf.getAttributes()
-  ])
-}
-    EOS
+      content ::Nexus3::Scripts.groovy_content('get_repo', node)
     end
   end
 end
