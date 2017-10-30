@@ -53,7 +53,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('upsert_user', node)
+      content ::Nexus3::Scripts.groovy_content('upsert_user', node)
     end
   end
 end
@@ -70,7 +70,7 @@ action :delete do
     username new_resource.api_username
     password new_resource.api_password
 
-    content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('delete_user', node)
+    content ::Nexus3::Scripts.groovy_content('delete_user', node)
   end
 end
 
@@ -87,7 +87,7 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('get_user', node)
+      content ::Nexus3::Scripts.groovy_content('get_user', node)
     end
   end
 

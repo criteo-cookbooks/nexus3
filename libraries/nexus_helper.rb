@@ -37,13 +37,5 @@ EOH
     rescue Timeout::Error
       raise Nexus3NotReady.new(endpoint, nexus_timeout)
     end
-
-    # Load Groovy scripts via the Nexus3 API.
-    class Scripting
-      def self.groovy_script_location(script_name, node)
-        @cookbook ||= node.run_context.cookbook_collection['nexus3']
-        @cookbook.preferred_filename_on_disk_location(node, :files, "#{script_name}.groovy")
-      end
-    end
   end
 end

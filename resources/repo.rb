@@ -51,7 +51,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('upsert_repo', node)
+      content ::Nexus3::Scripts.groovy_content('upsert_repo', node)
     end
   end
 end
@@ -62,7 +62,7 @@ action :delete do
   nexus3_api "delete_repo #{new_resource.repo_name}" do
     action %i(create run)
     script_name 'delete_repo'
-    content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('delete_repo', node)
+    content ::Nexus3::Scripts.groovy_content('delete_repo', node)
     args new_resource.repo_name
 
     endpoint new_resource.api_endpoint
@@ -86,7 +86,7 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content ::File.read ::Nexus3::Helper::Scripting.groovy_script_location('get_repo', node)
+      content ::Nexus3::Scripts.groovy_content('get_repo', node)
     end
   end
 end
