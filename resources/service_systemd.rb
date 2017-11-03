@@ -8,6 +8,7 @@ property :instance_name, String, name_property: true
 property :install_dir, String
 property :nexus3_user, String
 property :nexus3_group, String
+property :nofile_limit, Integer, default: lazy { node['nexus3']['nofile_limit'] }
 
 action :start do
   create_init
@@ -56,7 +57,8 @@ action_class do
       variables(
         instance_name: new_resource.instance_name,
         install_dir: new_resource.install_dir,
-        nexus3_user: new_resource.nexus3_user
+        nexus3_user: new_resource.nexus3_user,
+        nofile_limit: new_resource.nofile_limit
       )
       cookbook 'nexus3'
       notifies :run, 'execute[Load systemd unit file]', :immediately

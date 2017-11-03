@@ -25,3 +25,5 @@ default['nexus3']['vmoptions_variables'] = {
   Xms: '1200M',
   Xmx: '1200M'
 }
+
+default['nexus3']['nofile_limit'] = 65_536
