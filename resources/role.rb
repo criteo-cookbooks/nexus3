@@ -6,22 +6,16 @@ property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['
 property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
 property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
 
-load_current_value do |desired|
-  api_endpoint desired.api_endpoint
-  api_username desired.api_username
-  api_password desired.api_password
-
+load_current_value do
   begin
-    res = ::Nexus3::Api.new(api_endpoint, api_username, api_password).run_script('get_role', desired.role_name)
-    current_value_does_not_exist! if res == 'null'
+    res = ::Nexus3::Api.new(api_endpoint, api_username, api_password).run_script('get_role', role_name)
     config = JSON.parse(res)
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "Role config is #{config}"
-    role_name config['role']
     description config['description']
-    roles config['roles'].sort!
-    privileges config['privileges'].sort!
-  rescue LoadError, ::Nexus3::ApiError => e
+    roles config['roles']
+    privileges config['privileges']
+  rescue ::LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occurred: #{e.message}"
     current_value_does_not_exist!
   end
@@ -105,7 +99,7 @@ try {
 } catch (NoSuchRoleException ignored) {
     // No such role, ignoring.
 }
-    EOS
+      EOS
     end
   end
 end
@@ -116,13 +110,11 @@ action_class do
       compile_time true
     end
 
-    nexus3_api "get_role #{new_resource.role_name}" do
+    nexus3_api 'get_role' do
       action :create
-      script_name 'get_role'
       endpoint new_resource.api_endpoint
       username new_resource.api_username
       password new_resource.api_password
-      args new_resource.role_name
 
       content <<-EOS
 import org.sonatype.nexus.security.user.UserManager;
