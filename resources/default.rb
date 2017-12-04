@@ -58,7 +58,7 @@ action :install do
     group new_resource.nexus3_group
     cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :create, 'ruby_block[block until operational]', :delayed
+    notifies :run, 'ruby_block[block until operational]', :delayed
   end
 
   template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
@@ -71,7 +71,7 @@ action :install do
     group new_resource.nexus3_group
     cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :create, 'ruby_block[block until operational]', :delayed
+    notifies :run, 'ruby_block[block until operational]', :delayed
   end
 
   template ::File.join(new_resource.data, 'etc', 'nexus.properties') do
@@ -82,7 +82,7 @@ action :install do
     group new_resource.nexus3_group
     cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :create, 'ruby_block[block until operational]', :delayed
+    notifies :run, 'ruby_block[block until operational]', :delayed
   end
 
   link new_resource.nexus3_home do
