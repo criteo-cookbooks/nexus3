@@ -38,7 +38,7 @@ module Nexus3
 
     # Runs a specific script with parameters
     def run_script(scriptname, params)
-      body = request(:post, "#{scriptname}/run", 'text/plain', params)
+      body = request(:post, "script/#{scriptname}/run", 'text/plain', params)
       JSON.parse(body)['result']
     end
   end
