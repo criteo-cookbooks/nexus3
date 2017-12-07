@@ -15,7 +15,7 @@ load_current_value do |desired|
   password desired.password
 
   begin
-    response = JSON.parse(apiclient.request(:get, desired.script_name))
+    response = JSON.parse(apiclient.request(:get, "script/#{desired.script_name}"))
     content response['content'] if response.is_a?(Hash) && response.key?('content')
   rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
@@ -27,7 +27,7 @@ action :create do
   chef_gem 'httpclient'
 
   converge_if_changed do
-    apiclient.request(:delete, new_resource.script_name) unless current_resource.nil?
+    apiclient.request(:delete, "script/#{new_resource.script_name}") unless current_resource.nil?
     apiclient.request(:post, '', 'application/json', name: new_resource.script_name, type: 'groovy',
                                                      content: new_resource.content)
   end
@@ -46,7 +46,7 @@ action :delete do
 
   unless current_resource.nil?
     converge_by "deleting script #{new_resource.script_name}" do
-      apiclient.request(:delete, new_resource.script_name)
+      apiclient.request(:delete, "script/#{new_resource.script_name}")
     end
   end
 end
