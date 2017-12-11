@@ -37,39 +37,7 @@ action :create do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import org.sonatype.nexus.security.user.UserManager;
-import org.sonatype.nexus.security.role.NoSuchRoleException;
-
-import groovy.json.JsonSlurper;
-
-def params = new JsonSlurper().parseText(args);
-
-authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
-def existingRole = null;
-
-try {
-    existingRole = authManager.getRole(params.rolename);
-} catch (NoSuchRoleException ignored) {
-    // Could not find role, ignoring.
-}
-
-privileges = (params.privilege_list == null ? new HashSet() : params.privilege_list.toSet());
-roles = (params.role_list == null ? new HashSet() : params.role_list.toSet());
-
-if (existingRole != null) {
-    existingRole.setName(params.rolename);
-    existingRole.setDescription(params.description);
-    existingRole.setPrivileges(privileges);
-    existingRole.setRoles(roles);
-    authManager.updateRole(existingRole);
-    log.info("Updated role ${params.rolename} from Chef");
-} else {
-    // Let's make role ID == role name by convention.
-    security.addRole(params.rolename, params.rolename, params.description, privileges.toList(), roles.toList());
-    log.info("Added role ${params.rolename} from Chef");
-}
-      EOS
+      content ::Nexus3::Scripts.groovy_content('upsert_role', node)
     end
   end
 end
@@ -87,19 +55,7 @@ action :delete do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import org.sonatype.nexus.security.user.UserManager;
-import org.sonatype.nexus.security.role.NoSuchRoleException;
-
-authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
-try {
-    existingRole = authManager.getRole(args);
-    log.info("Deleting role ${existingRole.getName()}");
-    authManager.deleteRole(existingRole.getRoleId());
-} catch (NoSuchRoleException ignored) {
-    // No such role, ignoring.
-}
-      EOS
+      content ::Nexus3::Scripts.groovy_content('delete_role', node)
     end
   end
 end
@@ -116,25 +72,7 @@ action_class do
       username new_resource.api_username
       password new_resource.api_password
 
-      content <<-EOS
-import org.sonatype.nexus.security.user.UserManager;
-import org.sonatype.nexus.security.role.NoSuchRoleException;
-
-import groovy.json.JsonOutput;
-
-authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
-try {
-    role = authManager.getRole(args);
-    return JsonOutput.toJson([
-      role: role.getName(),
-      description: role.getDescription(),
-      roles: role.getRoles().toSorted(),
-      privileges: role.getPrivileges().toSorted()
-    ]);
-} catch (NoSuchRoleException) {
-    return null;
-}
-      EOS
+      content ::Nexus3::Scripts.groovy_content('get_role', node)
     end
   end
 
