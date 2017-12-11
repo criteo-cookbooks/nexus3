@@ -2,15 +2,14 @@ property :repo_name, String, name_attribute: true
 property :repo_type, String, default: 'maven2-hosted'
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_endpoint, String, desired_state: false, default: lazy { node['nexus3']['api']['endpoint'] }
-property :api_username, String, desired_state: false, default: lazy { node['nexus3']['api']['username'] }
-property :api_password, String, desired_state: false, sensitive: true,
+property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
+property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
+property :api_password, String, identity: true, sensitive: true,
                                 default: lazy { node['nexus3']['api']['password'] }
 
 load_current_value do |desired|
   begin
     res = ::Nexus3::Api.new(api_endpoint, api_username, api_password).run_script('get_repo', desired.repo_name)
-    current_value_does_not_exist! if res == 'null'
     config = JSON.parse(res)
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "Config is: #{config}"
