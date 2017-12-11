@@ -22,6 +22,9 @@ resource to configure Nexus 3 Repository Manager via its REST API.
 Use the [nexus3_repo](https://github.com/criteo-cookbooks/nexus3#nexus3_repo)
 resource to configure Nexus 3 repositories.
 
+Use the [nexus3_user](https://github.com/criteo-cookbooks/nexus3#nexus3_user)
+resource to configure Nexus 3 users.
+
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
@@ -43,35 +46,30 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 
 ### Attributes
 
-- `node['nexus3']['url']` - The download URL of Nexus 3 Repository 
-Manager. This can be a specific version of Nexus Repository Manager OSS 
-or Nexus Repository Manager Pro.
-Default `http://download.sonatype.com/nexus/3/latest-unix.tar.gz`.
+- `node['nexus3']['version']` - The version of Nexus 3 to download. Default
+  `3.2.1-01`.
+- `node['nexus3']['url']` - The download URL of Nexus 3 Repository Manager.
+  This can be a specific version of Nexus Repository Manager OSS or Nexus
+  Repository Manager Pro. Default
+  `http://download.sonatype.com/nexus/3/nexus-3.2.1-01-unix.tar.gz`.
 - `node['nexus3']['checksum']` (optional) - The checksum of Nexus 
-Repository Manager. Default `nil`.
+  Repository Manager. Default `nil`.
 - `node['nexus3']['path']` -  Install directory.
-Default Linux: `/opt` Windows: `#{ENV['SYSTEMDRIVE']}`.
+  Default Linux: `/opt` Windows: `#{ENV['SYSTEMDRIVE']}`.
 - `node['nexus3']['data']` -  Data directory. 
-Default `#{node['nexus3']['path']}/sonatype-work/nexus3`.
+  Default `#{node['nexus3']['path']}/sonatype-work/nexus3`.
 - `node['nexus3']['home']` -  Link to install directory. 
-Default `#{node['nexus3']['path']}/nexus3`.
-- `node['nexus3']['properties_cookbook']` -  Cookbook that contains the 
-template to use. Default `nexus3`.
-- `node['nexus3']['properties_source']` -  Template file that will be 
-used to create the `#{data}/etc/nexus.properties`
-file. Default `nexus.properties.erb`.
-- `node['nexus3']['properties_variables']` -  A Hash of variables that 
-are passed into a template file.
-Default `{ host: '0.0.0.0', port: '8081', args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml', context_path: '/' }`.
-- `node['nexus3']['vmoptions_cookbook']` -  Cookbook that contains the 
-template to use. Default `nexus3`.
-- `node['nexus3']['vmoptions_source']` -  Template file that will be 
-used to create the `#{home}/bin/nexus.vmoptions`
-file. Default `nexus.vmoptions.erb`.
-- `node['nexus3']['vmoptions_variables']` -  A Hash of variables that 
-are passed into a template file. Note that
-data directory will be injected into the hash if it is not defined. 
-Default `{ Xms: '1200M', Xmx: '1200M' }`.
+  Default `#{node['nexus3']['path']}/nexus3`.
+- `node['nexus3']['properties_variables']` - A Hash of variables that are
+  passed into a template file. Default `{ host: '0.0.0.0', port: '8081', args:
+  '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
+  context_path: '/' }`.
+- `node['nexus3']['vmoptions_variables']` - A Hash of variables that are
+  passed into a template file. Note that data directory will be injected into
+  the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
+- `node['nexus3']['nofile_limit']` - Limit of open files available for
+  Nexus 3. Default 65,536 as suggested by the Sonatype documentation on newer
+  releases.
 
 ### Examples
 
@@ -99,40 +97,51 @@ include_recipe 'nexus3'
 
 # Resources
 
+## Properties common to all resources using the Nexus3 API
+
+- `api_endpoint` - URL to reach the Nexus3 API. Default
+  `node['nexus3']['api']['endpoint']`
+- `api_username` - username to authenticate to the Nexus3 API. Default
+  `node['nexus3']['api'][username]`
+- `api_password` - password to authenticate to the Nexus3 API. Default
+  `node['nexus3']['api']['password']`
+
 ## nexus3
 
 Downloads and installs the latest Nexus Repository Manager OSS v3.
 
 ### Actions
-- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.  
-- `:uninstall` - Removes service and install directory. Uninstall will not delete the data directory unless the default
-data configuration has changed to place it under the install directory (which is not recommended).
-- `:nothing` - Define this resource block to do nothing until notified by another resource to take action.
-When this resource is notified, this resource block is either run immediately or it is queued up to be run
-at the end of the chef-client run.
+- `:install` - Default. Downloads and installs the latest Nexus Repository Manager OSS v3.
+
+Since the installation is resource-based, you can install different Nexus3
+instances on the same node. Make sure to specify different home and data
+directories, as well as different port numbers.
 
 ### Attributes
 
-- `servicename` - Name of service. Default value is the name of the resource block.
-- `user` - The owner of nexus3. Creates a nexus user when nil or uses value passed in. Default `nil`.
-- `group` - The group of nexus3. Creates a nexus group when nil or uses value passed in. Default `nil`.
-- `url` - The download URL of latest Nexus 3 Repository Manager OSS. This can be updated to
-download a specific version of Nexus Repository Manager OSS or Nexus Repository Manager Pro.
-Default `node['nexus3']['url']`.
-- `checksum` (optional) - The checksum of Nexus Repository Manager. Default `node['nexus3']['checksum']`.
+- `instance_name` - Name of service. Default value is the name of the resource
+  block.
+- `nexus3_user` - The owner of nexus3. Creates a nexus user with the value
+  passed in. Default `node['nexus3']['user']`.
+- `nexus3_group` - The group of nexus3. Creates a nexus group with the value
+  passed in. Default `node['nexus3']['group']`.
+- `version` - Version of Nexus3 to install. Default
+  `node['nexus3']['version']`
+- `url` - The download URL of latest Nexus 3 Repository Manager OSS. This can
+  be updated to download a specific version of Nexus Repository Manager OSS or
+  Nexus Repository Manager Pro. Default `node['nexus3']['url']`.
+- `checksum` (optional) - The checksum of Nexus Repository Manager. Default
+  `node['nexus3']['checksum']`.
 - `data` -  Data directory. Default `node['nexus3']['data']`.
 - `path` -  Install directory. Default `node['nexus3']['path']`.
-- `home` -  Link to install directory. Default `node['nexus3']['home']`.
-- `properties_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['properties_cookbook']`.
-- `properties_source` -  Template file that will be used to create the `#{data}/etc/nexus.properties`
-file. Default `node['nexus3']['properties_source']`.
-- `properties_variables` -  A Hash of variables that are passed into a template file.
-Default `node['nexus3']['properties_variables']`.
-- `vmoptions_cookbook` -  Cookbook that contains the template to use. Default `node['nexus3']['vmoptions_cookbook']`.
-- `vmoptions_source` -  Template file that will be used to create the `#{home}/bin/nexus.vmoptions`
-file. Default `node['nexus3']['vmoptions_source']`.
-- `vmoptions_variables` -  A Hash of variables that are passed into a template file. Note that data directory will
-be injected into the hash if it is not defined. Default `node['nexus3']['vmoptions_variables']`.
+- `nexus3_home` - Link to install directory. Default `node['nexus3']['home']`.
+- `service_name` - Name of service used for the system service manager
+  (systemd or other). Defaults to `instance_name`.
+- `properties_variables` - A Hash of variables that are passed into a template
+  file. Default `node['nexus3']['properties_variables']`.
+- `vmoptions_variables` - A Hash of variables that are passed into a template
+  file. Note that data directory will be injected into the hash if it is not
+  defined. Default `node['nexus3']['vmoptions_variables']`.
 
 ### Examples
 
@@ -172,13 +181,14 @@ end
 
 ## nexus3_api
 
-Configures Nexus 3 Repository Manager via API.
+Configures Nexus 3 Repository Manager via API. Low-level resource, usually
+used within other resources.
 
 ### Actions
-- `:run` - Default. Run the named script on the repository manager. The script
-  must already have been created.
 - `:create` - Creates or updates the named script on the repository manager
   (default action).
+- `:run` - Runs the named script on the repository manager. The script must
+  already have been created.
 - `:delete` - Deletes the named script from the repository manager.
 
 ### Properties
@@ -191,9 +201,6 @@ Configures Nexus 3 Repository Manager via API.
 - `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
 - `username` - Username to run the script as. Default `admin`.
 - `password` - Password of username.  Default `admin123`.
-- `script_cookbook` - Cookbook that contains the file to use. Default `node['nexus3']['api']['script_cookbook']`.
-- `script_source` - Name of the file in `#{script_cookbook}/files/default` or the path to a file located
-in `#{script_cookbook}/files`. The path must include the file name and its extension. . Default `nil`.
 
 ### Examples
 
@@ -214,7 +221,10 @@ end
 
 ## nexus3_repo
 
-Configures Nexus 3 repositories via API.
+Configures Nexus 3 repositories via API. This works by calling a Groovy script
+which will trigger the creation, update or deletion of a given repository. For
+ease of reading the source code, scripts are stored under `files/default` with
+the help of `libraries/scripts_helper.rb`.
 
 ### Actions
 - `:create` - Creates or updates a repository, passing a configuration via
@@ -222,39 +232,54 @@ Configures Nexus 3 repositories via API.
 - `:delete` - Deletes a repository.
 
 ### Properties
-- `repo_name` - Name of repository to act on, defaults to resource attribute name.
+- `repo_name` - Name of repository to act on, defaults to resource property
+  name.
 - `repo_type` - Type (or recipe in Nexus 3 words) of repository to create,
   among `maven2-hosted`, `maven2-proxy`, 'npm-hosted`, ... (default: 'maven2-hosted')
 - `attributes` - Hash of attributes passed to the `:create` action, used to
   specify repository attributes for creation or update.
 - `online` - Whether to put the repository online or not (default: true).
-- `api_url` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
-- `api_user` - Nexus 3 API user name (default: 'admin').
-- `api_password` - Nexus 3 API password (default: 'admin123').
 
-## ChefSpec Matchers
+## nexus3_user
 
-The nexus3 cookbook includes custom [ChefSpec](https://github.com/sethvargo/chefspec) matchers you can use to test
-your own cookbooks.
+Configures users for use with Nexus3. Users can be assigned roles and
+privileges, which are seen in the `nexus3_role` resource.
 
-Example Matcher Usage
+### Actions
 
-```ruby
-expect(chef_run).to install_nexus('nexus').with(
-  data: '/opt/repository/data'
-)
-```
+- `:create` - Creates or updates a user. You can change a non-admin user's
+  password with this resource. You will have to use a (yet to be written)
+  `nexus3_admin_password` resource to update the current admin password.
+- `:delete` - Deletes a user.
 
-Nexus3 Cookbook Matchers
+### Properties
 
-- install_nexus3(resource_name)
-- uninstall_nexus3(resource_name)
-- run_nexus3_api(resource_name)
-- create_nexus3_api(resource_name)
-- delete_nexus3_api(resource_name)
-- list_nexus3_api(resource_name)
-- create_nexus3_repo(resource_name)
-- delete_nexus3_repo(resource_name)
+- `username` - Username to create, defaults to resource name.
+- `password` - Password of user.
+- `first_name` - User first name.
+- `last_name` - User last name.
+- `email` - User email address.
+- `roles` - Array of roles to assign to the user (either the default ones or
+  those added with the `nexus3_role` resource).
+
+## nexus3_role
+
+Configures roles to use with Nexus3, so you can assign users to these roles
+later. Roles are associated with a list of privileges defined by Nexus3 and
+can be nested.
+
+### Actions
+
+- `:create` - Creates or updates a role.
+- `:delete` - Deletes a role.
+
+### Properties
+
+- `role_name` - Name of role to update, defaults to resource name.
+- `description` - A free-form description of the role.
+- `roles` - Array of roles that are part of this role. If any role does not
+  exist, it will be ignored if you use the script provided.
+- `privileges` - Array of privileges defined in Nexus3.
 
 ## Getting Help
 
