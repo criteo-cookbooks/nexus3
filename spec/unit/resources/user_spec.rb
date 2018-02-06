@@ -8,35 +8,35 @@ describe 'nexus3_test::user' do
     end
 
     before do
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_user/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'uploader-bot', headers: { 'Content-Type' => 'text/plain' })
         .to_return(api_response(404),
                    user_response('uploader-bot'),
                    user_response('uploader-bot'))
 
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_user/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'uploader2-bot', headers: { 'Content-Type' => 'text/plain' })
         .to_return(api_response(404),
                    user_response('uploader2-bot'),
                    user_response('uploader2-bot'))
 
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_user/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'test-with-pass', headers: { 'Content-Type' => 'text/plain' })
         .to_return(api_response(404),
                    user_response('test-with-pass'),
                    user_response('test-with-pass'))
 
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_user/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'doesnotexist', headers: { 'Content-Type' => 'text/plain' })
         .to_return(api_response(404),
                    user_response('doesnotexist'),
                    user_response('doesnotexist'))
 
-      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_user/run')
         .with(basic_auth: %w(admin admin123))
         .with(body: 'user_with_role', headers: { 'Content-Type' => 'text/plain' })
         .to_return(api_response(404),

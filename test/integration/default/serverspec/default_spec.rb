@@ -29,7 +29,7 @@ EOF
     script_foo = <<-EOH
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
 Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
--URI http://localhost:8081/service/siesta/rest/v1/script/foo -Method GET
+-URI http://localhost:8081/service/rest/v1/script/foo -Method GET
 EOH
 
     describe command("powershell -command { #{script_foo.strip} }") do
@@ -61,7 +61,7 @@ EOH
       its(:stdout) { should contain('pong') }
     end
 
-    describe command('curl -u admin:admin123 http://localhost:8081/service/siesta/rest/v1/script/foo') do
+    describe command('curl -u admin:admin123 http://localhost:8081/service/rest/v1/script/foo') do
       its(:stdout) { should match(/name.*foo/) }
       its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
       its(:stdout) { should match(/type.*groovy/) }
