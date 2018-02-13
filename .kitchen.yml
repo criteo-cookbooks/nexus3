@@ -6,7 +6,7 @@ driver:
 
 provisioner:
   name: chef_solo
-  require_chef_omnibus: '12'
+  require_chef_omnibus: 13.6.4
 
 platforms:
   - name: centos-7.1
