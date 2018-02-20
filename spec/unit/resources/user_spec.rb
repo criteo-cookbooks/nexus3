@@ -36,6 +36,13 @@ describe 'nexus3_test::user' do
                    user_response('doesnotexist'),
                    user_response('doesnotexist'))
 
+      stub_request(:post, 'http://localhost:8081/service/siesta/rest/v1/script/get_user/run')
+        .with(basic_auth: %w(admin admin123))
+        .with(body: 'user_with_role', headers: { 'Content-Type' => 'text/plain' })
+        .to_return(api_response(404),
+                   user_response('user_with_role'),
+                   user_response('user_with_role'))
+
       stub_request(:get, 'http://localhost:8081/service/metrics/ping')
         .to_return(api_response(200))
     end

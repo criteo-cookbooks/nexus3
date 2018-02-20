@@ -59,3 +59,15 @@ nexus3_user 'doesnotexist' do
   password 'test-1'
   action :delete
 end
+
+# This tests that we can add roles.
+nexus3_user 'user_with_role' do
+  password 'test-1'
+  roles ['nx-admin', 'nx-anonymous']
+end
+
+nexus3_user 'user_with_role again' do
+  username 'user_with_role'
+  password 'test-1'
+  roles ['nx-admin', 'nx-anonymous']
+end
