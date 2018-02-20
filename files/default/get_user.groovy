@@ -11,7 +11,7 @@ try {
             first_name: user.getFirstName(),
             last_name: user.getLastName(),
             email: user.getEmailAddress(),
-            roles: user.getRoles().collect { role -> role.getRoleId() }
+            roles: user.getRoles().collect { role -> role.getRoleId() }.toSorted()
         ])
     }
 } catch (UserNotFoundException e) {

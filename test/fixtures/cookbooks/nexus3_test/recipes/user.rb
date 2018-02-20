@@ -60,14 +60,28 @@ nexus3_user 'doesnotexist' do
   action :delete
 end
 
-# This tests that we can add roles.
+# This tests that we can add a user with roles.
 nexus3_user 'user_with_role' do
   password 'test-1'
-  roles ['nx-admin', 'nx-anonymous']
+  roles ['nx-admin']
 end
 
+# And update roles of an existing user
 nexus3_user 'user_with_role again' do
   username 'user_with_role'
   password 'test-1'
   roles ['nx-admin', 'nx-anonymous']
+end
+
+nexus3_user 'user_with_role again with the same roles' do
+  username 'user_with_role'
+  password 'test-1'
+  roles ['nx-admin', 'nx-anonymous']
+
+  notifies :run, 'ruby_block[fail if roles changed]', :immediately
+end
+
+ruby_block 'fail if roles changed' do
+  action :nothing
+  block { raise 'nexus3_user is not idempotent!' }
 end
