@@ -6,7 +6,7 @@ describe 'nexus::repositories' do
 -f 'admin','admin123')));"
     textplain = "-ContentType 'text/plain'"
     applicationjson = "-ContentType 'application/json'"
-    base_uri = '-URI http://localhost:8081/service/siesta/rest/v1/script'
+    base_uri = '-URI http://localhost:8081/service/rest/v1/script'
 
     create_script_get_repo = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" \
 -f $base64AuthInfo)} #{base_uri} -Method POST #{applicationjson} -Body '{\"name\":\"get_repo\",\"type\":\"groovy\",\
@@ -38,23 +38,23 @@ describe 'nexus::repositories' do
       its(:stdout) { should contain('get_repo').before('null') }
     end
   else # Linux
-    describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script -X POST ' \
+    describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script -X POST ' \
                      '-H "Content-Type: application/json" -d \'{"name":"get_repo","type":"groovy",' \
                      '"content":"repository.repositoryManager.get(args)"}\'') do
       its(:exit_status) { should eq 0 }
     end
 
-    describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script/foo/run ' \
+    describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/foo/run ' \
                      '-X POST -H "Content-Type: text/plain"') do
       its(:exit_status) { should eq 0 }
     end
 
-    describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script/get_repo/run ' \
+    describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_repo/run ' \
                      '-X POST -H "Content-Type: text/plain" -d foo') do
       its(:stdout) { should contain('result').before('repositoryName=').before('foo') }
     end
 
-    describe command('curl -uadmin:admin123 http://localhost:8081/service/siesta/rest/v1/script/get_repo/run ' \
+    describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_repo/run ' \
                      '-X POST -H "Content-Type: text/plain" -d doesnotexist') do
       its(:stdout) { should contain('result').before('null') }
     end
