@@ -8,6 +8,19 @@ import groovy.json.JsonSlurper;
 
 def params = new JsonSlurper().parseText(args)
 
+// Ensure each of the roles exists, otherwise fail
+// Without this check the user will be created/updated but with potentially
+// a list of roles different to that passed.
+authManager = security.getSecuritySystem().getAuthorizationManager(UserManager.DEFAULT_SOURCE);
+params.roles.each { role ->
+    try {
+        authManager.getRole(role);
+    } catch (NoSuchRoleException e) {
+        log.error("No such role: ${role}, trying to set for ${params.username} from Chef");
+        throw e
+    }
+}
+
 try {
     // Update
     User user = security.securitySystem.getUser(params.username, UserManager.DEFAULT_SOURCE);
