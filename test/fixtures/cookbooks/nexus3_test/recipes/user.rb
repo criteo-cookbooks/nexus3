@@ -73,10 +73,10 @@ nexus3_user 'user_with_role again' do
   roles ['nx-admin', 'nx-anonymous']
 end
 
-nexus3_user 'user_with_role again with the same roles' do
+nexus3_user 'user_with_role again with the same roles unordered' do
   username 'user_with_role'
   password 'test-1'
-  roles ['nx-admin', 'nx-anonymous']
+  roles ['nx-anonymous', 'nx-admin']
 
   notifies :run, 'ruby_block[fail if roles changed]', :immediately
 end
