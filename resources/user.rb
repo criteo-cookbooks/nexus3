@@ -3,7 +3,7 @@ property :password, String, sensitive: true, required: true
 property :first_name, String, default: ''
 property :last_name, String, default: ''
 property :email, String, default: ''
-property :roles, Array, default: lazy { [] }
+property :roles, Array, default: lazy { [] }, coerce: proc { |r| r.sort }
 property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
 property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
 property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
