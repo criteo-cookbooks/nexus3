@@ -80,6 +80,7 @@ suites:
     - nexus3_test::run_script
     - nexus3_test::user
     - nexus3_test::repositories
+    - nexus3_test::groups
     - nexus3_test::roles
     - nexus3_test::tasks
   attributes:
