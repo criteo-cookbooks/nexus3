@@ -81,6 +81,7 @@ suites:
     - nexus3_test::user
     - nexus3_test::repositories
     - nexus3_test::roles
+    - nexus3_test::tasks
   attributes:
     nexus3_test:
       connection_retries: 10
