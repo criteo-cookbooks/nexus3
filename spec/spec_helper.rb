@@ -2,7 +2,7 @@ require 'chefspec'
 require 'chefspec/berkshelf'
 require 'webmock/rspec'
 
-VER = '3.3.1-01'.freeze
+VER = '3.8.0-02'.freeze
 CACHE = Chef::Config[:file_cache_path]
 CENTOS_VERSION = '7.2.1511'.freeze
 
