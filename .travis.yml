@@ -36,10 +36,9 @@ script:
 - bundle exec rspec
 - KITCHEN_LOCAL_YAML=.kitchen.docker.yml bundle exec kitchen verify ${INSTANCE}
 before_install:
-- [ -n $encrypted_95c22e932368_key ] && openssl aes-256-cbc -K $encrypted_95c22e932368_key 
-  -iv $encrypted_95c22e932368_iv -in .travis/travis-ci.pem.enc -out ~\/.ssh/travis-ci.pem.criteo -d
-- [ -e .travis/travis-ci.pem ] && cp -v .travis/travis-ci.pem ~/.ssh/id_rsa
+- '[ -n "$encrypted_95c22e932368_key" ] && openssl aes-256-cbc -K $encrypted_95c22e932368_key
+ -iv $encrypted_95c22e932368_iv -in .travis/travis-ci.pem.enc -out ~\/.ssh/travis-ci.pem.criteo -d'
+- '[ -e .travis/travis-ci.pem ] && cp -v .travis/travis-ci.pem ~/.ssh/id_rsa'
 before_deploy:
 - openssl aes-256-cbc -K $encrypted_95c22e932368_key -iv $encrypted_95c22e932368_iv
   -in .travis/client.pem.enc -out .travis/client.pem -d
-dd
