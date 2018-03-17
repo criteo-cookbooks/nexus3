@@ -1,9 +1,21 @@
 language: ruby
-
+cache: bundler
+rvm:
+- 2.3.2
+deploy:
+  skip_cleanup: true
+  edge: true
+  edge:
+    source: criteo-forks/dpl
+    branch: chef_ruby2
+  provider: chef-supermarket
+  user_id: criteo
+  cookbook_category: Utilities
+  client_key: ".travis/client.pem"
+  on:
+    tags: true
 sudo: required
-
 services: docker
-
 env:
   matrix:
   - INSTANCE=default-centos-6
@@ -13,15 +25,21 @@ env:
   - INSTANCE=default-ubuntu-1604
   - INSTANCE=default-debian-8
   - INSTANCE=default-fedora-latest
-
 before_script:
-  # https://github.com/zuazo/kitchen-in-travis-native/issues/1#issuecomment-142230889
-  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
-
+- sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables
+  -N DOCKER )
 script:
-  - bundle exec rubocop --version
-  - bundle exec rubocop
-  - bundle exec foodcritic --version
-  - bundle exec foodcritic . --exclude spec -f any
-  - bundle exec rspec
-  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml bundle exec kitchen verify ${INSTANCE}
+- bundle exec rubocop --version
+- bundle exec rubocop
+- bundle exec foodcritic --version
+- bundle exec foodcritic . --exclude spec -f any
+- bundle exec rspec
+- KITCHEN_LOCAL_YAML=.kitchen.docker.yml bundle exec kitchen verify ${INSTANCE}
+before_install:
+- [ -n $encrypted_95c22e932368_key ] && openssl aes-256-cbc -K $encrypted_95c22e932368_key 
+  -iv $encrypted_95c22e932368_iv -in .travis/travis-ci.pem.enc -out ~\/.ssh/travis-ci.pem.criteo -d
+- [ -e .travis/travis-ci.pem ] && cp -v .travis/travis-ci.pem ~/.ssh/id_rsa
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_95c22e932368_key -iv $encrypted_95c22e932368_iv
+  -in .travis/client.pem.enc -out .travis/client.pem -d
+dd
