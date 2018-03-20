@@ -197,7 +197,7 @@ used within other resources.
 - `content` - Content of script. This is usually Groovy, see [Sonatype Nexus 3
   documentation](https://books.sonatype.com/nexus-book/3.1/reference/scripting.html) for
   more information, or see the example scripts in the `repo` resource.
-- `args` - Hash or Array arguments passed when `:run` is called.
+- `args` - Hash, String or NilClass arguments passed when `:run` is called.
 - `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
 - `username` - Username to run the script as. Default `admin`.
 - `password` - Password of username.  Default `admin123`.
