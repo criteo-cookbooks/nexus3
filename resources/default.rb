@@ -1,18 +1,18 @@
-property :instance_name, kind_of: String, name_attribute: true
-property :nexus3_user, kind_of: [String, NilClass], default: lazy { node['nexus3']['user'] }
-property :nexus3_group, kind_of: [String, NilClass], default: lazy { node['nexus3']['group'] }
-# property :nexus3_password, kind_of: [String, NilClass], sensitive: true # Admin password
-property :version, kind_of: String, default: lazy { node['nexus3']['version'] }
-property :url, kind_of: String, default: lazy { node['nexus3']['url'] }
-property :checksum, kind_of: String, default: lazy { node['nexus3']['checksum'] }
-property :nexus3_home, kind_of: String, default: lazy { node['nexus3']['home'] }
-property :path, kind_of: String, default: lazy { node['nexus3']['path'] }
-property :data, kind_of: String, default: lazy { node['nexus3']['data'] }
+property :instance_name, String, name_property: true
+property :nexus3_user, [String, NilClass], default: lazy { node['nexus3']['user'] }
+property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['group'] }
+# property :nexus3_password, [String, NilClass], sensitive: true # Admin password
+property :version, String, default: lazy { node['nexus3']['version'] }
+property :url, String, default: lazy { node['nexus3']['url'] }
+property :checksum, String, default: lazy { node['nexus3']['checksum'] }
+property :nexus3_home, String, default: lazy { node['nexus3']['home'] }
+property :path, String, default: lazy { node['nexus3']['path'] }
+property :data, String, default: lazy { node['nexus3']['data'] }
 # Name of service used as property for nexus3_service; can be instance_name or something different
 # like version number.
-property :service_name, kind_of: String, default: lazy { instance_name }
-property :properties_variables, kind_of: Hash, default: lazy { node['nexus3']['properties_variables'] }
-property :vmoptions_variables, kind_of: Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
+property :service_name, String, default: lazy { instance_name }
+property :properties_variables, Hash, default: lazy { node['nexus3']['properties_variables'] }
+property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")

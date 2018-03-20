@@ -1,4 +1,4 @@
-property :repo_name, String, name_attribute: true
+property :repo_name, String, name_property: true
 property :repo_type, String, default: 'maven2-hosted'
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
