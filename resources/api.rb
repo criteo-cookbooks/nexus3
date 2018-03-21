@@ -1,4 +1,4 @@
-property :script_name, String, name_attribute: true
+property :script_name, String, name_property: true
 property :content, String, default: ''.freeze
 property :args, [Hash, String, NilClass], desired_state: false
 property :endpoint, String, desired_state: false, identity: true, default: node['nexus3']['api']['endpoint']
