@@ -22,6 +22,9 @@ resource to configure Nexus 3 Repository Manager via its REST API.
 Use the [nexus3_repo](https://github.com/criteo-cookbooks/nexus3#nexus3_repo)
 resource to configure Nexus 3 repositories.
 
+Use the [nexus3_group](https://github.com/criteo-cookbooks/nexus3#nexus3_group)
+resource to configure Nexus 3 repository groups.
+
 Use the [nexus3_user](https://github.com/criteo-cookbooks/nexus3#nexus3_user)
 resource to configure Nexus 3 users.
 
@@ -261,6 +264,25 @@ Configures scheduled tasks via API.
 - `api_endpoint` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
 - `api_username` - Nexus 3 API user name (default: node['nexus3']['api']['username']).
 - `api_password` - Nexus 3 API password (default: node['nexus3']['api']['password']).
+
+## nexus3_group
+
+Configures Nexus 3 repository groups via API. This works wrapping the nexus3_repo
+resource with names of member repositories added as an attribute.
+
+### Actions
+- `:create` - Creates or updates a group, passing a configuration via `attributes`.
+- `:delete` - Deletes a group.
+
+### Properties
+- `group_name` - Name of repository group to act on, defaults to resource property
+  name.
+- `group_type` - Type (or recipe in Nexus 3 words) of repository group to create,
+  among `maven2-group`, 'npm-group`, ... (default: 'maven2-group')
+- `attributes` - Hash of attributes passed to the `:create` action, used to
+  specify repository attributes for creation or update.
+- `online` - Whether to put the repository online or not (default: true).
+- `repositories` - Array of repository names that compose the group.
 
 ## nexus3_user
 

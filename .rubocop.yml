@@ -14,3 +14,6 @@ AbcSize:
 
 BlockLength:
   Max: 130
+
+Style/FormatString:
+  Exclude: ['spec/**/*', 'test/**/*']

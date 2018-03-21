@@ -22,6 +22,7 @@ suites:
     - nexus3_test::delete_script
     - nexus3_test::run_script
     - nexus3_test::repositories
+    - nexus3_test::groups
   attributes:
     nexus3_test:
       connection_retries: 10
