@@ -4,7 +4,7 @@ property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['grou
 # property :nexus3_password, [String, NilClass], sensitive: true # Admin password
 property :version, String, default: lazy { node['nexus3']['version'] }
 property :url, String, default: lazy { node['nexus3']['url'] }
-property :checksum, String, default: lazy { node['nexus3']['checksum'] }
+property :checksum, [String, NilClass], default: lazy { node['nexus3']['checksum'] }
 property :nexus3_home, String, default: lazy { node['nexus3']['home'] }
 property :path, String, default: lazy { node['nexus3']['path'] }
 property :data, String, default: lazy { node['nexus3']['data'] }
@@ -33,7 +33,7 @@ action :install do
   ark "nexus-#{new_resource.version}" do
     action :put
     url download_url
-    checksum new_resource.checksum
+    checksum new_resource.checksum unless new_resource.checksum.nil?
     path new_resource.path
     owner new_resource.nexus3_user
     group new_resource.nexus3_group
