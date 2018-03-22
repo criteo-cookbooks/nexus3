@@ -102,12 +102,8 @@ include_recipe 'nexus3'
 
 ## Properties common to all resources using the Nexus3 API
 
-- `api_endpoint` - URL to reach the Nexus3 API. Default
-  `node['nexus3']['api']['endpoint']`
-- `api_username` - username to authenticate to the Nexus3 API. Default
-  `node['nexus3']['api'][username]`
-- `api_password` - password to authenticate to the Nexus3 API. Default
-  `node['nexus3']['api']['password']`
+`api_client` - A ::Nexus3::Api instance. Default is configured using
+following `nexus3.api` attributes: `endpoint`, `username` & `password`
 
 ## nexus3
 
@@ -201,9 +197,6 @@ used within other resources.
   documentation](https://books.sonatype.com/nexus-book/3.1/reference/scripting.html) for
   more information, or see the example scripts in the `repo` resource.
 - `args` - Hash, String or NilClass arguments passed when `:run` is called.
-- `endpoint` - REST API endpoint. Default `node['nexus3']['api']['endpoint']`.
-- `username` - Username to run the script as. Default `admin`.
-- `password` - Password of username.  Default `admin123`.
 
 ### Examples
 
@@ -242,9 +235,6 @@ the help of `libraries/scripts_helper.rb`.
 - `attributes` - Hash of attributes passed to the `:create` action, used to
   specify repository attributes for creation or update.
 - `online` - Whether to put the repository online or not (default: true).
-- `api_endpoint` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
-- `api_username` - Nexus 3 API user name (default: node['nexus3']['api']['username']).
-- `api_password` - Nexus 3 API password (default: node['nexus3']['api']['password']).
 
 ## nexus3_task
 
@@ -261,9 +251,6 @@ Configures scheduled tasks via API.
 - `task_source` - Source code of the script to run, for now it defaults to
   running Groovy scripts (typeID: script).
 - `task_crontab` - Actual schedule in the form of a crontab string.
-- `api_endpoint` - Nexus 3 API endpoint (default: node['nexus3']['api']['endpoint']).
-- `api_username` - Nexus 3 API user name (default: node['nexus3']['api']['username']).
-- `api_password` - Nexus 3 API password (default: node['nexus3']['api']['password']).
 
 ## nexus3_group
 

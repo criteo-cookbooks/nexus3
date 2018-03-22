@@ -4,10 +4,17 @@ module Nexus3
 
   # Interact with the Nexus3 API
   class Api
+    def self.default(node)
+      new(node['nexus3']['api']['endpoint'],
+          node['nexus3']['api']['username'],
+          node['nexus3']['api']['password']).freeze
+    end
+
     def initialize(base_url, user, password)
       require 'httpclient'
       require 'json'
 
+      @endpoint = base_url
       @http_client = ::HTTPClient.new(base_url: base_url).tap do |client|
         # Authentication
         client.set_auth(base_url, user, password)
@@ -17,7 +24,7 @@ module Nexus3
       end
     end
 
-    attr_reader :http_client
+    attr_reader :http_client, :endpoint
 
     def request(method, path, ct = 'application/json', data = nil)
       data = case data

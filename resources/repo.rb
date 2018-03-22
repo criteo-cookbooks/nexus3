@@ -2,15 +2,11 @@ property :repo_name, String, name_property: true
 property :repo_type, String, default: 'maven2-hosted'
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
-property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
-property :api_password, String, identity: true, sensitive: true,
-                                default: lazy { node['nexus3']['api']['password'] }
+property :api_client, ::Nexus3::Api, identity: true, default: ::Nexus3::Api.default(node)
 
 load_current_value do |desired|
   begin
-    res = ::Nexus3::Api.new(api_endpoint, api_username, api_password).run_script('get_repo', desired.repo_name)
-    config = JSON.parse(res)
+    config = ::JSON.parse(api_client.run_script('get_repo', desired.repo_name))
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "Config is: #{config}"
     repo_name config['repositoryName']
@@ -37,9 +33,7 @@ action :create do
            attributes: new_resource.attributes
 
       action %i(create run)
-      endpoint new_resource.api_endpoint
-      username new_resource.api_username
-      password new_resource.api_password
+      api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_repo', node)
     end
@@ -55,9 +49,7 @@ action :delete do
     content ::Nexus3::Scripts.groovy_content('delete_repo', node)
     args new_resource.repo_name
 
-    endpoint new_resource.api_endpoint
-    username new_resource.api_username
-    password new_resource.api_password
+    api_client new_resource.api_client
 
     not_if { current_resource.nil? }
   end
@@ -72,9 +64,7 @@ action_class do
     nexus3_api "get_repo #{new_resource.repo_name}" do
       action :create
       script_name 'get_repo'
-      endpoint new_resource.api_endpoint
-      username new_resource.api_username
-      password new_resource.api_password
+      api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('get_repo', node)
     end
