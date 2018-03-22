@@ -4,17 +4,11 @@ property :first_name, String, default: ''
 property :last_name, String, default: ''
 property :email, String, default: ''
 property :roles, Array, default: lazy { [] }, coerce: proc { |r| r.sort }
-property :api_endpoint, String, identity: true, default: lazy { node['nexus3']['api']['endpoint'] }
-property :api_username, String, identity: true, default: lazy { node['nexus3']['api']['username'] }
-property :api_password, String, identity: true, sensitive: true, default: lazy { node['nexus3']['api']['password'] }
+property :api_client, ::Nexus3::Api, identity: true, default: ::Nexus3::Api.default(node)
 
 load_current_value do |desired|
-  apiclient = ::Nexus3::Api.new(api_endpoint, api_username, api_password)
-
   begin
-    res = apiclient.run_script('get_user', username)
-    current_value_does_not_exist! if res == 'null'
-    config = JSON.parse(res)
+    config = ::JSON.parse(api_client.run_script('get_user', username))
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "User config is #{config}"
     first_name config['first_name']
@@ -24,7 +18,7 @@ load_current_value do |desired|
 
     # Check if we need to change the password.
     begin
-      ::Nexus3::Api.new(api_endpoint, username, desired.password).request(:get, '/service/metrics/ping')
+      ::Nexus3::Api.new(api_client.endpoint, username, desired.password).request(:get, '/service/metrics/ping')
       password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
     rescue ::Nexus3::ApiError
       password desired.password
@@ -49,9 +43,7 @@ action :create do
            roles: new_resource.roles
 
       action %i(create run)
-      endpoint new_resource.api_endpoint
-      username new_resource.api_username
-      password new_resource.api_password
+      api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_user', node)
     end
@@ -66,9 +58,7 @@ action :delete do
     args new_resource.username
 
     action %i(create run)
-    endpoint new_resource.api_endpoint
-    username new_resource.api_username
-    password new_resource.api_password
+    api_client new_resource.api_client
 
     content ::Nexus3::Scripts.groovy_content('delete_user', node)
   end
@@ -83,9 +73,7 @@ action_class do
     nexus3_api "get_user #{new_resource.username}" do
       action :create
       script_name 'get_user'
-      endpoint new_resource.api_endpoint
-      username new_resource.api_username
-      password new_resource.api_password
+      api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('get_user', node)
     end
