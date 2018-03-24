@@ -70,9 +70,9 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 - `node['nexus3']['vmoptions_variables']` - A Hash of variables that are
   passed into a template file. Note that data directory will be injected into
   the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
-- `node['nexus3']['nofile_limit']` - Limit of open files available for
-  Nexus 3. Default 65,536 as suggested by the Sonatype documentation on newer
-  releases.
+- `node['nexus3']['nofile_limit']` - Limit of open files available for the
+  Nexus3 service in systemd. Default 65,536 as suggested by the Sonatype
+  documentation on newer releases.
 
 ### Examples
 
