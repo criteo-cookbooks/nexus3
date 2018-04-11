@@ -11,20 +11,25 @@ module Nexus3
     end
 
     def initialize(base_url, user, password)
-      require 'httpclient'
       require 'json'
 
       @endpoint = base_url
-      @http_client = ::HTTPClient.new(base_url: base_url).tap do |client|
+      @password = password
+      @user = user
+    end
+
+    attr_reader :endpoint
+
+    def http_client
+      require 'httpclient'
+      ::HTTPClient.new(base_url: @endpoint).tap do |client|
         # Authentication
-        client.set_auth(base_url, user, password)
+        client.set_auth(@endpoint, @user, @password)
         client.force_basic_auth = true
         # Debugging
         client.debug_dev = STDOUT if ::Chef::Log.debug? || (ENV['HTTPCLIENT_LOG'] == 'stdout')
       end
     end
-
-    attr_reader :http_client, :endpoint
 
     def request(method, path, ct = 'application/json', data = nil)
       data = case data
