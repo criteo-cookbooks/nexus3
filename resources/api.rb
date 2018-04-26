@@ -17,9 +17,9 @@ action :create do
   chef_gem 'httpclient'
 
   converge_if_changed do
-    api_client.request(:delete, new_resource.script_name) unless current_resource.nil?
-    api_client.request(:post, '', 'application/json', name: new_resource.script_name, type: 'groovy',
-                                                      content: new_resource.content)
+    new_resource.api_client.request(:delete, new_resource.script_name) unless current_resource.nil?
+    new_resource.api_client.request(:post, '', 'application/json', name: new_resource.script_name, type: 'groovy',
+                                                                   content: new_resource.content)
   end
 end
 
@@ -27,7 +27,7 @@ action :run do
   chef_gem 'httpclient'
 
   converge_by "running script #{new_resource.script_name}" do
-    api_client.run_script(new_resource.script_name, new_resource.args)
+    new_resource.api_client.run_script(new_resource.script_name, new_resource.args)
   end
 end
 
@@ -36,7 +36,7 @@ action :delete do
 
   unless current_resource.nil?
     converge_by "deleting script #{new_resource.script_name}" do
-      api_client.request(:delete, new_resource.script_name)
+      new_resource.api_client.request(:delete, new_resource.script_name)
     end
   end
 end
