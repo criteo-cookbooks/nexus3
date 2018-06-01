@@ -11,6 +11,7 @@ version '2.5.0'
 chef_version '>= 12.14.34'
 
 depends 'ark'
+depends 'updatable-attributes'
 
 supports 'centos'
 supports 'debian'

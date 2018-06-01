@@ -61,15 +61,15 @@ action :install do
     notifies :run, 'ruby_block[block until operational]', :delayed
   end
 
-  template ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
-    source 'nexus.vmoptions.erb'
-    variables(
-      new_resource.vmoptions_variables.merge(data: new_resource.data)
-    )
-    mode '0644'
+  vmoptions = new_resource.vmoptions_variables.map do |k, v|
+    v.nil? ? "-#{k}" : "-#{k}=#{v}"
+  end
+
+  file ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
     owner new_resource.nexus3_user
     group new_resource.nexus3_group
-    cookbook 'nexus3'
+    mode '0644'
+    content vmoptions.join("\n")
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, 'ruby_block[block until operational]', :delayed
   end
