@@ -2,7 +2,7 @@ property :role_name, String, name_property: true
 property :description, String, default: ''.freeze
 property :roles, Array, default: lazy { [] }
 property :privileges, Array, default: lazy { [] }
-property :api_client, ::Nexus3::Api, identity: true, default: ::Nexus3::Api.default(node)
+property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do
   begin
