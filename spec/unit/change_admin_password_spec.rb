@@ -3,8 +3,11 @@ require 'spec_helper'
 describe 'nexus3_test::change_admin_password' do
   context 'linux' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'centos', version: CENTOS_VERSION, step_into: 'nexus3',
-                               file_cache_path: CACHE).converge('nexus3_test::default', 'nexus3_test::change_admin_password')
+      ChefSpec::SoloRunner.new(platform: 'centos',
+                               version: CENTOS_VERSION,
+                               step_into: 'nexus3',
+                               file_cache_path: CACHE)
+                          .converge('nexus3_test::default', 'nexus3_test::change_admin_password')
     end
 
     it 'set admin credentials' do
@@ -27,8 +30,11 @@ describe 'nexus3_test::change_admin_password' do
 
   context 'windows' do
     let(:chef_run) do
-      ChefSpec::SoloRunner.new(platform: 'windows', version: '2012R2', step_into: 'nexus3',
-                               file_cache_path: CACHE).converge('nexus3_test::default', 'nexus3_test::change_admin_password')
+      ChefSpec::SoloRunner.new(platform: 'windows',
+                               version: '2012R2',
+                               step_into: 'nexus3',
+                               file_cache_path: CACHE)
+                          .converge('nexus3_test::default', 'nexus3_test::change_admin_password')
     end
 
     it 'set admin credentials' do
