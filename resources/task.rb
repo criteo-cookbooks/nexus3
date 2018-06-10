@@ -1,7 +1,7 @@
 property :task_name, String, name_property: true
 property :task_source, String, default: ''.freeze
 property :task_crontab, String, default: '0 1 * * * ?'.freeze
-property :api_client, ::Nexus3::Api, identity: true, default: ::Nexus3::Api.default(node)
+property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin
