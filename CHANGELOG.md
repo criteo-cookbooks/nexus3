@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.0.0 2018-06-15
+
+A lot of changes went into this release.
+
+- Made Nexus3 installation a resource to support multi-tenancy.
+  - SysVinit or Systemd Linux systems are supported, as well as Windows.
+  - JVM settings are attribute-driven.
+- Users, groups, repositories, roles and tasks can now be created via
+  resources.
+  - All these functions are supported by Groovy scripts uploaded to the Nexus3
+    via its REST API.
+- An API resource does most of the job of talking to Nexus3 for all
+  operations.
+- All operations are idempotent and will wait on Nexus3 startup.
+- A comprehensive test suite is included (ChefSpec and Kitchen/ServerSpec)
+- Criteo took over maintenance of the cookbook (Thank you Dennis for your hard
+  work supporting the cookbook previously!)
+
 ## 2.1.0 2017-03-14
 
 - Add another variable to nexus.properties.erb to configure nexus-args
