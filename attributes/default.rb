@@ -21,9 +21,27 @@ default['nexus3']['properties_variables'] = {
   context_path: '/'
 }
 
-default['nexus3']['vmoptions_variables'] = {
-  Xms: '1200M',
-  Xmx: '1200M'
-}
-
 default['nexus3']['nofile_limit'] = 65_536
+
+# Nexus JVM tunning
+# Ref:
+#   https://help.sonatype.com/repomanager3/installation/configuring-the-runtime-environment
+#   https://help.sonatype.com/repomanager3/system-requirements
+default['nexus3']['vmoptions_variables']['Xms4G'] = nil
+default['nexus3']['vmoptions_variables']['Xmx4G'] = nil
+default['nexus3']['vmoptions_variables']['XX:+HeapDumpOnOutOfMemoryError'] = nil
+default['nexus3']['vmoptions_variables']['XX:+UnlockDiagnosticVMOptions'] = nil
+default['nexus3']['vmoptions_variables']['XX:+UnsyncloadClass'] = nil
+default['nexus3']['vmoptions_variables']['XX:+LogVMOutput'] = nil
+default['nexus3']['vmoptions_variables']['XX:MaxDirectMemorySize'] = '39158M'
+default['nexus3']['vmoptions_variables']['Dkaraf.data'] = node['nexus3']['data']
+default['nexus3']['vmoptions_variables']['Dkaraf.etc'] = 'etc/karaf'
+default['nexus3']['vmoptions_variables']['Dkaraf.base'] = '.'
+default['nexus3']['vmoptions_variables']['Dkaraf.home'] = '.'
+default['nexus3']['vmoptions_variables']['Dkaraf.startLocalConsole'] = false
+default['nexus3']['vmoptions_variables']['Djava.net.preferIPv4Stack'] = true
+on_attribute_update('nexus3', 'data') do
+  default['nexus3']['vmoptions_variables']['XX:LogFile'] = ::File.join(node['nexus3']['data'], 'log', 'jvm.log')
+  default['nexus3']['vmoptions_variables']['Dkaraf.data'] = node['nexus3']['data']
+  default['nexus3']['vmoptions_variables']['Djava.io.tmpdir'] = ::File.join(node['nexus3']['data'], 'tmp')
+end

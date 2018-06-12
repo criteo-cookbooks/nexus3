@@ -43,11 +43,11 @@ describe 'nexus3_test::default' do
         .to notify('ruby_block[block until operational]').to(:run).delayed
     end
 
-    it 'creates vmoptions template' do
-      expect(chef_run).to create_template("/opt/nexus-#{VER}/bin/nexus.vmoptions")
-      expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
+    it 'creates vmoptions file' do
+      expect(chef_run).to create_file("/opt/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run.file("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
-      expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
+      expect(chef_run.file("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('ruby_block[block until operational]').to(:run).delayed
     end
 
@@ -115,11 +115,11 @@ describe 'nexus3_test::default' do
         .to notify('ruby_block[block until operational]').to(:run).delayed
     end
 
-    it 'creates vmoptions template' do
-      expect(chef_run).to create_template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions")
-      expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
+    it 'creates vmoptions file' do
+      expect(chef_run).to create_file("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions")
+      expect(chef_run.file("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
-      expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
+      expect(chef_run.file("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('ruby_block[block until operational]').to(:run).delayed
     end
 
