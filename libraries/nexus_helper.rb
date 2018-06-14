@@ -25,6 +25,7 @@ EOH
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
                Errno::EADDRNOTAVAIL,
+               Errno::EHOSTUNREACH,
                OpenURI::HTTPError => e
           # Getting 403 is ok since it means we reached the endpoint and
           # it's asking us for authentication.
