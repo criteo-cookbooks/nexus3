@@ -88,15 +88,20 @@ include_recipe 'nexus3'
 ```
 
 #### Updating Memory Allocation and other JVM Paramaters
-The default and maximum heap sizes for the repository manager are a value of 1200M, suitable for most usage patterns.
-To install latest nexus3 with 1500M initial memory and 2G max memory, set it in the vmoptions_variables:
+
+The default and maximum heap sizes for the repository manager are a value of
+1200 MB, suitable for most usage patterns. To install latest nexus3 with 1500 MB
+initial memory and 2 GB max memory, set it in the `vmoptions_variables`:
 
 ```ruby
 include_recipe 'java_se'
 
-node.default['nexus3']['vmoptions_variables'] = { Xms: '1500M', Xmx: '2G' }
+node.default['nexus3']['vmoptions_variables'] = { Xms1500M: nil, Xmx2G: nil }
 include_recipe 'nexus3'
 ```
+
+The `vmoptions_variables` attributes are mapped to JVM options `-<key>=<value>` if a value
+is defined. If `<value>` is `nil`, the option becomes `-<key>`.
 
 # Resources
 
