@@ -14,7 +14,9 @@ load_current_value do |desired|
 end
 
 action :create do
-  chef_gem 'httpclient'
+  chef_gem 'httpclient' do
+    compile_time true
+  end
 
   converge_if_changed do
     new_resource.api_client.request(:delete, new_resource.script_name) unless current_resource.nil?
@@ -24,7 +26,9 @@ action :create do
 end
 
 action :run do
-  chef_gem 'httpclient'
+  chef_gem 'httpclient' do
+    compile_time true
+  end
 
   converge_by "running script #{new_resource.script_name}" do
     new_resource.api_client.run_script(new_resource.script_name, new_resource.args)
@@ -32,7 +36,9 @@ action :run do
 end
 
 action :delete do
-  chef_gem 'httpclient'
+  chef_gem 'httpclient' do
+    compile_time true
+  end
 
   unless current_resource.nil?
     converge_by "deleting script #{new_resource.script_name}" do
