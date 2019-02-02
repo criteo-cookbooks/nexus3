@@ -1,5 +1,6 @@
 # Jetty section
-application-port=<%=@port%>
+<% if @port %>application-port=<%=@port%><% end %>
+<% if @port_ssl %>application-port-ssl=<%=@port_ssl%><% end %>
 application-host=<%=@host%>
 nexus-args=<%=@args%>
 nexus-context-path=<%=@context_path%>
