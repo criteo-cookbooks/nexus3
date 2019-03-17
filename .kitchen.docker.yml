@@ -83,6 +83,7 @@ suites:
     - nexus3_test::groups
     - nexus3_test::roles
     - nexus3_test::tasks
+    - nexus3_test::cleanup_policies
   attributes:
     nexus3_test:
       connection_retries: 10
@@ -102,6 +103,7 @@ suites:
     - nexus3_test::groups
     - nexus3_test::roles
     - nexus3_test::tasks
+    - nexus3_test::cleanup_policies
   attributes:
     nexus3_test:
       connection_retries: 10

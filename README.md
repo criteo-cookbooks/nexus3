@@ -317,6 +317,43 @@ can be nested.
   exist, it will be ignored if you use the script provided.
 - `privileges` - Array of privileges defined in Nexus3.
 
+## nexus3_cleanup_policy
+
+Configures Cleanup Policy to use with Nexus3 repositories, so you can configure
+rentention limit. Policies are per repository format and relative to either the
+artifact's publish_date or its last download date.
+
+### Actions
+
+- `:create` - Creates or updates a policy.
+- `:delete` - Deletes a policy.
+
+### Properties
+
+- `policy_name` - Name of the policy to manage, defaults to resource name.
+- `notes` - A small description about the cleanup policy.
+- `format` - The target repository format, defaults to 'raw'.
+- `mode` - Cleanup mode, currently only 'delete' seems to be supported.
+- `criteria` - Hash of rules to control the cleanup.
+
+### Criteria rules
+
+Supported criteria may vary depending on the repository format, but the 2 main ones are:
+- `lastBlobUpdated` - Cleanup artifacts published more than the given number of seconds ago.
+- `lastDownloaded` - Cleanup artifacts last downloaded more than the given number of seconds ago.
+
+_*NB:* criteria is the number of seconds as String._
+
+### Example
+
+```ruby
+nexus3_cleanup_policy 'example' do
+  format 'raw'
+  notes  'Cleanup all artifacts uploaded more 7 days ago AND last downloaded more than 3 days ago.'
+  criteria lastBlobUpdated: '604800', lastDownloaded: '259200'
+end
+```
+
 ## Getting Help
 
 - Ask specific questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/nexus3).
