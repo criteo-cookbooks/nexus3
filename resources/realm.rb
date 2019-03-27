@@ -6,28 +6,26 @@ action :enable do
 
   nexus3_api "enable #{new_resource.name}" do
     script_name 'realm'
-    args name: new_resource.name,
-         action: 'enable'
+    args name: new_resource.name
 
     action %i(create run)
     api_client new_resource.api_client
 
-    content ::Nexus3::Scripts.groovy_content('realm', node)
+    content ::Nexus3::Scripts.groovy_content('enable_realm', node)
   end
 end
 
-action :disbale do
+action :disable do
   init
 
   nexus3_api "disable #{new_resource.name}" do
     script_name 'realm'
-    args name: new_resource.name,
-         action: 'disable'
+    args name: new_resource.name
 
     action %i(create run)
     api_client new_resource.api_client
 
-    content ::Nexus3::Scripts.groovy_content('realm', node)
+    content ::Nexus3::Scripts.groovy_content('disable_realm', node)
   end
 end
 
