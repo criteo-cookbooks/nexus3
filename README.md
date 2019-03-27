@@ -28,6 +28,9 @@ resource to configure Nexus 3 repository groups.
 Use the [nexus3_user](https://github.com/criteo-cookbooks/nexus3#nexus3_user)
 resource to configure Nexus 3 users.
 
+Use the [nexus3_realm](https://github.com/criteo-cookbooks/nexus3#nexus3_realm)
+resource to handle realm activation.
+
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
@@ -256,6 +259,19 @@ Configures scheduled tasks via API.
 - `task_source` - Source code of the script to run, for now it defaults to
   running Groovy scripts (typeID: script).
 - `task_crontab` - Actual schedule in the form of a crontab string.
+
+## nexus3_realm
+
+Handle realm activation via API.
+
+### Actions
+
+- `:configure` - Configure a given realm.
+
+### Properties
+
+- `realm_name` - Name of realm to act on, defaults to resource name.
+- `enable` - Whether to enable a given realm.
 
 ## nexus3_group
 
