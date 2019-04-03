@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.1.0 2019-04-03
+
+A lot of changes went into this release.
+
+- Capture Errno::EHOSTUNREACH exception.
+  - It was raising an exception rather than retrying on first converge.
+- Stop depending on an outdated Java installation for tests.
+- Be more precise in setting the JVM options.
+- Extend nexus.properties with application-port-ssl.
+- Bump nexus3 version to 3.15.2.
+- Add nexus3_cleanup_policy resource.
+  - This lets you define new cleanup polices for your repositories.
+- Add nexus3_realm resource.
+  - This lets you handle activation on secutiry realm.
+
 ## 3.0.0 2018-06-15
 
 A lot of changes went into this release.
