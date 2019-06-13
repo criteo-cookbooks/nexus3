@@ -1,4 +1,4 @@
-include_recipe 'java_se'
+include_recipe 'java' unless platform_family?('windows')
 
 package 'curl'
 
