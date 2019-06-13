@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.0 2019-06-13
+
+- Make scripts helper usable by other cookbooks.
+  - This lets you easily register scripts which reside in your own cookbooks.
+- Bump nexus3 version to 3.16.2
+
 ## 3.1.0 2019-04-03
 
 A lot of changes went into this release.
