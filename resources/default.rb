@@ -3,7 +3,7 @@ property :nexus3_user, [String, NilClass], default: lazy { node['nexus3']['user'
 property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['group'] }
 property :nexus3_password, String, sensitive: true, default: lazy { node['nexus3']['api']['password'] } # Admin password
 property :version, String, default: lazy { node['nexus3']['version'] }
-property :url, String, default: lazy { node['nexus3']['url'] }
+property :url, [String, NilClass], default: lazy { node['nexus3']['url'] }
 property :checksum, [String, NilClass], default: lazy { node['nexus3']['checksum'] }
 property :nexus3_home, String, default: lazy { node['nexus3']['home'] }
 property :path, String, default: lazy { node['nexus3']['path'] }
