@@ -62,14 +62,14 @@ action :install do
   end
 
   vmoptions = new_resource.vmoptions_variables.map do |k, v|
-    v.nil? ? "-#{k}" : "-#{k}=#{v}"
+    v.nil? ? "-#{k}\n" : "-#{k}=#{v}\n"
   end
 
   file ::File.join(install_dir, 'bin', 'nexus.vmoptions') do
     owner new_resource.nexus3_user
     group new_resource.nexus3_group
     mode '0644'
-    content vmoptions.join("\n")
+    content vmoptions.join
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, 'ruby_block[block until operational]', :delayed
   end
