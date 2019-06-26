@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.0 2019-06-26
+
+- Fix a bug where last option in vmoptions would be ignored
+
 ## 3.2.0 2019-06-13
 
 - Make scripts helper usable by other cookbooks.
