@@ -8,7 +8,7 @@ load_current_value do |desired|
     config = ::JSON.parse(api_client.run_script('get_task', desired.task_name))
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "Config is: #{config}"
-    task_source config['source']
+    task_source config['source'] || ''.freeze
   # We rescue here because during the first run, the task will not exist yet, so we let Chef know that
   # the resource has to be created.
   rescue LoadError, ::Nexus3::ApiError => e

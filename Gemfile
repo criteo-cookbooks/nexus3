@@ -4,6 +4,7 @@ gem 'berkshelf'
 gem 'chef', '>= 12.10.27'
 gem 'chef-zero', '< 14.0' if ::Gem::Version.new(RUBY_VERSION) < ::Gem::Version.new('2.4.3')
 gem 'chefspec'
+gem 'fakefs'
 gem 'foodcritic'
 gem 'webmock'
 
