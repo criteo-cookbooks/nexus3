@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.4.0 2019-10-18
+
+- Pin faraday to version compatible with this cookbook
+- Bump to latest version 3.19.1
+- Update tests to change admin password as it is not the default
+  anymore, it is generated randomly at installation.
+
 ## 3.3.0 2019-06-26
 
 - Fix a bug where last option in vmoptions would be ignored
