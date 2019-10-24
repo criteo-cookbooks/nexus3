@@ -30,7 +30,9 @@ action :create do
       args name: new_resource.repo_name,
            type: new_resource.repo_type,
            online: new_resource.online,
-           attributes: new_resource.attributes
+           attributes: new_resource.attributes,
+           multi_policy_cleanup_support: Gem::Version.new(node['nexus3']['version'].split('-').first) >=
+                                         Gem::Version.new('3.19.0')
 
       action %i(create run)
       api_client new_resource.api_client
