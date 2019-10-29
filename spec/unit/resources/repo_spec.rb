@@ -27,8 +27,8 @@ describe 'nexus3_test::repositories' do
       expect(chef_run).to create_nexus3_api('get_repo foo')
       expect(chef_run).to create_nexus3_api('upsert_repo foo')
       expect(chef_run).to run_nexus3_api('upsert_repo foo').with(
-        repo_name: 'foo',
-        repo_type: 'maven2-hosted'
+        args: hash_including(name: 'foo',
+                             type: 'maven2-hosted')
       )
     end
 
@@ -36,7 +36,9 @@ describe 'nexus3_test::repositories' do
       expect(chef_run).to delete_nexus3_repo('bar')
       expect(chef_run).to create_nexus3_api('get_repo bar')
       expect(chef_run).to create_nexus3_api('delete_repo bar')
-      expect(chef_run).to run_nexus3_api('delete_repo bar').with(repo_name: 'bar')
+      expect(chef_run).to run_nexus3_api('delete_repo bar').with(
+        args: 'bar'
+      )
     end
   end
 end

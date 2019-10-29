@@ -61,7 +61,13 @@ action :install do
     notifies :run, 'ruby_block[block until operational]', :delayed
   end
 
-  vmoptions = new_resource.vmoptions_variables.map do |k, v|
+  vars = new_resource.vmoptions_variables.dup
+
+  vars['XX:LogFile'] ||= ::File.join(new_resource.data, 'log', 'jvm.log')
+  vars['Dkaraf.data'] ||= new_resource.data
+  vars['Djava.io.tmpdir'] ||= ::File.join(new_resource.data, 'tmp')
+
+  vmoptions = vars.map do |k, v|
     v.nil? ? "-#{k}\n" : "-#{k}=#{v}\n"
   end
 
