@@ -12,6 +12,15 @@ conf = Mash.new(
 nexus3_repo 'foo' do
   attributes conf
 end
+#
+# nexus3_repo 'wobble' do
+#   attributes conf
+#   api_client lazy {
+#     ::Nexus3::Api.new('http://localhost:8082/service/rest/v1/script/',
+#                       'admin',
+#                       ::File.read('/usr/local/nexusdata/admin.password'))
+#   }
+# end
 
 nexus3_repo 'foo again' do
   repo_name 'foo'

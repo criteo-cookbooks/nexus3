@@ -17,13 +17,8 @@ unless platform_family?('windows')
     nexus3_user 'nexusbar'
     nexus3_group 'nexusbar'
     nexus3_home '/home/nexusbar'
-    version '3.4.0-02'
-    service_name '3.4.0-02'
     properties_variables(
-      host: '0.0.0.0',
-      port: '8082',
-      args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
-      context_path: '/'
+      port: '8082'
     )
   end
 end

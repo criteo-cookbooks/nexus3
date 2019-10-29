@@ -20,3 +20,16 @@ ruby_block 'fail if foo is created again' do
   action :nothing
   block { raise 'nexus3_api is not idempotent!' }
 end
+#
+# nexus3_api 'foo' do
+#   script_name 'foo'
+#   content "repository.createMavenHosted('foo')"
+#
+#   api_client lazy {
+#     ::Nexus3::Api.new('http://localhost:8082/service/rest/v1/script/',
+#                       'admin',
+#                       ::File.read('/usr/local/nexusdata/admin.password'))
+#   }
+#
+#   action :create
+# end
