@@ -1,4 +1,5 @@
 require_relative 'inspec_helper'
+require 'rspec/retry'
 
 title 'nexus::default'
 
@@ -53,13 +54,29 @@ else # Linux
     it { should be_owned_by 'nexus' }
   end
 
-  describe service('nexus3_foo') do
-    it { should be_running }
+  describe file('/usr/local/nexusdata/etc') do
+    it { should be_directory }
+    it { should be_owned_by 'nexusbar' }
   end
 
-  unless os.debian?
-    describe service('nexus3_foo') do
-      it { should be_enabled }
+  %w(foo bar).each do |service|
+    unless os.debian?
+      describe service("nexus3_#{service}") do
+        it { should be_enabled }
+      end
+    end
+
+    describe service("nexus3_#{service}") do
+      it { should be_running }
+    end
+  end
+
+  [8081, 8082].each do |port|
+    describe port(port) do
+      it 'waiting for Nexus to listen', retry: 32, retry_wait: 4 do
+        expect(port(port).listening?).to eq true
+      end
+      its('protocols') { should include('tcp') }
     end
   end
 

@@ -65,7 +65,7 @@ describe 'nexus3_test::default' do
 
     it 'enables nexus service' do
       expect(chef_run).to enable_nexus3_service('foo')
-      expect(chef_run).to enable_nexus3_service('3.4.0-02')
+      expect(chef_run).to enable_nexus3_service('bar')
     end
 
     it 'blocks until operational does nothing' do
