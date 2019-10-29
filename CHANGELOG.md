@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.1 2019-10-29
+
+- Support Multi-policy Cleanup on repo creation
+
 ## 3.4.0 2019-10-18
 
 - Pin faraday to version compatible with this cookbook
