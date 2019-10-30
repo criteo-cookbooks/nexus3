@@ -1,5 +1,4 @@
 require_relative 'inspec_helper'
-require 'rspec/retry'
 
 title 'nexus::default'
 
@@ -54,7 +53,7 @@ else # Linux
     it { should be_owned_by 'nexus' }
   end
 
-  describe file('/usr/local/nexusdata/etc') do
+  describe file('/usr/local/nexusbar/data/etc') do
     it { should be_directory }
     it { should be_owned_by 'nexusbar' }
   end
@@ -71,22 +70,20 @@ else # Linux
     end
   end
 
-  [8081, 8082].each do |port|
-    describe port(port) do
-      it 'waiting for Nexus to listen', retry: 32, retry_wait: 4 do
-        expect(port(port).listening?).to eq true
-      end
+  [{ port: 8081, password: 'admin123' }, { port: 8082, password: 'humdiddle' }].each do |cfg|
+    describe port(cfg[:port]) do
+      it { should be_listening }
       its('protocols') { should include('tcp') }
     end
-  end
 
-  describe command('curl -u admin:admin123 http://localhost:8081/service/metrics/ping') do
-    its(:stdout) { should match('pong') }
-  end
+    describe command("curl -u admin:#{cfg[:password]} http://localhost:#{cfg[:port]}/service/metrics/ping") do
+      its(:stdout) { should match('pong') }
+    end
 
-  describe command('curl -u admin:admin123 http://localhost:8081/service/rest/v1/script/foo') do
-    its(:stdout) { should match(/name.*foo/) }
-    its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
-    its(:stdout) { should match(/type.*groovy/) }
+    describe command("curl -u admin:#{cfg[:password]} http://localhost:#{cfg[:port]}/service/rest/v1/script/foo") do
+      its(:stdout) { should match(/name.*foo/) }
+      its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
+      its(:stdout) { should match(/type.*groovy/) }
+    end
   end
 end

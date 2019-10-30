@@ -44,7 +44,6 @@ suites:
 - name: default
   run_list:
     - nexus3_test::default
-    - nexus3_test::change_admin_password
     - nexus3_test::create_script
     - nexus3_test::delete_script
     - nexus3_test::run_script

@@ -19,5 +19,4 @@ end
 # Other gems should go after this comment
 gem 'faraday', '<0.16.0' # Newer version is incompatible with this cookbook.
 gem 'kitchen-inspec'
-gem 'rspec-retry'
 gem 'rubocop', '=0.47.1'

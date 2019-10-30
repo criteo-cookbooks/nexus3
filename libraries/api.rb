@@ -10,12 +10,24 @@ module Nexus3
           node['nexus3']['api']['password']).freeze
     end
 
+    def self.local(port, user, password)
+      new(endpoint(port), user, password).freeze
+    end
+
+    def self.endpoint(port)
+      "http://localhost:#{port}/service/rest/v1/script/"
+    end
+
     def initialize(base_url, user, password)
       require 'json'
 
       @endpoint = base_url
       @password = password
       @user = user
+    end
+
+    def to_s
+      "#{@user}:#{@password}@#{@endpoint}"
     end
 
     attr_reader :endpoint
