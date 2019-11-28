@@ -1,7 +1,7 @@
 property :instance_name, String, name_property: true
 property :nexus3_user, [String, NilClass], default: lazy { node['nexus3']['user'] }
 property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['group'] }
-# property :nexus3_password, [String, NilClass], sensitive: true # Admin password
+property :nexus3_password, String, sensitive: true, default: lazy { node['nexus3']['api']['password'] } # Admin password
 property :version, String, default: lazy { node['nexus3']['version'] }
 property :url, String, default: lazy { node['nexus3']['url'] }
 property :checksum, [String, NilClass], default: lazy { node['nexus3']['checksum'] }
@@ -49,6 +49,9 @@ action :install do
     end
   end
 
+  port = new_resource.properties_variables['port']
+  blocker = "block until Nexus #{new_resource.service_name}@#{port} operational"
+
   # Install configuration from templates
   template ::File.join(install_dir, 'bin', 'nexus.rc') do
     source 'nexus.rc.erb'
@@ -58,7 +61,7 @@ action :install do
     group new_resource.nexus3_group
     cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :run, 'ruby_block[block until operational]', :delayed
+    notifies :run, "ruby_block[#{blocker}]", :delayed
   end
 
   vars = new_resource.vmoptions_variables.dup
@@ -77,7 +80,7 @@ action :install do
     mode '0644'
     content vmoptions.join
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :run, 'ruby_block[block until operational]', :delayed
+    notifies :run, "ruby_block[#{blocker}]", :delayed
   end
 
   template ::File.join(new_resource.data, 'etc', 'nexus.properties') do
@@ -88,7 +91,7 @@ action :install do
     group new_resource.nexus3_group
     cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
-    notifies :run, 'ruby_block[block until operational]', :delayed
+    notifies :run, "ruby_block[#{blocker}]", :delayed
   end
 
   link new_resource.nexus3_home do
@@ -104,12 +107,32 @@ action :install do
     action :enable
   end
 
+  pwchanger = "admin_change_password for #{new_resource.service_name}@#{port}"
+
   # Allow for Nexus to fully start before moving on.
-  ruby_block 'block until operational' do
+  ruby_block blocker do
     block do
-      Chef::Log.info "Waiting until Nexus is listening on port #{node['nexus3']['properties_variables']['port']}"
-      wait_until_ready!(node['nexus3']['api']['endpoint'], node['nexus3']['api']['wait'])
+      Chef::Log.info "Waiting until Nexus #{new_resource.service_name} is listening on port #{port}"
+      wait_until_ready!(::Nexus3::Api.endpoint(port), node['nexus3']['api']['wait'])
     end
+    action :nothing
+    notifies :create, "nexus3_api[#{pwchanger}]"
+    notifies :run, "nexus3_api[#{pwchanger}]"
+  end
+
+  passwd_file = ::File.join(new_resource.data, 'admin.password')
+
+  nexus3_api pwchanger do
+    script_name 'change_admin_password'
+    content "security.securitySystem.changePassword('admin', args)"
+    args new_resource.nexus3_password
+    api_client lazy { ::Nexus3::Api.local(port, 'admin', ::File.read(passwd_file)) }
+    only_if { ::File.exist? passwd_file }
+    action :nothing
+    notifies :delete, "file[#{passwd_file}]"
+  end
+
+  file passwd_file do
     action :nothing
   end
 end
@@ -127,5 +150,5 @@ action_class do
     url
   end
 
-  include Nexus3::Helper
+  include ::Nexus3::Helper
 end

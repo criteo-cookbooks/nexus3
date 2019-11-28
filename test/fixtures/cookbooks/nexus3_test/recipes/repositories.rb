@@ -13,6 +13,11 @@ nexus3_repo 'foo' do
   attributes conf
 end
 
+nexus3_repo 'foo' do
+  attributes conf
+  api_client ::Nexus3::Api.local(8082, 'admin', 'humdiddle')
+end
+
 nexus3_repo 'foo again' do
   repo_name 'foo'
   attributes conf

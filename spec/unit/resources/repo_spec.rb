@@ -8,18 +8,20 @@ describe 'nexus3_test::repositories' do
     end
 
     before do
-      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_repo/run')
-        .with(basic_auth: %w(admin admin123))
-        .with(body: 'foo', headers: { 'Content-Type' => 'text/plain' })
-        .to_return(api_response(404),
-                   repo_response('foo'))
+      [{ port: 8081, password: 'admin123' }, { port: 8082, password: 'humdiddle' }].each do |cfg|
+        stub_request(:post, "http://localhost:#{cfg[:port]}/service/rest/v1/script/get_repo/run")
+          .with(basic_auth: ['admin', cfg[:password]])
+          .with(body: 'foo', headers: { 'Content-Type' => 'text/plain' })
+          .to_return(api_response(404),
+                     repo_response('foo'))
 
-      stub_request(:post, 'http://localhost:8081/service/rest/v1/script/get_repo/run')
-        .with(basic_auth: %w(admin admin123))
-        .with(body: 'bar', headers: { 'Content-Type' => 'text/plain' })
-        .to_return(api_response(404),
-                   repo_response('bar'),
-                   api_response(404))
+        stub_request(:post, "http://localhost:#{cfg[:port]}/service/rest/v1/script/get_repo/run")
+          .with(basic_auth: ['admin', cfg[:password]])
+          .with(body: 'bar', headers: { 'Content-Type' => 'text/plain' })
+          .to_return(api_response(404),
+                     repo_response('bar'),
+                     api_response(404))
+      end
     end
 
     it 'creates a repo' do

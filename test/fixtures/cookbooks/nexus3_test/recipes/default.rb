@@ -10,11 +10,12 @@ nexus3 'foo'
 unless platform_family?('windows')
   package 'iproute' # inspec tests on fedora-29 need this for `ss`
   nexus3 'bar' do
-    path '/usr/local/nexusbar'
-    data '/usr/local/nexusdata'
+    path '/usr/local/nexusbar/path'
+    data '/usr/local/nexusbar/data'
     nexus3_user 'nexusbar'
     nexus3_group 'nexusbar'
     nexus3_home '/home/nexusbar'
-    properties_variables(node['nexus3']['properties_variables'].merge(port: '8082'))
+    nexus3_password 'humdiddle'
+    properties_variables(node['nexus3']['properties_variables'].merge(port: 8082))
   end
 end

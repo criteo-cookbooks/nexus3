@@ -40,7 +40,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.rc"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("/opt/nexus-#{VER}/bin/nexus.rc"))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates vmoptions file' do
@@ -48,7 +48,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.file("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.file("/opt/nexus-#{VER}/bin/nexus.vmoptions"))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates properties template' do
@@ -56,7 +56,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.template('/opt/sonatype-work/nexus3/etc/nexus.properties'))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template('/opt/sonatype-work/nexus3/etc/nexus.properties'))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates homedir symlink' do
@@ -69,7 +69,7 @@ describe 'nexus3_test::default' do
     end
 
     it 'blocks until operational does nothing' do
-      expect(chef_run.ruby_block('block until operational')).to do_nothing
+      expect(chef_run.ruby_block('block until Nexus foo@8081 operational')).to do_nothing
     end
   end
 
@@ -112,7 +112,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.rc"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template("C:\\Nexus3/nexus-#{VER}/bin/nexus.rc"))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates vmoptions file' do
@@ -120,7 +120,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.file("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.file("C:\\Nexus3/nexus-#{VER}/bin/nexus.vmoptions"))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates properties template' do
@@ -128,7 +128,7 @@ describe 'nexus3_test::default' do
       expect(chef_run.template('C:\Nexus3/sonatype-work/nexus3/etc/nexus.properties'))
         .to notify('nexus3_service[foo]').to(:restart).delayed
       expect(chef_run.template('C:\Nexus3/sonatype-work/nexus3/etc/nexus.properties'))
-        .to notify('ruby_block[block until operational]').to(:run).delayed
+        .to notify('ruby_block[block until Nexus foo@8081 operational]').to(:run).delayed
     end
 
     it 'creates homedir symlink' do
@@ -140,7 +140,7 @@ describe 'nexus3_test::default' do
     end
 
     it 'blocks until operational does nothing' do
-      expect(chef_run.ruby_block('block until operational')).to do_nothing
+      expect(chef_run.ruby_block('block until Nexus foo@8081 operational')).to do_nothing
     end
   end
 end
