@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.0 2019-12-06
+
+- Set the Nexus admin password when the repo is setup #105
+- Fix support for multiple instances on linux #104
+
 ## 3.4.1 2019-10-29
 
 - Support Multi-policy Cleanup on repo creation
