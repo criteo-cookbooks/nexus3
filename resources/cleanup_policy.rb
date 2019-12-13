@@ -24,6 +24,11 @@ end
 
 action :create do
   init
+  version = if ::Gem::Version.create(node['nexus3']['version'].split('-').first) >= ::Gem::Version.create('3.20.0')
+              '.3.20'
+            else
+              ''
+            end
 
   converge_if_changed do
     nexus3_api "upsert_cleanup_policy #{new_resource.policy_name}" do
@@ -37,7 +42,7 @@ action :create do
       action %i(create run)
       api_client new_resource.api_client
 
-      content ::Nexus3::Scripts.groovy_content('upsert_cleanup_policy', node)
+      content ::Nexus3::Scripts.groovy_content("upsert_cleanup_policy#{version}", node)
     end
   end
 end
