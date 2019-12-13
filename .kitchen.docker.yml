@@ -54,6 +54,7 @@ suites:
     - nexus3_test::roles
     - nexus3_test::tasks
     - nexus3_test::cleanup_policies
+    - nexus3_test::outbound_proxy
   attributes:
     nexus3_test:
       connection_retries: 10

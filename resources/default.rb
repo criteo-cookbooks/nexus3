@@ -13,6 +13,7 @@ property :data, String, default: lazy { node['nexus3']['data'] }
 property :service_name, String, default: lazy { instance_name }
 property :properties_variables, Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
+property :outbound_proxy, [Hash, NilClass], default: lazy { node['nexus3']['outbound_proxy'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
@@ -118,6 +119,7 @@ action :install do
     action :nothing
     notifies :create, "nexus3_api[#{pwchanger}]"
     notifies :run, "nexus3_api[#{pwchanger}]"
+    notifies new_resource.outbound_proxy ? :create : :delete, 'nexus3_outbound_proxy[default]'
   end
 
   passwd_file = ::File.join(new_resource.data, 'admin.password')
@@ -134,6 +136,13 @@ action :install do
 
   file passwd_file do
     action :nothing
+  end
+
+  # Configure outbound proxy (triggered after password changed)
+  nexus3_outbound_proxy 'default' do
+    action :nothing
+    config new_resource.outbound_proxy unless new_resource.outbound_proxy.nil?
+    api_client lazy { ::Nexus3::Api.local(port, 'admin', new_resource.nexus3_password) }
   end
 end
 
