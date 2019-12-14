@@ -76,6 +76,8 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 - `node['nexus3']['nofile_limit']` - Limit of open files available for the
   Nexus3 service in systemd. Default 65,536 as suggested by the Sonatype
   documentation on newer releases.
+- `node['nexus3']['outbound_proxy']` - Configure outbound HTTP/HTTPS proxy. See example
+  'Configure outbound HTTP/HTTPS proxy for all the attributes.'
 
 ### Examples
 
@@ -105,6 +107,40 @@ include_recipe 'nexus3'
 
 The `vmoptions_variables` attributes are mapped to JVM options `-<key>=<value>` if a value
 is defined. If `<value>` is `nil`, the option becomes `-<key>`.
+
+#### Configure outbound HTTP/HTTPS proxy
+
+```ruby
+node.default['nexus3']['outbound_proxy'] = {
+  'http' => {
+    'host' => 'proxy.example.com',
+    'port' => 80,
+    'auth' => {
+      'username' => 'example',
+      'password' => 'secret',
+      'host' => 'NTLM host',
+      'domain' => 'NTLM domain',
+    },
+  },
+  'https' => {
+    'host' => 'proxy.example.com',
+    'port' => 80,
+    'auth' => {
+      'username' => 'example',
+      'password' => 'secret',
+      'host' => 'NTLM host',
+      'domain' => 'NTLM domain',
+    },
+  },
+  'non_proxy_hosts' => ['rubygems.org', '*.chef.io'],
+}
+```
+
+`http` is mandatory, it is a prerequisite to configure the outbound proxy,
+you cannot just configure `https` for example, it would not be valid.
+
+`auth` can be ommited if you do not want to configure authentication. Only set
+`username` and `password` for basic authentication, else it will be NTLM.
 
 # Resources
 
@@ -149,6 +185,7 @@ directories, as well as different port numbers.
 - `vmoptions_variables` - A Hash of variables that are passed into a template
   file. Note that data directory will be injected into the hash if it is not
   defined. Default `node['nexus3']['vmoptions_variables']`.
+- `outbound_proxy` - Configure outbound HTTP/HTTPS proxy. Default `node['nexus3']['outbound_proxy']`.
 
 ### Examples
 

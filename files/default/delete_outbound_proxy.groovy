@@ -1,0 +1,2 @@
+core.removeHTTPSProxy()
+core.removeHTTPProxy()
