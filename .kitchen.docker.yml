@@ -44,17 +44,7 @@ suites:
 - name: default
   run_list:
     - nexus3_test::default
-    - nexus3_test::create_script
-    - nexus3_test::delete_script
-    - nexus3_test::run_script
-    - nexus3_test::user
-    - nexus3_test::repositories
-    - nexus3_test::groups
-    - nexus3_test::realm
-    - nexus3_test::roles
-    - nexus3_test::tasks
-    - nexus3_test::cleanup_policies
-    - nexus3_test::outbound_proxy
+    - nexus3_resources_test::default
   attributes:
     nexus3_test:
       connection_retries: 10
