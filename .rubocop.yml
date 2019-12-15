@@ -2,6 +2,7 @@ AllCops:
   Exclude:
     - '.kitchen/**/*'
     - 'vendor/**/*'
+    - 'test/fixtures/cookbooks/nexus3_resources_test/attributes/*'
 
 Layout/LineLength:
   Max: 120
