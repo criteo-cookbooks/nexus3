@@ -16,4 +16,5 @@ suites:
 - name: default
   run_list:
     - nexus3_test::default
+    - nexus3_resources_test::default
   attributes:
