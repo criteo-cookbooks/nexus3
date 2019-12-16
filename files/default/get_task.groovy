@@ -1,3 +1,4 @@
+import org.sonatype.nexus.scheduling.schedule.Schedule;
 import org.sonatype.nexus.scheduling.TaskConfiguration;
 import org.sonatype.nexus.scheduling.TaskInfo;
 import org.sonatype.nexus.scheduling.TaskScheduler;
@@ -11,5 +12,11 @@ TaskInfo existingTask = taskScheduler.listsTasks().find { TaskInfo taskInfo ->
 }
 
 if (existingTask) {
-    return JsonOutput.toJson(existingTask.getConfiguration().asMap());
+    Schedule schedule = existingTask.getSchedule();
+    Map<String, String> schedule_properties = new HashMap<>();
+    schedule_properties.put('type', schedule.getType());
+    if (schedule.getType() == 'cron') {
+      schedule_properties.put('cronExpression', schedule.getCronExpression());
+    }
+    return JsonOutput.toJson([ schedule: schedule_properties ] + existingTask.getConfiguration().asMap());
 }
