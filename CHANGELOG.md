@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.6.0 2019-12-16
+
+- Knob to configure outbound proxy #106
+- Bump nexus3 to 3.20 with fixed cleanup_policy script #107
+
 ## 3.5.0 2019-12-06
 
 - Set the Nexus admin password when the repo is setup #105
