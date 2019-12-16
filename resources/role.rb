@@ -40,16 +40,16 @@ end
 action :delete do
   init
 
-  converge_if_changed do
-    nexus3_api "delete_role #{new_resource.role_name}" do
-      script_name 'delete_role'
-      args new_resource.role_name
+  nexus3_api "delete_role #{new_resource.role_name}" do
+    script_name 'delete_role'
+    args new_resource.role_name
 
-      action %i[create run]
-      api_client new_resource.api_client
+    action %i[create run]
+    api_client new_resource.api_client
 
-      content ::Nexus3::Scripts.groovy_content('delete_role', node)
-    end
+    content ::Nexus3::Scripts.groovy_content('delete_role', node)
+
+    not_if { current_resource.nil? }
   end
 end
 

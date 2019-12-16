@@ -38,18 +38,16 @@ end
 action :delete do
   init
 
-  converge_if_changed do
-    nexus3_api "delete_task #{new_resource.task_name}" do
-      action %i[create run]
-      script_name 'delete_task'
-      args new_resource.task_name
+  nexus3_api "delete_task #{new_resource.task_name}" do
+    action %i[create run]
+    script_name 'delete_task'
+    args new_resource.task_name
 
-      content ::Nexus3::Scripts.groovy_content('delete_task', node)
+    content ::Nexus3::Scripts.groovy_content('delete_task', node)
 
-      api_client new_resource.api_client
+    api_client new_resource.api_client
 
-      not_if { current_resource.nil? }
-    end
+    not_if { current_resource.nil? }
   end
 end
 
