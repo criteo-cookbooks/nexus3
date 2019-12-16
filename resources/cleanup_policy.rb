@@ -50,18 +50,16 @@ end
 action :delete do
   init
 
-  converge_if_changed do
-    nexus3_api "delete_cleanup_policy #{new_resource.policy_name}" do
-      action %i[create run]
-      script_name 'delete_cleanup_policy'
-      args new_resource.policy_name
+  nexus3_api "delete_cleanup_policy #{new_resource.policy_name}" do
+    action %i[create run]
+    script_name 'delete_cleanup_policy'
+    args new_resource.policy_name
 
-      content ::Nexus3::Scripts.groovy_content('delete_cleanup_policy', node)
+    content ::Nexus3::Scripts.groovy_content('delete_cleanup_policy', node)
 
-      api_client new_resource.api_client
+    api_client new_resource.api_client
 
-      not_if { current_resource.nil? }
-    end
+    not_if { current_resource.nil? }
   end
 end
 

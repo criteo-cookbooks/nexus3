@@ -61,6 +61,8 @@ action :delete do
     api_client new_resource.api_client
 
     content ::Nexus3::Scripts.groovy_content('delete_user', node)
+
+    not_if { current_resource.nil? }
   end
 end
 
