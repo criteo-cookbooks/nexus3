@@ -4,7 +4,7 @@ property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::A
 load_current_value do
   begin
     cfg = ::JSON.parse(api_client.run_script('get_outbound_proxy', nil))
-    current_value_does_not_exist! if cfg.nil?
+    current_value_does_not_exist! if !cfg.respond_to?(:empty?) || cfg.empty?
     config cfg
     ::Chef::Log.debug "Config is: #{config}"
   # We rescue here because during the first run, the repository will not exist yet, so we let Chef know that
