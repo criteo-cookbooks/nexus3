@@ -1,38 +1,25 @@
 require_relative 'inspec_helper'
 
-title 'nexus::roles'
+title 'nexus3_roles'
 
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_role/run -X POST ' \
-                 '-H "Content-Type: text/plain" -d foo') do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) do
-    should eq('{
-  "name" : "get_role",
-  "result" : "{\"role\":\"foo\",\"description\":\"\",\"roles\":[],\"privileges\":[]}"
-}')
+# Check that scripts exist
+%w[get_role upsert_role delete_role].each do |script_name|
+  describe nexus3_script_get(script_name) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"type"\s+:\s+"groovy"/) }
   end
 end
 
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_role/run -X POST ' \
-                 '-H "Content-Type: text/plain" -d doesnotexist') do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) do
-    should eq('{
-  "name" : "get_role",
-  "result" : "null"
-}')
+# Check correct response on invalid role
+[nil, '', 'missing-role'].each do |invalid_role|
+  describe nexus3_script_post('get_role/run', invalid_role) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"result"\s+:\s+"null"/) }
   end
 end
 
-# rubocop:disable Layout/LineLength
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_role/run -X POST ' \
-                 '-H "Content-Type: text/plain" -d baz') do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) do
-    should eq('{
-  "name" : "get_role",
-  "result" : "{\"role\":\"baz\",\"description\":\"\",\"roles\":[],\"privileges\":[\"nx-blobstores-read\",\"nx-ldap-read\"]}"
-}')
-  end
+# Check correct response on existing role
+describe nexus3_script_post('get_role/run', 'integration_role') do
+  its('status') { should cmp 200 }
+  its('body') { should match(/"result"\s+:\s+".*\Wrole\W+:\W+integration_role\W.*"/) }
 end
-# rubocop:enable Layout/LineLength

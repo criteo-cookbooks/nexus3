@@ -26,17 +26,6 @@ if os[:family] == 'windows'
   describe command("powershell -command { #{ping.strip} }") do
     its(:stdout) { should match('pong') }
   end
-
-  script_foo = <<~TEST_SCRIPT
-    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
-    Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
-    -URI http://localhost:8081/service/rest/v1/script/foo -Method GET
-  TEST_SCRIPT
-
-  describe command("powershell -command { #{script_foo.strip} }") do
-    its(:stdout) { should match(/name.*content.*type/) }
-    its(:stdout) { should match(/foo.*repository.createMaven.*groovy/) }
-  end
 else # Linux
   describe file('/opt/sonatype-work/nexus3') do
     it { should be_directory }
@@ -78,12 +67,6 @@ else # Linux
 
     describe command("curl -u admin:#{cfg[:password]} http://localhost:#{cfg[:port]}/service/metrics/ping") do
       its(:stdout) { should match('pong') }
-    end
-
-    describe command("curl -u admin:#{cfg[:password]} http://localhost:#{cfg[:port]}/service/rest/v1/script/foo") do
-      its(:stdout) { should match(/name.*foo/) }
-      its(:stdout) { should match(/content.*repository.createMavenHosted.*foo/) }
-      its(:stdout) { should match(/type.*groovy/) }
     end
   end
 end

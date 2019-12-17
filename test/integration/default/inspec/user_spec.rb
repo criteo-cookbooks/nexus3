@@ -1,46 +1,25 @@
 require_relative 'inspec_helper'
 
-title 'nexus::user'
+title 'nexus3_user'
 
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script -X POST ' \
-                 '-H "Content-Type: application/json" -d \'{"name":"get_user","type":"groovy",' \
-                 '"content":"security.Security.getUser(args)"}\'') do
-  its(:exit_status) { should eq 0 }
-end
-
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
-                 '-X POST -H "Content-Type: text/plain"') do
-  its(:exit_status) { should eq 0 }
-end
-
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
-                 '-X POST -H "Content-Type: text/plain" -d uploader-bot') do
-  its(:stdout) do
-    should eq('{
-  "name" : "get_user",
-  "result" : "{\"username\":\"uploader-bot\",\"first_name\":\"\",\"last_name\":\"\",\"email\":\"\",\"roles\":[]}"
-}')
+# Check that scripts exist
+%w[get_user upsert_user delete_user].each do |script_name|
+  describe nexus3_script_get(script_name) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"type"\s+:\s+"groovy"/) }
   end
 end
 
-# rubocop:disable Layout/LineLength
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
-                 '-X POST -H "Content-Type: text/plain" -d uploader2-bot') do
-  its(:stdout) do
-    should eq('{
-  "name" : "get_user",
-  "result" : "{\"username\":\"uploader2-bot\",\"first_name\":\"uploader2\",\"last_name\":\"bot\",\"email\":\"uploader2@example.com\",\"roles\":[]}"
-}')
+# Check correct response on invalid user
+[nil, '', 'missing-user'].each do |invalid_user|
+  describe nexus3_script_post('get_user/run', invalid_user) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"result"\s+:\s+"null"/) }
   end
 end
-# rubocop:enable Layout/LineLength
 
-describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
-                 '-X POST -H "Content-Type: text/plain" -d doesnotexist') do
-  its(:stdout) do
-    should eq('{
-  "name" : "get_user",
-  "result" : "null"
-}')
-  end
+# Check correct response on existing user
+describe nexus3_script_post('get_user/run', 'integration_user') do
+  its('status') { should cmp 200 }
+  its('body') { should match(/"result"\s+:\s+".*\Wusername\W+:\W+integration_user\W.*"/) }
 end
