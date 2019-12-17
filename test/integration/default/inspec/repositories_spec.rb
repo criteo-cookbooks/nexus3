@@ -1,62 +1,25 @@
 require_relative 'inspec_helper'
 
-title 'nexus::repositories'
+title 'nexus3_repo'
 
-if os[:family] == 'windows'
-  auth_info = "$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes((\"{0}:{1}\" \
--f 'admin','admin123')));"
-  textplain = "-ContentType 'text/plain'"
-  applicationjson = "-ContentType 'application/json'"
-  base_uri = '-URI http://localhost:8081/service/rest/v1/script'
-
-  create_script_get_repo = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" \
--f $base64AuthInfo)} #{base_uri} -Method POST #{applicationjson} -Body '{\"name\":\"get_repo\",\"type\":\"groovy\",\
-\"content\":\"repository.repositoryManager.get(args)\"}'"
-
-  run_script_foo = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" -f $base64AuthInfo)} \
-#{base_uri}/get_repo/run -Method POST #{textplain}"
-
-  run_get_repo_foo = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" -f $base64AuthInfo)} \
-#{base_uri}/get_repo/run -Method POST #{textplain} -Body 'foo'"
-
-  run_get_repo_doesnotexist = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" \
--f $base64AuthInfo)} #{base_uri}/get_repo/run -Method POST #{textplain} -Body 'doesnotexist'"
-
-  describe command("powershell -command { #{create_script_get_repo} }") do
-    its(:exit_status) { should eq 1 }
+# Check that scripts exist
+%w[get_repo upsert_repo delete_repo].each do |script_name|
+  describe nexus3_script_get(script_name) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"type"\s+:\s+"groovy"/) }
   end
+end
 
-  describe command("powershell -command { #{run_script_foo} }") do
-    its(:exit_status) { should eq 1 }
+# Check correct response on invalid repo
+[nil, '', 'missing-repo'].each do |invalid_repo|
+  describe nexus3_script_post('get_repo/run', invalid_repo) do
+    its('status') { should cmp 200 }
+    its('body') { should match(/"result"\s+:\s+"null"/) }
   end
+end
 
-  describe command("powershell -command { #{run_get_repo_foo} }") do
-    its(:stdout) { should match('result') }
-    its(:stdout) { should match('get_repo') }
-  end
-
-  describe command("powershell -command { #{run_get_repo_doesnotexist} }") do
-    its(:stdout) { should match('get_repo.*null') }
-  end
-else # Linux
-  describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script -X POST ' \
-                   '-H "Content-Type: application/json" -d \'{"name":"get_repo","type":"groovy",' \
-                   '"content":"repository.repositoryManager.get(args)"}\'') do
-    its(:exit_status) { should eq 0 }
-  end
-
-  describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/foo/run ' \
-                   '-X POST -H "Content-Type: text/plain"') do
-    its(:exit_status) { should eq 0 }
-  end
-
-  describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_repo/run ' \
-                   '-X POST -H "Content-Type: text/plain" -d foo') do
-    its(:stdout) { should match('result.*repositoryName.*foo') }
-  end
-
-  describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_repo/run ' \
-                   '-X POST -H "Content-Type: text/plain" -d doesnotexist') do
-    its(:stdout) { should match(/result.*null/) }
-  end
+# Check correct response on existing repo
+describe nexus3_script_post('get_repo/run', 'integration_repo') do
+  its('status') { should cmp 200 }
+  its('body') { should match(/"result"\s+:\s+".*\WrepositoryName\W+:\W+integration_repo\W.*"/) }
 end
