@@ -4,7 +4,7 @@ require 'webmock/rspec'
 
 VER = '3.20.0-04'.freeze
 CACHE = Chef::Config[:file_cache_path]
-CENTOS_VERSION = '7.4.1708'.freeze
+CENTOS_VERSION = '7.6.1810'.freeze
 
 def api_response(code, result = {})
   { status: code, headers: { 'Content-Type' => 'application/json' }, body: JSON.generate(result) }
