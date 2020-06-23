@@ -22,7 +22,7 @@ action :create do
     nexus3_api "upsert_outbound_proxy #{new_resource.name}" do
       script_name 'upsert_outbound_proxy'
       args new_resource.config
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_outbound_proxy', node)
@@ -34,7 +34,7 @@ action :delete do
   init
 
   nexus3_api "delete_outbound_proxy #{new_resource.name}" do
-    action %i(create run)
+    action %i[create run]
     script_name 'delete_outbound_proxy'
     content ::Nexus3::Scripts.groovy_content('delete_outbound_proxy', node)
 

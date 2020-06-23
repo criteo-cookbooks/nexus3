@@ -13,7 +13,7 @@ end
 
 # Test role deletion
 nexus3_role 'bar' do
-  action %i(create delete)
+  action %i[create delete]
 end
 
 nexus3_role 'bar again' do
@@ -32,5 +32,5 @@ nexus3_role 'baz'
 
 nexus3_role 'baz again' do
   role_name 'baz'
-  privileges ['nx-blobstores-read', 'nx-ldap-read']
+  privileges %w[nx-blobstores-read nx-ldap-read]
 end

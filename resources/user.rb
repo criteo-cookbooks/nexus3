@@ -42,7 +42,7 @@ action :create do
            email: new_resource.email,
            roles: new_resource.roles
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_user', node)
@@ -57,7 +57,7 @@ action :delete do
     script_name 'delete_user'
     args new_resource.username
 
-    action %i(create run)
+    action %i[create run]
     api_client new_resource.api_client
 
     content ::Nexus3::Scripts.groovy_content('delete_user', node)

@@ -2,7 +2,7 @@
 nexus3_api 'anonymous' do
   content 'repository.repositoryManager.browse()'
 
-  action %i(create run)
+  action %i[create run]
   retries 10
   retry_delay 10
 end

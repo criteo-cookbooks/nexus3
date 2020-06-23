@@ -26,8 +26,8 @@ end
 
 def role_response(rolename)
   api_response(200, result: JSON.generate(role: rolename,
-                                          description: 'desc-spec', roles: ['role-spec1', 'role-spec2'],
-                                          privileges: ['priv-spec-1', 'priv-spec-2']))
+                                          description: 'desc-spec', roles: %w[role-spec1 role-spec2],
+                                          privileges: %w[priv-spec-1 priv-spec-2]))
 end
 
 def task_response(taskname)

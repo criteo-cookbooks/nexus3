@@ -23,7 +23,7 @@ describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/sc
   end
 end
 
-# rubocop:disable LineLength
+# rubocop:disable Layout/LineLength
 describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
                  '-X POST -H "Content-Type: text/plain" -d uploader2-bot') do
   its(:stdout) do
@@ -33,7 +33,7 @@ describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/sc
 }')
   end
 end
-# rubocop:enable LineLength
+# rubocop:enable Layout/LineLength
 
 describe command('curl -uadmin:admin123 http://localhost:8081/service/rest/v1/script/get_user/run ' \
                  '-X POST -H "Content-Type: text/plain" -d doesnotexist') do

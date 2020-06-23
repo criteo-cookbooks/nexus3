@@ -19,7 +19,7 @@ describe 'nexus3_test::roles' do
     it 'updates a role' do
       expect(chef_run).to create_nexus3_role('baz')
       expect(chef_run).to create_nexus3_role('baz again')
-        .with(privileges: ['nx-blobstores-read', 'nx-ldap-read'])
+        .with(privileges: %w[nx-blobstores-read nx-ldap-read])
     end
   end
 end

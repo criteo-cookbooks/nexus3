@@ -24,14 +24,14 @@ end
 nexus3_group 'foo-group' do
   attributes group_conf
   group_type 'pypi-group'
-  repositories %w(test1 test2)
+  repositories %w[test1 test2]
 end
 
 nexus3_group 'foo-group again' do
   group_name 'foo-group'
   group_type 'pypi-group'
   attributes group_conf
-  repositories %w(test1 test2)
+  repositories %w[test1 test2]
   notifies :run, 'ruby_block[fail if foo-group is created again]', :immediately
 end
 

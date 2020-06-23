@@ -1,3 +1,1 @@
-unless (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM).nil?
-  set :os, family: 'windows'
-end
+set :os, family: 'windows' unless (/cygwin|mswin|mingw|bccwin|wince|emx/ =~ RUBY_PLATFORM).nil?
