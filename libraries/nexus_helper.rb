@@ -1,5 +1,5 @@
 require 'timeout'
-require 'open-uri'
+require 'net/http'
 
 module Nexus3
   # Helper library for testing Nexus3 responses
@@ -17,19 +17,19 @@ EOH
     end
 
     def wait_until_ready!(endpoint, timeout = 15 * 60)
+      uri = ::Kernel.URI(endpoint)
       Timeout.timeout(timeout, Timeout::Error) do
         begin
-          open(endpoint)
+          response = ::Net::HTTP.get_response(uri)
+          response.error! if response.code.start_with?('5')
         rescue SocketError,
                Errno::ECONNREFUSED,
                Errno::ECONNRESET,
                Errno::ENETUNREACH,
                Errno::EADDRNOTAVAIL,
                Errno::EHOSTUNREACH,
-               OpenURI::HTTPError => e
-          # Getting 403 is ok since it means we reached the endpoint and
-          # it's asking us for authentication.
-          break if e.message =~ /^403/
+               Net::HTTPError => e
+
           Chef::Log.debug("Nexus3 is not accepting requests - #{e.message}")
           sleep 1
           retry
