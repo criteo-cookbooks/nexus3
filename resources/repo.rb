@@ -34,7 +34,7 @@ action :create do
            multi_policy_cleanup_support: Gem::Version.new(node['nexus3']['version'].split('-').first) >=
                                          Gem::Version.new('3.19.0')
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_repo', node)
@@ -46,7 +46,7 @@ action :delete do
   init
 
   nexus3_api "delete_repo #{new_resource.repo_name}" do
-    action %i(create run)
+    action %i[create run]
     script_name 'delete_repo'
     content ::Nexus3::Scripts.groovy_content('delete_repo', node)
     args new_resource.repo_name

@@ -128,7 +128,7 @@ action :install do
     script_name 'change_admin_password'
     content "security.securitySystem.changePassword('admin', args)"
     args new_resource.nexus3_password
-    api_client lazy { ::Nexus3::Api.local(port, 'admin', ::File.read(passwd_file)) }
+    api_client(lazy { ::Nexus3::Api.local(port, 'admin', ::File.read(passwd_file)) })
     only_if { ::File.exist? passwd_file }
     action :nothing
     notifies :delete, "file[#{passwd_file}]"
@@ -142,13 +142,14 @@ action :install do
   nexus3_outbound_proxy 'default' do
     action :nothing
     config new_resource.outbound_proxy unless new_resource.outbound_proxy.nil?
-    api_client lazy { ::Nexus3::Api.local(port, 'admin', new_resource.nexus3_password) }
+    api_client(lazy { ::Nexus3::Api.local(port, 'admin', new_resource.nexus3_password) })
   end
 end
 
 action_class do
   def download_url
     return new_resource.url unless new_resource.url.nil? || new_resource.url.empty?
+
     url = 'https://download.sonatype.com/nexus/3/nexus-'
     url << new_resource.version.to_s
     url << if platform?('windows')

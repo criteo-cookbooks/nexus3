@@ -17,21 +17,21 @@ if os[:family] == 'windows'
     it { should be_running }
   end
 
-  ping = <<-EOF
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
-Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
--URI http://localhost:8081/service/metrics/ping
-EOF
+  ping = <<~PING_COMMAND
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
+    Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
+    -URI http://localhost:8081/service/metrics/ping
+  PING_COMMAND
 
   describe command("powershell -command { #{ping.strip} }") do
     its(:stdout) { should match('pong') }
   end
 
-  script_foo = <<-EOH
-$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
-Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
--URI http://localhost:8081/service/rest/v1/script/foo -Method GET
-EOH
+  script_foo = <<~TEST_SCRIPT
+    $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
+    Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
+    -URI http://localhost:8081/service/rest/v1/script/foo -Method GET
+  TEST_SCRIPT
 
   describe command("powershell -command { #{script_foo.strip} }") do
     its(:stdout) { should match(/name.*content.*type/) }
@@ -58,7 +58,7 @@ else # Linux
     it { should be_owned_by 'nexusbar' }
   end
 
-  %w(foo bar).each do |service|
+  %w[foo bar].each do |service|
     unless os.debian?
       describe service("nexus3_#{service}") do
         it { should be_enabled }

@@ -43,17 +43,17 @@ module Nexus3
       end
     end
 
-    def request(method, path, ct = 'application/json', data = nil)
+    def request(method, path, content_type = 'application/json', data = nil)
       data = case data
              when Hash, Array
                JSON.generate(data)
              else
                data
              end
-      res = http_client.request(method, path, nil, data, 'Content-Type' => ct)
+      res = http_client.request(method, path, nil, data, 'Content-Type' => content_type)
 
       res.body
-    rescue => e
+    rescue StandardError => e
       error_message = " with following error\n#{e.response.body}" if e.respond_to? 'response'
       raise "Nexus API: '#{e}' #{error_message}"
     ensure

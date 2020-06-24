@@ -2,6 +2,9 @@ source 'https://supermarket.chef.io'
 
 metadata
 
-group :solo do
+group :test do
+  cookbook 'ark'
   cookbook 'nexus3_test', path: 'test/fixtures/cookbooks/nexus3_test'
+  cookbook 'updatable-attributes'
+  cookbook 'windows'
 end

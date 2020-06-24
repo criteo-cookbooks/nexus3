@@ -29,7 +29,7 @@ action :create do
            role_list: new_resource.roles,
            privilege_list: new_resource.privileges
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_role', node)
@@ -45,7 +45,7 @@ action :delete do
       script_name 'delete_role'
       args new_resource.role_name
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('delete_role', node)

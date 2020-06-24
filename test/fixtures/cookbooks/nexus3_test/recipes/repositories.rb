@@ -30,7 +30,7 @@ ruby_block 'fail if foo is created again' do
 end
 
 nexus3_repo 'bar' do
-  action %i(create delete)
+  action %i[create delete]
   attributes conf
 end
 

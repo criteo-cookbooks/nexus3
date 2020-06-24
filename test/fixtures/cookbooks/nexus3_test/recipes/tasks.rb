@@ -11,7 +11,7 @@ ruby_block 'fail if foo is created again' do
 end
 
 nexus3_task 'bar' do
-  action %i(create delete)
+  action %i[create delete]
 end
 
 nexus3_task 'bar again' do

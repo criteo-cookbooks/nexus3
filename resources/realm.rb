@@ -24,7 +24,7 @@ action :configure do
       args name: new_resource.realm_name,
            enable: new_resource.enable
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('configure_realm', node)

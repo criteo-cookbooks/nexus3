@@ -3,17 +3,20 @@ AllCops:
     - '.kitchen/**/*'
     - 'vendor/**/*'
 
-LineLength:
+Layout/LineLength:
   Max: 120
 
-MethodLength:
+Layout/MethodLength:
   Max: 60
 
-AbcSize:
+Layout/AbcSize:
   Max: 60
 
-BlockLength:
+Layout/BlockLength:
   Max: 130
 
 Style/FormatString:
   Exclude: ['spec/**/*', 'test/**/*']
+
+Style/FrozenStringLiteralComment:
+  Enabled: false

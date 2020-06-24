@@ -8,7 +8,7 @@ if os[:family] == 'windows'
   base_uri = '-URI http://localhost:8081/service/rest/v1/script'
 
   run_get_group = "#{auth_info} Invoke-RestMethod -Headers @{Authorization=(\"Basic {0}\" -f $base64AuthInfo)} \
-#{base_uri}/get_repo/run -Method POST -ContentType 'text/plain' -Body '%{group}'"
+#{base_uri}/get_repo/run -Method POST -ContentType 'text/plain' -Body '%<group>'"
 
   describe command("powershell -command { #{run_get_group} }" % { group: 'foo-group' }) do
     its(:stdout) { should match(/foo-group.*result/) }

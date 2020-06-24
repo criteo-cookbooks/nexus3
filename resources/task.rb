@@ -27,7 +27,7 @@ action :create do
            source: new_resource.task_source,
            crontab: new_resource.task_crontab
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content('upsert_task', node)
@@ -40,7 +40,7 @@ action :delete do
 
   converge_if_changed do
     nexus3_api "delete_task #{new_resource.task_name}" do
-      action %i(create run)
+      action %i[create run]
       script_name 'delete_task'
       args new_resource.task_name
 

@@ -39,7 +39,7 @@ action :create do
            notes: new_resource.notes,
            criteria: new_resource.criteria
 
-      action %i(create run)
+      action %i[create run]
       api_client new_resource.api_client
 
       content ::Nexus3::Scripts.groovy_content("upsert_cleanup_policy#{version}", node)
@@ -52,7 +52,7 @@ action :delete do
 
   converge_if_changed do
     nexus3_api "delete_cleanup_policy #{new_resource.policy_name}" do
-      action %i(create run)
+      action %i[create run]
       script_name 'delete_cleanup_policy'
       args new_resource.policy_name
 
