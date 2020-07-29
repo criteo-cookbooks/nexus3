@@ -14,12 +14,10 @@ default['nexus3']['data'] = "#{node['nexus3']['path']}/sonatype-work/nexus3"
 # Nexus username (do not run as root)
 default['nexus3']['user'] = 'nexus'
 
-default['nexus3']['properties_variables'] = {
-  host: '0.0.0.0',
-  port: '8081',
-  args: '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
-  context_path: '/'
-}
+default['nexus3']['properties_variables']['application-port'] = '8081'
+default['nexus3']['properties_variables']['application-host'] = '0.0.0.0'
+default['nexus3']['properties_variables']['nexus-args'] = '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml'
+default['nexus3']['properties_variables']['nexus-context-path'] = '/'
 
 default['nexus3']['nofile_limit'] = 65_536
 
