@@ -5,7 +5,7 @@ AllCops:
     - 'test/fixtures/cookbooks/nexus3_resources_test/attributes/*'
 
 Layout/LineLength:
-  Max: 120
+  Max: 150
 
 Layout/MethodLength:
   Max: 60

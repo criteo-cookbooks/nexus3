@@ -17,6 +17,15 @@ if os[:family] == 'windows'
     it { should be_running }
   end
 
+  describe file('C:/sonatype-work/nexus3/etc/nexus.properties') do
+    it { should be_file }
+    it { should be_owned_by 'nexus' }
+    its('content') { should match('application-port=8081') }
+    its('content') { should match('application-host=0.0.0.0') }
+    its('content') { should match(%r{nexus-args=\$\{jetty.etc\}/jetty.xml,\$\{jetty.etc\}/jetty-http.xml,\$\{jetty.etc\}/jetty-requestlog.xml}) }
+    its('content') { should match(%r{nexus-context-path=/}) }
+  end
+
   ping = <<~PING_COMMAND
     $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f 'admin','admin123'))); \
     Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
@@ -40,6 +49,15 @@ else # Linux
   describe file('/opt/sonatype-work/nexus3/etc') do
     it { should be_directory }
     it { should be_owned_by 'nexus' }
+  end
+
+  describe file('/opt/sonatype-work/nexus3/etc/nexus.properties') do
+    it { should be_file }
+    it { should be_owned_by 'nexus' }
+    its('content') { should match('application-port=8081') }
+    its('content') { should match('application-host=0.0.0.0') }
+    its('content') { should match(%r{nexus-args=\$\{jetty.etc\}/jetty.xml,\$\{jetty.etc\}/jetty-http.xml,\$\{jetty.etc\}/jetty-requestlog.xml}) }
+    its('content') { should match(%r{nexus-context-path=/}) }
   end
 
   describe file('/usr/local/nexusbar/data/etc') do
