@@ -16,6 +16,6 @@ unless platform_family?('windows')
     nexus3_group 'nexusbar'
     nexus3_home '/home/nexusbar'
     nexus3_password 'humdiddle'
-    properties_variables(node['nexus3']['properties_variables'].merge(port: 8082))
+    properties_variables(node['nexus3']['properties_variables'].merge('application-port': '8082'))
   end
 end

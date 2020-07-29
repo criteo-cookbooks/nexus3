@@ -50,7 +50,7 @@ action :install do
     end
   end
 
-  port = new_resource.properties_variables['port']
+  port = new_resource.properties_variables['application-port']
   blocker = "block until Nexus #{new_resource.service_name}@#{port} operational"
 
   # Install configuration from templates
@@ -84,13 +84,11 @@ action :install do
     notifies :run, "ruby_block[#{blocker}]", :delayed
   end
 
-  template ::File.join(new_resource.data, 'etc', 'nexus.properties') do
-    source 'nexus.properties.erb'
-    variables new_resource.properties_variables
+  file ::File.join(new_resource.data, 'etc', 'nexus.properties') do
+    content new_resource.properties_variables.map { |k, v| "#{k}=#{v}" }.join("\n")
     mode '0644'
     user new_resource.nexus3_user
     group new_resource.nexus3_group
-    cookbook 'nexus3'
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, "ruby_block[#{blocker}]", :delayed
   end
