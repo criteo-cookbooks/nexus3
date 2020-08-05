@@ -46,6 +46,9 @@ suites:
     - nexus3_test::default
     - nexus3_resources_test::default
     - nexus3_test::integration
+  ports:
+    - 8081
+    - 8082
   attributes:
     nexus3_test:
       connection_retries: 10
