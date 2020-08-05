@@ -7,7 +7,7 @@
 [cookbook_version]: https://img.shields.io/cookbook/v/nexus3.svg
 [build_status]: https://api.travis-ci.org/criteo-cookbooks/nexus3.svg?branch=master
 
-This cookbook installs and configures Sonatype Nexus 3 Repository 
+This cookbook installs and configures Sonatype Nexus 3 Repository
 Manager OSS according to 
 https://books.sonatype.com/nexus-book/reference3/install.html
 
@@ -67,9 +67,11 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
 - `node['nexus3']['home']` -  Link to install directory. 
   Default `#{node['nexus3']['path']}/nexus3`.
 - `node['nexus3']['properties_variables']` - A Hash of variables that are
-  passed into a template file. Default `{ host: '0.0.0.0', port: '8081', args:
+  passed into a file populated on each line with the following format: 
+  'Key'='Value'.
+  Default `{ 'application-host': '0.0.0.0', 'application-port': '8081', 'nexus-args':
   '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
-  context_path: '/' }`.
+  'nexus-context-path': '/' }`.
 - `node['nexus3']['vmoptions_variables']` - A Hash of variables that are
   passed into a template file. Note that data directory will be injected into
   the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
