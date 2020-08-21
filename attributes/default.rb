@@ -18,6 +18,7 @@ default['nexus3']['properties_variables']['application-port'] = '8081'
 default['nexus3']['properties_variables']['application-host'] = '0.0.0.0'
 default['nexus3']['properties_variables']['nexus-args'] = '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml'
 default['nexus3']['properties_variables']['nexus-context-path'] = '/'
+default['nexus3']['properties_variables']['nexus.scripts.allowCreation'] = 'true'
 
 default['nexus3']['nofile_limit'] = 65_536
 
