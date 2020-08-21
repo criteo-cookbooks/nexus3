@@ -17,15 +17,15 @@ if (params.multi_policy_cleanup_support && params.attributes.containsKey("cleanu
 }
 
 def repo = repository.repositoryManager.get(params.name)
-Configuration conf
+
 if (repo == null) { // create
-    conf = new Configuration(
-        repositoryName: params.name,
-        recipeName: params.type,
-        online: params.online,
-        attributes: params.attributes
-    )
-    repository.createRepository(conf)
+    Configuration conf = repository.repositoryManager.newConfiguration()
+    conf.setRepositoryName(params.name)
+    conf.setRecipeName(params.type)
+    conf.setOnline(params.online)
+    conf.setAttributes(params.attributes as Map)
+
+    repository.repositoryManager.create(conf)
 } else { // update
     conf = repo.getConfiguration()
     if (conf.getRecipeName() != params.type) {
