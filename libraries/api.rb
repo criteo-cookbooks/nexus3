@@ -27,7 +27,14 @@ module Nexus3
     end
 
     def to_s
-      "#{@user}:#{@password}@#{@endpoint}"
+      "#{@user}@#{@endpoint}"
+    end
+
+    # Custom inspect without sensitive data
+    def inspect
+      variables = instance_variables.reject { |v| v == :@password }.map { |v| " #{v}=#{instance_variable_get(v)}" }
+
+      ::Kernel.instance_method(:to_s).bind(self).call.sub('>', "#{variables.join(',')}>")
     end
 
     attr_reader :endpoint
