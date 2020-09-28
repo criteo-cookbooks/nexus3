@@ -34,10 +34,6 @@ end
 
 action_class do
   def init
-    chef_gem 'httpclient' do
-      compile_time true
-    end
-
     nexus3_api "get_realm_status #{new_resource.realm_name}" do
       action :create
       script_name 'get_realm_status'

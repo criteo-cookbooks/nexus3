@@ -14,8 +14,6 @@ load_current_value do |desired|
 end
 
 action :create do
-  chef_gem 'httpclient'
-
   converge_if_changed do
     new_resource.api_client.request(:delete, new_resource.script_name) unless current_resource.nil?
     new_resource.api_client.request(:post, '', 'application/json', name: new_resource.script_name, type: 'groovy',
@@ -24,16 +22,12 @@ action :create do
 end
 
 action :run do
-  chef_gem 'httpclient'
-
   converge_by "running script #{new_resource.script_name}" do
     new_resource.api_client.run_script(new_resource.script_name, new_resource.args)
   end
 end
 
 action :delete do
-  chef_gem 'httpclient'
-
   unless current_resource.nil?
     converge_by "deleting script #{new_resource.script_name}" do
       new_resource.api_client.request(:delete, new_resource.script_name)

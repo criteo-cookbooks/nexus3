@@ -46,10 +46,6 @@ end
 
 action_class do
   def init
-    chef_gem 'httpclient' do
-      compile_time true
-    end
-
     nexus3_api "get_outbound_proxy #{new_resource.name}" do
       action :create
       script_name 'get_outbound_proxy'
