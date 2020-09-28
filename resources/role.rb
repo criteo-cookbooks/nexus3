@@ -55,10 +55,6 @@ end
 
 action_class do
   def init
-    chef_gem 'httpclient' do
-      compile_time true
-    end
-
     nexus3_api 'get_role' do
       action :create
       api_client new_resource.api_client

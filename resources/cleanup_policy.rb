@@ -65,10 +65,6 @@ end
 
 action_class do
   def init
-    chef_gem 'httpclient' do
-      compile_time true
-    end
-
     nexus3_api "get_cleanup_policy #{new_resource.policy_name}" do
       action :create
       script_name 'get_cleanup_policy'

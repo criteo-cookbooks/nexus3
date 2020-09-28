@@ -19,3 +19,5 @@ supports 'fedora'
 supports 'redhat'
 supports 'ubuntu'
 supports 'windows'
+
+gem 'httpclient', '>= 2.8'
