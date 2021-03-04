@@ -1,6 +1,6 @@
 property :repo_name, String, name_property: true
 property :repo_type, String, default: 'maven2-hosted'
-property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
+property :attributes, Hash, coerce: ::Nexus3::Helper.method(:coerce_repo_attributes), default: lazy { ::Mash.new }
 property :online, [true, false], default: true
 property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
