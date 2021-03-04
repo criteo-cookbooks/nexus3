@@ -8,7 +8,7 @@ driver:
 
 provisioner:
   name: chef_solo
-  require_chef_omnibus: 13.6.4
+  require_chef_omnibus: 14.7.17
 
 verifier:
   name: inspec

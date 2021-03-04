@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'berkshelf'
 
 group :unit_test do
-  gem 'chef', '= 13.12.14'
+  gem 'chef', '= 14.7.17'
   gem 'chefspec', '>= 7.4.0'
   gem 'fakefs'
   gem 'webmock'
