@@ -1,7 +1,7 @@
 property :role_name, String, name_property: true
 property :description, String, default: ''.freeze
-property :roles, Array, default: lazy { [] }
-property :privileges, Array, default: lazy { [] }
+property :roles, Array, default: lazy { [] }, coerce: proc { |r| r.sort }
+property :privileges, Array, default: lazy { [] }, coerce: proc { |p| p.sort }
 property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do
