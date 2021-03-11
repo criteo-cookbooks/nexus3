@@ -31,6 +31,9 @@ resource to configure Nexus 3 users.
 Use the [nexus3_realm](https://github.com/criteo-cookbooks/nexus3#nexus3_realm)
 resource to handle realm activation.
 
+Use the [nexus3_routing_rule](https://github.com/criteo-cookbooks/nexus3#nexus3_routing_rule)
+resource to configure Nexus 3 routing rules.
+
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
@@ -311,6 +314,23 @@ Handle realm activation via API.
 
 - `realm_name` - Name of realm to act on, defaults to resource name.
 - `enable` - Whether to enable a given realm.
+
+## nexus3_routing_rule
+
+Configures Nexus 3 [routing rules](https://help.sonatype.com/repomanager3/repository-management/routing-rules)
+via the REST API. Routing rules are used to restrict certain paths
+on proxy repositories.
+
+### Actions
+
+- `:create` - Creates or updates a routing rule.
+- `:delete` - Deletes a routing rule.
+
+### Properties
+
+- `description` - Rule description.
+- `mode` - Rule mode to ALLOW or BLOCK the given matchers, defaults to BLOCK.
+- `matchers` - A list of regex to identify paths to allow / block.
 
 ## nexus3_group
 

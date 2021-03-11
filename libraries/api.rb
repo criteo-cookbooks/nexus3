@@ -76,7 +76,8 @@ module Nexus3
     # Define rest methods to get and updates resources.
     # single and many are used to name ruby methods.
     [
-      %w[script script scripts]
+      %w[script script scripts],
+      %w[routing-rules routing_rule routing_rules]
     ].each do |resource, single, many|
       define_method(many) do
         JSON.parse(request(:get, resource))
