@@ -7,10 +7,10 @@ module Nexus3
     # Apply some logic on repo attributes hash
     def self.coerce_repo_attributes(value)
       value = value.dup
-      # Ensure cleanup policies are sorted if any, to ensure coherent comparison
-      if value.dig('cleanup', 'policyName').is_a?(::Array)
+      # Ensure policyName is an array and is sorted to ensure idempotency
+      if value.dig('cleanup', 'policyName')
         value['cleanup'] = value['cleanup'].dup
-        value['cleanup']['policyName'] = value['cleanup']['policyName'].sort
+        value['cleanup']['policyName'] = ::Kernel.Array(value['cleanup']['policyName']).sort
       end
       value
     end
