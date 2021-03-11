@@ -8,7 +8,7 @@ module Nexus3
     def self.coerce_repo_attributes(value)
       value = value.dup
       # Ensure cleanup policies are sorted if any, to ensure coherent comparison
-      if value.dig('cleanup', 'policyName')
+      if value.dig('cleanup', 'policyName').is_a?(::Array)
         value['cleanup'] = value['cleanup'].dup
         value['cleanup']['policyName'] = value['cleanup']['policyName'].sort
       end
