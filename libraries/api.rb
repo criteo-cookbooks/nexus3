@@ -15,7 +15,7 @@ module Nexus3
     end
 
     def self.endpoint(port)
-      "http://localhost:#{port}/service/rest/v1/script/"
+      "http://localhost:#{port}/service/rest/v1/"
     end
 
     def initialize(base_url, user, password)
@@ -69,8 +69,34 @@ module Nexus3
 
     # Runs a specific script with parameters
     def run_script(scriptname, params)
-      body = request(:post, "#{scriptname}/run", 'text/plain', params)
+      body = request(:post, "script/#{scriptname}/run", 'text/plain', params)
       JSON.parse(body)['result']
+    end
+
+    # Define rest methods to get and updates resources.
+    # single and many are used to name ruby methods.
+    [
+      %w[script script scripts]
+    ].each do |resource, single, many|
+      define_method(many) do
+        JSON.parse(request(:get, resource))
+      end
+
+      define_method(single) do |name|
+        JSON.parse(request(:get, "#{resource}/#{name}"))
+      end
+
+      define_method("delete_#{single}") do |name|
+        request(:delete, "#{resource}/#{name}")
+      end
+
+      define_method("add_#{single}") do |data|
+        request(:post, resource, 'application/json', data)
+      end
+
+      define_method("update_#{single}") do |data|
+        request(:put, "#{resource}/#{data['name']}", 'application/json', data)
+      end
     end
   end
 end

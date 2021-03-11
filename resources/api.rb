@@ -5,7 +5,7 @@ property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::A
 
 load_current_value do |desired|
   begin
-    response = JSON.parse(api_client.request(:get, desired.script_name))
+    response = api_client.script(desired.script_name)
     content response['content'] if response.is_a?(Hash) && response.key?('content')
   rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occured: #{e.message}"
@@ -15,9 +15,8 @@ end
 
 action :create do
   converge_if_changed do
-    new_resource.api_client.request(:delete, new_resource.script_name) unless current_resource.nil?
-    new_resource.api_client.request(:post, '', 'application/json', name: new_resource.script_name, type: 'groovy',
-                                                                   content: new_resource.content)
+    new_resource.api_client.delete_script(new_resource.script_name) unless current_resource.nil?
+    new_resource.api_client.add_script(name: new_resource.script_name, type: 'groovy', content: new_resource.content)
   end
 end
 
@@ -30,7 +29,7 @@ end
 action :delete do
   unless current_resource.nil?
     converge_by "deleting script #{new_resource.script_name}" do
-      new_resource.api_client.request(:delete, new_resource.script_name)
+      new_resource.api_client.delete_script(new_resource.script_name)
     end
   end
 end

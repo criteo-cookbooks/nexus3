@@ -227,8 +227,8 @@ end
 
 ## nexus3_api
 
-Configures Nexus 3 Repository Manager via API. Low-level resource, usually
-used within other resources.
+Configures Nexus 3 Repository Manager via Script API. Low-level resource,
+usually used within other resources.
 
 ### Actions
 - `:create` - Creates or updates the named script on the repository manager
