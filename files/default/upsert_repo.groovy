@@ -1,6 +1,8 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import org.sonatype.nexus.repository.config.Configuration
+import org.sonatype.nexus.repository.routing.RoutingRule
+import org.sonatype.nexus.repository.routing.RoutingRuleStore
 
 def params = new JsonSlurper().parseText(args)
 
@@ -16,6 +18,12 @@ if (params.multi_policy_cleanup_support && params.attributes.containsKey("cleanu
   params.attributes["cleanup"]["policyName"] = params.attributes["cleanup"]["policyName"].toSet()
 }
 
+RoutingRuleStore routingRuleStore = container.lookup(RoutingRuleStore.class.getName());
+RoutingRule routingRule;
+if (params.containsKey("routingRuleName") && params["routingRuleName"] != "") {
+  routingRule = routingRuleStore.getByName(params["routingRuleName"]);
+}
+
 def repo = repository.repositoryManager.get(params.name)
 
 if (repo == null) { // create
@@ -24,6 +32,9 @@ if (repo == null) { // create
     conf.setRecipeName(params.type)
     conf.setOnline(params.online)
     conf.setAttributes(params.attributes as Map)
+    if (routingRule != null) {
+      conf.setRoutingRuleId(routingRule.id());
+    }
 
     repository.repositoryManager.create(conf)
 } else { // update
@@ -33,6 +44,12 @@ if (repo == null) { // create
     }
     conf.setOnline(params.online)
     conf.setAttributes(params.attributes)
+    if (routingRule != null) {
+      conf.setRoutingRuleId(routingRule.id());
+    } else {
+      conf.setRoutingRuleId(null);
+    }
+
     repo.stop()
     repo.update(conf)
     repo.start()
