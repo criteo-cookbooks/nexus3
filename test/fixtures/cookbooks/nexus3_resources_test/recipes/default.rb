@@ -1,4 +1,5 @@
 include_recipe 'nexus3_test'
+include_recipe '::dependencies'
 
 tested_resources = {}
 node['nexus3_resources_test'].each do |resource_name, actions|

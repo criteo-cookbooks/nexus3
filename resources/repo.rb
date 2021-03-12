@@ -2,6 +2,7 @@ property :repo_name, String, name_property: true
 property :repo_type, String, default: 'maven2-hosted'
 property :attributes, Hash, coerce: ::Nexus3::Helper.method(:coerce_repo_attributes), default: lazy { ::Mash.new }
 property :online, [true, false], default: true
+property :routing_rule_name, String, default: ''
 property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
@@ -13,6 +14,7 @@ load_current_value do |desired|
     repo_type config['recipeName']
     attributes config['attributes']
     online config['online']
+    routing_rule_name config['routingRuleName']
   # We rescue here because during the first run, the repository will not exist yet, so we let Chef know that
   # the resource has to be created.
   rescue LoadError, ::Nexus3::ApiError => e
@@ -31,6 +33,7 @@ action :create do
            type: new_resource.repo_type,
            online: new_resource.online,
            attributes: new_resource.attributes,
+           routingRuleName: new_resource.routing_rule_name,
            multi_policy_cleanup_support: Gem::Version.new(node['nexus3']['version'].split('-').first) >=
                                          Gem::Version.new('3.19.0')
 
