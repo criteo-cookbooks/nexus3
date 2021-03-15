@@ -9,6 +9,5 @@ default['nexus3_resources_test']['user']['create']['update_with_properties']['la
 default['nexus3_resources_test']['user']['create']['update_with_properties']['first_name'] = 'first_blah'
 default['nexus3_resources_test']['user']['create']['update_with_properties']['email'] = 'bur@bla.h'
 default['nexus3_resources_test']['user']['create']['update_with_properties']['roles'] = %w[nx-anonymous nx-admin]
-# action :delete
+# action :delete (without password!)
 default['nexus3_resources_test']['user']['delete']['default']['username'] = 'bur'
-default['nexus3_resources_test']['user']['delete']['default']['password'] = 'secret'
