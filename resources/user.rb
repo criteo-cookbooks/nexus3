@@ -17,11 +17,13 @@ load_current_value do |desired|
     roles config['roles']
 
     # Check if we need to change the password.
-    begin
-      ::Nexus3::Api.new(api_client.endpoint, username, desired.password).request(:get, '/service/metrics/ping')
-      password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
-    rescue ::Nexus3::ApiError
-      password desired.password
+    if self.class.properties[:password].is_set?(desired)
+      begin
+        ::Nexus3::Api.new(api_client.endpoint, username, desired.password).request(:get, '/service/metrics/ping')
+        password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
+      rescue ::Nexus3::ApiError
+        password desired.password
+      end
     end
   rescue LoadError, ::Nexus3::ApiError => e
     ::Chef::Log.warn "A '#{e.class}' occurred: #{e.message}"
