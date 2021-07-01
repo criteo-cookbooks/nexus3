@@ -50,9 +50,9 @@ module Nexus3
       end
     end
 
-    def request(method, path, content_type = 'application/json', data = nil)
+    def request(method, path, content_type: 'application/json', data: nil, query: nil)
       data = JSON.generate(data) if content_type == 'application/json' && (data.is_a?(Hash) || data.is_a?(Array))
-      res = http_client.request(method, path, nil, data, 'Content-Type' => content_type)
+      res = http_client.request(method, path, query, data, 'Content-Type' => content_type)
       res.body
     rescue StandardError => e
       error_message = " with following error\n#{e.response.body}" if e.respond_to? 'response'
@@ -63,7 +63,7 @@ module Nexus3
 
     # Runs a specific script with parameters
     def run_script(scriptname, params)
-      body = request(:post, "script/#{scriptname}/run", 'application/json', params)
+      body = request(:post, "script/#{scriptname}/run", data: params)
       JSON.parse(body)['result']
     end
 
@@ -86,11 +86,11 @@ module Nexus3
       end
 
       define_method("add_#{single}") do |data|
-        request(:post, resource, 'application/json', data)
+        request(:post, resource, data: data)
       end
 
       define_method("update_#{single}") do |data|
-        request(:put, "#{resource}/#{data['name']}", 'application/json', data)
+        request(:put, "#{resource}/#{data['name']}", data: data)
       end
     end
   end
