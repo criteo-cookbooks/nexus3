@@ -8,7 +8,7 @@ describe 'Nexus3::Api' do
 
   it 'does not generate json for a custom content-type' do
     stub_request(:post, 'http://localhost/sample/api/script/rspec/run')
-      .with(body: 'example', headers: { 'Content-Type' => 'text/plain' })
+      .with(body: 'example', headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: '{"result":"ok"}')
     expect(api_client.run_script('rspec', 'example')).to eq('ok')
   end

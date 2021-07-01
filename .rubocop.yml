@@ -21,3 +21,9 @@ Style/FormatString:
 
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Max: 8
+
+Metrics/PerceivedComplexity:
+  Max: 8
