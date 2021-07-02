@@ -34,6 +34,9 @@ resource to handle realm activation.
 Use the [nexus3_routing_rule](https://github.com/criteo-cookbooks/nexus3#nexus3_routing_rule)
 resource to configure Nexus 3 routing rules.
 
+Use the [nexus3_component](https://github.com/criteo-cookbooks/nexus3#nexus3_component)
+resource to create a component / upload an asset.
+
 ## Requirements
 * Chef 12.14.34+
 * ark cookbook
@@ -428,6 +431,33 @@ nexus3_cleanup_policy 'example' do
   criteria lastBlobUpdated: '604800', lastDownloaded: '259200'
 end
 ```
+
+## nexus3_component
+
+Create a component / upload an asset to a given repository.
+Currently supports Maven2, Raw and Rubygems repositories.
+
+### Actions
+
+- `:create` - Creates a component.
+
+### Properties
+
+- `component_name` - Component name, use as is for maven2.artifactId / raw.asset1.filename
+- `type` - Type of asset (linked to repo type), maven2, raw, rubygems
+- `repo` - Repository
+- `asset` - Path to a file on the machine to upload
+
+When uploading a maven2 asset:
+
+- `maven2_asset_extension` - Asset extension, e.g. jar
+- `maven2_asset_classifier` - (Optional) Asset classifier, e.g. uber
+- `maven2_version` - Component version
+- `maven2_group_id` - Component group ID, e.g. com.example
+
+When uploading a raw asset:
+
+- `raw_directory` - Asset remote path / directory
 
 ## Getting Help
 

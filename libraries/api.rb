@@ -93,5 +93,19 @@ module Nexus3
         request(:put, "#{resource}/#{data['name']}", data: data)
       end
     end
+
+    # exists? check if asset at the given path exists
+    def exists?(repo, path)
+      # Little hack with custom client to get read of the API prefix.
+      # TODO: Provide more data to the Api init / pass the api prefix in each method
+      u = URI.parse(@endpoint)
+      u.path = ::File.join('/repository', repo, path) # Replace api prefix by the path to the asset
+      res = ::HTTPClient.new.head(u)
+      res.ok?
+    end
+
+    def add_component(repository, params)
+      request(:post, 'components', query: { 'repository' => repository }, content_type: 'multipart/form-data', data: params)
+    end
   end
 end
