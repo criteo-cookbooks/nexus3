@@ -1,32 +1,28 @@
 require_relative '../../spec_helper'
+require_relative '../../../libraries/api'
 
 describe 'Nexus3::Api' do
   let(:api_client) do
     Nexus3::Api.new('http://localhost/sample/api/', 'admin', 'admin123')
   end
 
-  let(:repo_list) do
-    [
-      {
-        'name' => 'foo',
-        'content' => 'repository.createMavenHosted(\'foo\')',
-        'type' => 'groovy'
-      },
-      {
-        'name' => 'anonymous',
-        'content' => 'security.setAnonymousAccess(Boolean.valueOf(args))',
-        'type' => 'groovy'
-      }
-    ]
+  it 'does not generate json for a custom content-type' do
+    stub_request(:post, 'http://localhost/sample/api/script/rspec/run')
+      .with(body: 'example', headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: 200, body: '{"result":"ok"}')
+    expect(api_client.run_script('rspec', 'example')).to eq('ok')
   end
 
-  let(:repo_list2) do
-    repo_list <<
-      {
-        'name' => 'maven-test',
-        'content' => 'repository.createMavenHosted(\'maven-test\')',
-        'type' => 'groovy'
-      }
+  it 'generates json data for application/json content type' do
+    stub_request(:post, 'http://localhost/sample/api/routing-rules')
+      .with(body: '{"some":"json"}', headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: 200, body: '{"result":"ok"}')
+    stub_request(:post, 'http://localhost/sample/api/routing-rules')
+      .with(body: '["an","array"]', headers: { 'Content-Type' => 'application/json' })
+      .to_return(status: 200, body: '{"result":"ok"}')
+
+    expect(api_client.add_routing_rule('some' => 'json')).to eq('{"result":"ok"}')
+    expect(api_client.add_routing_rule(%w[an array])).to eq('{"result":"ok"}')
   end
 
   before(:each) do

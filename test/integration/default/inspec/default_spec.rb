@@ -66,11 +66,13 @@ else # Linux
   end
 
   %w[foo bar].each do |service|
-    unless os.debian?
+    unless os.debian? || os.linux?
       describe service("nexus3_#{service}") do
         it { should be_enabled }
       end
     end
+
+    next if os.linux?
 
     describe service("nexus3_#{service}") do
       it { should be_running }
