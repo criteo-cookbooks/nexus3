@@ -40,9 +40,8 @@ load_current_value do |desired|
     ::Chef::Log.debug "Config is: #{config}"
     crontab config.dig('schedule', 'cronExpression') || ''.freeze
     task_type config['.typeId'] || ''.freeze
-    config['properties'].nil? || config['properties'].each do |key, value|
-      properties[key] = value
-    end
+    # Only care about properties we are setting
+    properties(config.keep_if { |k, _| desired.properties.keys.include?(k) })
 
   # We rescue here because during the first run, the task will not exist yet, so we let Chef know that
   # the resource has to be created.
