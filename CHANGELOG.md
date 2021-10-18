@@ -1,9 +1,23 @@
 # Changelog
 
-## Unreleased
+## 4.0.0 2021-10-18
 
 - Task creation is now more generic. This change is breaking with any previous
-  usage of tasks. Please have a look at api_examples/task.rb for integration
+  usage of tasks. Please have a look at api_examples/task.rb for integration.
+  (PR #115)
+- New component resource to upload assets via Chef (PR #128)
+- New routing_rule resource to create routing rules (PR #123, #126)
+- API endpoint is now used for REST API too, /script must be removed
+  from the path. (PR #123, 068c1a7)
+- Install httpclient via cookbook metadata gem dependency
+- Enable scripts creation by default as this cookbook relies on few
+  script to create the different resources (PR ##116, 307964d)
+- Allow configuring nexus.properties via attributes (PR #79)
+- Avoid forcing default version to all users (PR #96)
+
+Nexus < 3.27 is now unsupported.
+
+All commits included: https://github.com/criteo-cookbooks/nexus3/compare/v3.6.0...8dc896f
 
 ## 3.6.0 2019-12-16
 
