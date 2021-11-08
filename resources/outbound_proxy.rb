@@ -1,4 +1,4 @@
-property :config, Hash, default: lazy { ::Mash.new }
+property :config, Hash, default: lazy { ::Mash.new }, sensitive: true
 property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do
@@ -24,6 +24,7 @@ action :create do
       args new_resource.config
       action %i[create run]
       api_client new_resource.api_client
+      sensitive true
 
       content ::Nexus3::Scripts.groovy_content('upsert_outbound_proxy', node)
     end
