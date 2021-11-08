@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.0 2021-11-08
+
+- Make outbound proxy configuration sensitive to not leak credentials
+
 ## 4.0.0 2021-10-18
 
 - Task creation is now more generic. This change is breaking with any previous
