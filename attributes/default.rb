@@ -26,8 +26,17 @@ default['nexus3']['nofile_limit'] = 65_536
 # Ref:
 #   https://help.sonatype.com/repomanager3/installation/configuring-the-runtime-environment
 #   https://help.sonatype.com/repomanager3/system-requirements
-default['nexus3']['vmoptions_variables']['Xms4G'] = nil
-default['nexus3']['vmoptions_variables']['Xmx4G'] = nil
+default['nexus3']['desired_heap_size'] = '4G'
+
+on_attribute_update('nexus3', 'desired_heap_size') do |_precedence, _path, new_value, previous_value|
+  new_value ||= node.read('nexus3', 'desired_heap_size') # the block is yield on registration with no "new value"
+
+  rm_default('nexus3', 'vmoptions_variables', "Xms#{previous_value}")
+  rm_default('nexus3', 'vmoptions_variables', "Xmx#{previous_value}")
+  default['nexus3']['vmoptions_variables']["Xms#{new_value}"] = nil
+  default['nexus3']['vmoptions_variables']["Xmx#{new_value}"] = nil
+end
+
 default['nexus3']['vmoptions_variables']['XX:+HeapDumpOnOutOfMemoryError'] = nil
 default['nexus3']['vmoptions_variables']['XX:+UnlockDiagnosticVMOptions'] = nil
 default['nexus3']['vmoptions_variables']['XX:+UnsyncloadClass'] = nil

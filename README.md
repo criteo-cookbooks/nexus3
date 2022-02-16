@@ -78,9 +78,10 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
   Default `{ 'application-host': '0.0.0.0', 'application-port': '8081', 'nexus-args':
   '${jetty.etc}/jetty.xml,${jetty.etc}/jetty-http.xml,${jetty.etc}/jetty-requestlog.xml',
   'nexus-context-path': '/' }`.
+- `node['nexus3']['desired_heap_size']` - To easily configure the min & max heap size (JVM Xms & Xmx). Default `'4G'`.
 - `node['nexus3']['vmoptions_variables']` - A Hash of variables that are
   passed into a template file. Note that data directory will be injected into
-  the hash if it is not defined. Default `{ Xms: '1200M', Xmx: '1200M' }`.
+  the hash if it is not defined and Xms & Xmx variables are managed by `desired_heap_size`. Default `{ Xms: '4G', Xmx: '4G' }`.
 - `node['nexus3']['nofile_limit']` - Limit of open files available for the
   Nexus3 service in systemd. Default 65,536 as suggested by the Sonatype
   documentation on newer releases.
