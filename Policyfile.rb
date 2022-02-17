@@ -12,6 +12,7 @@ cookbook 'nexus3_resources_test', path: 'test/fixtures/cookbooks/nexus3_resource
 
 # Test attributes
 default['nexus3_test']['connection_retries'] = 10
+default['nexus3']['desired_heap_size'] = '2G'
 default['nexus3']['api']['sensitive'] = false
 
 # Constraints for Chef 14 :(
