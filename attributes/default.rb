@@ -38,3 +38,4 @@ default['nexus3']['vmoptions_variables']['Dkaraf.base'] = '.'
 default['nexus3']['vmoptions_variables']['Dkaraf.home'] = '.'
 default['nexus3']['vmoptions_variables']['Dkaraf.startLocalConsole'] = false
 default['nexus3']['vmoptions_variables']['Djava.net.preferIPv4Stack'] = true
+default['nexus3']['vmoptions_variables']['Djava.endorsed.dirs'] = 'lib/endorsed'
