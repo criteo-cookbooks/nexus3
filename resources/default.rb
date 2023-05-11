@@ -13,7 +13,7 @@ property :data, String, default: lazy { node['nexus3']['data'] }
 property :service_name, String, default: lazy { instance_name }
 property :properties_variables, Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
-property :outbound_proxy, [Hash, NilClass], default: lazy { node['nexus3']['outbound_proxy'] }
+property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { node['nexus3']['outbound_proxy'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
