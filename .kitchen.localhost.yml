@@ -4,6 +4,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  chef_license: accept
   require_chef_omnibus: 14.7.17
 
 verifier:
