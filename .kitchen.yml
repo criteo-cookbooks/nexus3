@@ -30,15 +30,3 @@ platforms:
 
 suites:
   - name: default
-    run_list:
-      - nexus3_test::default
-      - nexus3_resources_test::default
-      - nexus3_test::integration
-    attributes:
-       nexus3_test:
-         connections_retries: 10
-       nexus3:
-         api:
-           sensitive: false
-           live_stream: false
-           fail: false

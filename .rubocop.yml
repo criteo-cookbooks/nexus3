@@ -16,6 +16,10 @@ Layout/AbcSize:
 Layout/BlockLength:
   Max: 130
 
+Naming/FileName:
+  Exclude:
+  - Policyfile.rb # this is chef names
+
 Style/FormatString:
   Exclude: ['spec/**/*', 'test/**/*']
 
