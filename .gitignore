@@ -1,7 +1,7 @@
 .idea
 .DS_Store
 
-Berksfile.lock
+Policyfile.lock.json
 Gemfile.lock
 .kitchen/
 .kitchen.local.yml

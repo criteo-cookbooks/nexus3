@@ -1,5 +1,5 @@
 require 'chefspec'
-require 'chefspec/berkshelf'
+require 'chefspec/policyfile'
 require 'webmock/rspec'
 
 VER = '3.27.0-03'.freeze
