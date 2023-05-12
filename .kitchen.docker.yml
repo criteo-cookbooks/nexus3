@@ -32,9 +32,9 @@ platforms:
     intermediate_instructions:
       - RUN yum -y install tar yum
 
-- name: ubuntu-16.04
+- name: ubuntu-20.04
   driver:
-    image: dokken/ubuntu-16.04
+    image: dokken/ubuntu-20.04
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
