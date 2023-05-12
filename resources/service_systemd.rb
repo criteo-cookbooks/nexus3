@@ -52,21 +52,26 @@ end
 
 action_class do
   def create_init
-    template "/etc/systemd/system/nexus3_#{new_resource.instance_name}.service" do
-      source 'systemd_unit.erb'
-      variables(
-        instance_name: new_resource.instance_name,
-        install_dir: new_resource.install_dir,
-        nexus3_user: new_resource.nexus3_user,
-        nofile_limit: new_resource.nofile_limit
+    nexus_bin = ::File.join(new_resource.install_dir, 'bin', 'nexus')
+    systemd_unit "nexus3_#{new_resource.instance_name}.service" do
+      action :create
+      content(
+        Unit: {
+          Description: "nexus service (#{new_resource.instance_name})",
+          After: 'network.target'
+        },
+        Service: {
+          Type: 'forking',
+          LimitNOFILE: new_resource.nofile_limit,
+          ExecStart: "#{nexus_bin} start",
+          ExecStop: "#{nexus_bin} stop",
+          User: new_resource.nexus3_user,
+          Restart: 'on-abort'
+        },
+        Install: {
+          WantedBy: 'multi-user.target'
+        }
       )
-      cookbook 'nexus3'
-      notifies :run, 'execute[Load systemd unit file]', :immediately
-    end
-
-    execute 'Load systemd unit file' do
-      command 'systemctl daemon-reload'
-      action :nothing
     end
   end
 end
