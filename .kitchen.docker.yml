@@ -17,7 +17,7 @@ verifier:
 platforms:
 - name: centos-7
   driver:
-    image: centos:7
+    image: dokken/centos-7
     intermediate_instructions:
       - RUN yum clean all
       - RUN yum -y install net-tools lsof
@@ -34,7 +34,7 @@ platforms:
 
 - name: ubuntu-16.04
   driver:
-    image: ubuntu:16.04
+    image: dokken/ubuntu-16.04
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update
