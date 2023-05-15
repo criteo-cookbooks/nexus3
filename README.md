@@ -5,7 +5,7 @@
 
 [cookbook]: https://supermarket.chef.io/cookbooks/nexus3
 [cookbook_version]: https://img.shields.io/cookbook/v/nexus3.svg
-[build_status]: https://api.travis-ci.org/criteo-cookbooks/nexus3.svg?branch=master
+[build_status]: https://img.shields.io/github/actions/workflow/status/criteo-cookbooks/nexus3/criteo-cookbooks-ci.yml
 
 This cookbook installs and configures Sonatype Nexus 3 Repository
 Manager OSS according to 
