@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.2.0 2023-05-15
+
+- Make outbound proxy property sensitive in the default nexus3 resource
+- Use systemd_unit resource instead of template+execute for Nexus3 unit
+- Add JVM option Djava.endorsed.dirs to fix NoClassDefFoundError
+
 ## 4.1.0 2021-11-08
 
 - Make outbound proxy configuration sensitive to not leak credentials
