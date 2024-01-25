@@ -13,6 +13,8 @@ default['nexus3']['home'] = "#{node['nexus3']['path']}/nexus3"
 default['nexus3']['data'] = "#{node['nexus3']['path']}/sonatype-work/nexus3"
 # Nexus username (do not run as root)
 default['nexus3']['user'] = 'nexus'
+default['nexus3']['uid'] = nil
+default['nexus3']['gid'] = nil
 
 default['nexus3']['properties_variables']['application-port'] = '8081'
 default['nexus3']['properties_variables']['application-host'] = '0.0.0.0'

@@ -14,6 +14,8 @@ unless platform_family?('windows')
     data '/usr/local/nexusbar/data'
     nexus3_user 'nexusbar'
     nexus3_group 'nexusbar'
+    nexus3_uid 1234
+    nexus3_gid 5678
     nexus3_home '/home/nexusbar'
     nexus3_password 'humdiddle'
     properties_variables(node['nexus3']['properties_variables'].merge('application-port': '8082'))
