@@ -60,6 +60,13 @@ else # Linux
     its('content') { should match(%r{nexus-context-path=/}) }
   end
 
+  describe user('nexusbar') do
+    it { should exist }
+    its('uid') { should eq 1234 }
+    its('group') { should eq 'nexusbar' }
+    its('gid') { should eq 5678 }
+  end
+
   describe file('/usr/local/nexusbar/data/etc') do
     it { should be_directory }
     it { should be_owned_by 'nexusbar' }

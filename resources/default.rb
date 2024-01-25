@@ -1,6 +1,8 @@
 property :instance_name, String, name_property: true
 property :nexus3_user, [String, NilClass], default: lazy { node['nexus3']['user'] }
+property :nexus3_uid, [String, Integer, NilClass], default: lazy { node['nexus3']['uid'] }
 property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['group'] }
+property :nexus3_gid, [String, Integer, NilClass], default: lazy { node['nexus3']['gid'] }
 property :nexus3_password, String, sensitive: true, default: lazy { node['nexus3']['api']['password'] } # Admin password
 property :version, String, default: lazy { node['nexus3']['version'] }
 property :url, [String, NilClass], default: lazy { node['nexus3']['url'] }
@@ -18,16 +20,17 @@ property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { nod
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
 
+  group new_resource.nexus3_group do
+    gid new_resource.nexus3_gid unless new_resource.nexus3_gid.nil?
+  end
+
   user new_resource.nexus3_user do
     comment 'Nexus 3 user'
+    group new_resource.nexus3_group
     home new_resource.nexus3_home
     manage_home false # is linked to install_dir below
     shell '/bin/bash'
-  end
-
-  group new_resource.nexus3_group do
-    members new_resource.nexus3_user
-    append true
+    uid new_resource.nexus3_uid unless new_resource.nexus3_uid.nil?
   end
 
   # Install Nexus3 software
