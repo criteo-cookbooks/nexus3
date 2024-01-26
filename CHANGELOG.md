@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.3.0 2024-01-26
+
+- Add new nexus3.desired_heap_size attribute to ease JVM heap tuning
+- Allow to configure nexus's system user uid & gid
+
 ## 4.2.0 2023-05-15
 
 - Make outbound proxy property sensitive in the default nexus3 resource
