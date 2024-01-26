@@ -60,6 +60,11 @@ else # Linux
     its('content') { should match(%r{nexus-context-path=/}) }
   end
 
+  describe file('/opt/nexus3/deploy/nexus-repository-cargo-bundle.kar') do
+    it { should be_file }
+    it { should be_owned_by 'nexus' }
+  end
+
   describe user('nexusbar') do
     it { should exist }
     its('uid') { should eq 1234 }
