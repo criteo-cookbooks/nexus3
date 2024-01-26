@@ -87,6 +87,7 @@ Downloads and installs the latest Nexus 3 Repository Manager OSS.
   documentation on newer releases.
 - `node['nexus3']['outbound_proxy']` - Configure outbound HTTP/HTTPS proxy. See example
   'Configure outbound HTTP/HTTPS proxy for all the attributes.'
+- `node['nexus3']['plugins']` - Install external plugins, takes a hash of `{ 'plugin-name' : { "name": "name override", "source": "..", "checksum": "..", "action": "remote file action"}}`. Plugins should be bundled in KAR format, and will be written on disk as `<plugin-name>-bundle.kar`
 
 ### Examples
 
