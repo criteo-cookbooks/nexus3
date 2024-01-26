@@ -16,6 +16,7 @@ property :service_name, String, default: lazy { instance_name }
 property :properties_variables, Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { node['nexus3']['outbound_proxy'] }
+property :plugins, Hash, default: lazy { node['nexus3']['plugins'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
@@ -94,6 +95,19 @@ action :install do
     group new_resource.nexus3_group
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, "ruby_block[#{blocker}]", :delayed
+  end
+
+  # Install plugins
+  new_resource.plugins.each do |name, config|
+    plugin_file_path = ::File.join(install_dir, 'deploy', "#{config['name'] || name}-bundle.kar")
+    remote_file plugin_file_path do
+      source config['source']
+      checksum config['checksum']
+      owner new_resource.nexus3_user
+      action((config['action'] || :create).to_sym)
+      notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
+      notifies :run, "ruby_block[#{blocker}]", :delayed
+    end
   end
 
   link new_resource.nexus3_home do

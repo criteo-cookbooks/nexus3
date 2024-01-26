@@ -50,3 +50,15 @@ default['nexus3']['vmoptions_variables']['Dkaraf.home'] = '.'
 default['nexus3']['vmoptions_variables']['Dkaraf.startLocalConsole'] = false
 default['nexus3']['vmoptions_variables']['Djava.net.preferIPv4Stack'] = true
 default['nexus3']['vmoptions_variables']['Djava.endorsed.dirs'] = 'lib/endorsed'
+
+# Plugins bundles in KAR format to install
+#
+#  default['nexus3']['plugins']['nexus-repository-chef'] = {
+#    "name": "force_another_name",
+#    "source": "https://on.the.internet/nexus-repository-chef-0.0.10-bundle.kar",
+#    "checksum": "8e6494bd8edbf3beb6b7054d599561e698dcf3f666c2114b7126c246804484a9",
+#    "action": "create" # https://docs.chef.io/resources/remote_file/#actions
+#  }
+#
+# https://help.sonatype.com/en/installing-bundles.html
+default['nexus3']['plugins'] = {}
