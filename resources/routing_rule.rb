@@ -2,7 +2,7 @@ property :rule_name, ::String, name_property: true
 property :description, ::String, default: ''.freeze
 property :mode, ::String, equal_to: %w[BLOCK ALLOW], default: 'BLOCK'.freeze
 property :matchers, Array, default: lazy { [] }, coerce: proc { |m| m.sort }
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin

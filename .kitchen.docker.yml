@@ -2,7 +2,7 @@
 ---
 driver:
   name: dokken
-  chef_version: 14.7.17
+  chef_version: 17.9.46
   privileged: true # because Docker and SystemD/Upstart
 
 transport:
@@ -16,26 +16,26 @@ verifier:
   name: inspec
 
 platforms:
-- name: centos-7
+- name: centos-stream-8
   driver:
-    image: dokken/centos-7
+    image: dokken/centos-stream-8
     intermediate_instructions:
       - RUN yum clean all
       - RUN yum -y install net-tools lsof
     pid_one_command: /usr/lib/systemd/systemd
 
-- name: fedora-29
+- name: fedora-39
   driver:
-    image: fedora:29
+    image: dokken/fedora-39
     intermediate_instructions:
     - RUN yum clean all
     pid_one_command: /usr/lib/systemd/systemd
     intermediate_instructions:
       - RUN yum -y install tar yum
 
-- name: ubuntu-20.04
+- name: ubuntu-22.04
   driver:
-    image: dokken/ubuntu-20.04
+    image: dokken/ubuntu-22.04
     pid_one_command: /bin/systemd
     intermediate_instructions:
       - RUN /usr/bin/apt-get update

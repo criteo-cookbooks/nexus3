@@ -3,7 +3,7 @@ property :group_type, String, regex: /-group$/, default: 'maven2-group'
 property :repositories, Array, default: lazy { [] }
 property :attributes, Hash, default: lazy { ::Mash.new } # Not mandatory but strongly recommended in the generic case.
 property :online, [true, false], default: true
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 action :create do
   nexus3_repo new_resource.group_name do

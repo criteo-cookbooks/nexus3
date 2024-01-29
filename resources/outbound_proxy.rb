@@ -1,5 +1,5 @@
 property :config, Hash, default: lazy { ::Mash.new }, sensitive: true
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do
   begin

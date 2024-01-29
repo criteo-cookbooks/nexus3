@@ -3,7 +3,7 @@ property :format, ::String, default: 'raw'.freeze
 property :criteria, ::Hash, default: lazy { ::Mash.new }, coerce: proc { |c| c.is_a?(::Mash) ? c : ::Mash.new(c) }
 property :mode, ::String, default: 'delete'.freeze
 property :notes, ::String, default: ''.freeze
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin

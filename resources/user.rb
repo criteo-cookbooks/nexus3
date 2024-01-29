@@ -4,7 +4,7 @@ property :first_name, String, default: ''
 property :last_name, String, default: ''
 property :email, String, default: ''
 property :roles, Array, default: lazy { [] }, coerce: proc { |r| r.sort }
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin

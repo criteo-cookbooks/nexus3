@@ -3,7 +3,7 @@ property :repo_type, String, default: 'maven2-hosted'
 property :attributes, Hash, coerce: ::Nexus3::Helper.method(:coerce_repo_attributes), default: lazy { ::Mash.new }
 property :online, [true, false], default: true
 property :routing_rule_name, String, default: ''
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin

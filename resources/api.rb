@@ -1,7 +1,7 @@
 property :script_name, String, name_property: true
 property :content, String, default: ''.freeze
 property :args, [Hash, String, NilClass], desired_state: false
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   begin

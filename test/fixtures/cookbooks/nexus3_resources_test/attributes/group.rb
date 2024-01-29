@@ -1,5 +1,5 @@
 # Test group resource
-default_repo_conf = ::Mash.new(storage: { blobStoreName: 'default', writePolicy: 'ALLOW_ONCE' })
+default_repo_conf = ::Mash.new(storage: { blobStoreName: 'default', writePolicy: 'ALLOW_ONCE' }, component: {})
 default_group_conf = ::Mash.new(storage: { blobStoreName: 'default', strictContentTypeValidation: true })
 
 # Create 2 pypi repo first

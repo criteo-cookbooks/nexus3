@@ -1,4 +1,4 @@
-include_recipe 'java' unless platform_family?('windows')
+openjdk_pkg_install '8' unless platform_family?('windows')
 
 package 'curl'
 
