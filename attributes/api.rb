@@ -1,6 +1,6 @@
 default['nexus3']['api']['script_cookbook'] = 'nexus3'
 default['nexus3']['api']['type'] = 'groovy'
-default['nexus3']['api']['endpoint'] = 'http://localhost:8081/service/rest/v1/script/'
+default['nexus3']['api']['endpoint'] = 'http://localhost:8081/service/rest/v1/'
 default['nexus3']['api']['username'] = 'admin'
 default['nexus3']['api']['password'] = 'admin123'
 default['nexus3']['api']['ignore_failure'] = true
