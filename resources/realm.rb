@@ -1,6 +1,6 @@
 property :realm_name, String, name_property: true
 property :enable, [true, false], required: true
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 load_current_value do |desired|
   # By default, it will be 'false' if given realm not exist on server's side, then

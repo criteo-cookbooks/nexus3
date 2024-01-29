@@ -10,7 +10,7 @@ property :maven2_group_id, [NilClass, ::String], default: nil
 # raw specific params
 property :raw_directory, [NilClass, ::String], default: nil
 
-property :api_client, ::Nexus3::Api, identity: true, default: lazy { ::Nexus3::Api.default(node) }
+property :api_client, ::Nexus3::Api, identity: true, desired_state: false, default: lazy { ::Nexus3::Api.default(node) }
 
 action :create do
   validate!

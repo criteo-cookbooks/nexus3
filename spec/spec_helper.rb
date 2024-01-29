@@ -1,8 +1,9 @@
 require 'chefspec'
 require 'chefspec/policyfile'
+require 'rexml/document'
 require 'webmock/rspec'
 
-VER = '3.27.0-03'.freeze
+VER = '3.64.0-04'.freeze
 CACHE = Chef::Config[:file_cache_path]
 CENTOS_VERSION = '7.8.2003'.freeze
 
