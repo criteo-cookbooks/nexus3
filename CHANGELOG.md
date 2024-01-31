@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.0 2024-01-31
+
+- [Breaking] Require Chef 17 as minimum Chef version
+- Support plugins installation in bundled KAR format
+- Fix default api endpoint value
+
 ## 4.3.0 2024-01-26
 
 - Add new nexus3.desired_heap_size attribute to ease JVM heap tuning
