@@ -1,5 +1,7 @@
 openjdk_pkg_install '8' unless platform_family?('windows')
 
+group 'nexusall'
+
 package 'curl'
 
 # Installation with default settings
@@ -16,6 +18,7 @@ unless platform_family?('windows')
     nexus3_group 'nexusbar'
     nexus3_uid 1234
     nexus3_gid 5678
+    nexus3_additional_groups ['nexusall']
     nexus3_home '/home/nexusbar'
     nexus3_password 'humdiddle'
     properties_variables(node['nexus3']['properties_variables'].merge('application-port': '8082'))

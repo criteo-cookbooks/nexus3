@@ -69,6 +69,7 @@ else # Linux
     it { should exist }
     its('uid') { should eq 1234 }
     its('group') { should eq 'nexusbar' }
+    its('groups') { should include 'nexusall' }
     its('gid') { should eq 5678 }
   end
 

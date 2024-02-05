@@ -3,6 +3,7 @@ property :nexus3_user, [String, NilClass], default: lazy { node['nexus3']['user'
 property :nexus3_uid, [String, Integer, NilClass], default: lazy { node['nexus3']['uid'] }
 property :nexus3_group, [String, NilClass], default: lazy { node['nexus3']['group'] }
 property :nexus3_gid, [String, Integer, NilClass], default: lazy { node['nexus3']['gid'] }
+property :nexus3_additional_groups, [Array, NilClass], default: lazy { node['nexus3']['additional_groups'] }
 property :nexus3_password, String, sensitive: true, default: lazy { node['nexus3']['api']['password'] } # Admin password
 property :version, String, default: lazy { node['nexus3']['version'] }
 property :url, [String, NilClass], default: lazy { node['nexus3']['url'] }
@@ -32,6 +33,16 @@ action :install do
     manage_home false # is linked to install_dir below
     shell '/bin/bash'
     uid new_resource.nexus3_uid unless new_resource.nexus3_uid.nil?
+  end
+
+  new_resource.nexus3_additional_groups.to_a.each do |gr|
+    group "add #{new_resource.nexus3_user} user to #{gr} group" do
+      group_name gr
+      action :modify
+      append true
+      members [new_resource.nexus3_user]
+      not_if { platform?('windows') }
+    end
   end
 
   # Install Nexus3 software
