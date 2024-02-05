@@ -2,9 +2,12 @@ source 'https://rubygems.org'
 
 group :unit_test do
   gem 'chef', '= 17.9.46'
-  gem 'chefspec', '>= 9.3.6'
   gem 'fakefs', '>= 2.5.0'
   gem 'webmock', '>= 3.13.0'
+
+  # TODO: Unpin chefspec and remove rspec pin once chefspec integrates breaking rspec-expectations change
+  gem 'chefspec', '= 9.3.6'
+  gem 'rspec-expectations', '= 3.12.3'
 end
 
 group :integration do
