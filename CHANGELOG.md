@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.0 2024-02-06
+
+- Allow to add nexus user to additional groups
+
 ## 5.0.0 2024-01-31
 
 - [Breaking] Require Chef 17 as minimum Chef version
