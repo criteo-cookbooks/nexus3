@@ -8,7 +8,7 @@ source_url 'https://github.com/criteo-cookbooks/chef-nexus3' if respond_to?(:sou
 issues_url 'https://github.com/criteo-cookbooks/chef-nexus3/issues' if respond_to?(:issues_url)
 version '5.1.0'
 
-chef_version '>= 17.9.46'
+chef_version '>= 14.7.17'
 
 depends 'ark'
 depends 'updatable-attributes', '>= 1.0.0'
