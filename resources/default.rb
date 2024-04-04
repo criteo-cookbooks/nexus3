@@ -18,6 +18,7 @@ property :properties_variables, Hash, default: lazy { node['nexus3']['properties
 property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { node['nexus3']['outbound_proxy'] }
 property :plugins, Hash, default: lazy { node['nexus3']['plugins'] }
+property :logback_variables, Hash, default: lazy { node['nexus3']['logback_variables'] }
 
 action :install do
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
@@ -106,6 +107,17 @@ action :install do
     group new_resource.nexus3_group
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, "ruby_block[#{blocker}]", :delayed
+  end
+
+  template ::File.join(new_resource.data, 'etc', 'logback', 'logback.xml') do
+    source new_resource.logback_variables['source']
+    cookbook new_resource.logback_variables['cookbook']
+    mode '0644'
+    owner new_resource.nexus3_user
+    group new_resource.nexus3_group
+    notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
+    notifies :run, "ruby_block[#{blocker}]", :delayed
+    not_if { new_resource.logback_variables.empty? }
   end
 
   # Install plugins
