@@ -20,7 +20,7 @@ property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { nod
 property :plugins, Hash, default: lazy { node['nexus3']['plugins'] }
 property :logback_variables, Hash, default: lazy { node['nexus3']['logback_variables'] }
 
-action :install do
+action :install do # rubocop:disable Metrics/BlockLength
   install_dir = ::File.join(new_resource.path, "nexus-#{new_resource.version}")
 
   group new_resource.nexus3_group do
