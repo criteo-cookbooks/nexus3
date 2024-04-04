@@ -25,6 +25,8 @@ default['nexus3']['properties_variables']['nexus-args'] = '${jetty.etc}/jetty.xm
 default['nexus3']['properties_variables']['nexus-context-path'] = '/'
 default['nexus3']['properties_variables']['nexus.scripts.allowCreation'] = 'true'
 
+default['nexus3']['logback_variables'] = {}
+
 default['nexus3']['nofile_limit'] = 65_536
 
 # Nexus JVM tunning
