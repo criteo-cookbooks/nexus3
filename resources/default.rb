@@ -115,6 +115,7 @@ action :install do # rubocop:disable Metrics/BlockLength
     mode '0644'
     owner new_resource.nexus3_user
     group new_resource.nexus3_group
+    variables(config: new_resource.logback_variables['config'])
     notifies :restart, "nexus3_service[#{new_resource.service_name}]", :delayed
     notifies :run, "ruby_block[#{blocker}]", :delayed
     not_if { new_resource.logback_variables.empty? }
