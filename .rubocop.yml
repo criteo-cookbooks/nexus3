@@ -7,13 +7,13 @@ AllCops:
 Layout/LineLength:
   Max: 150
 
-Layout/MethodLength:
+Metrics/MethodLength:
   Max: 60
 
-Layout/AbcSize:
+Metrics/AbcSize:
   Max: 60
 
-Layout/BlockLength:
+Metrics/BlockLength:
   Max: 130
 
 Naming/FileName:

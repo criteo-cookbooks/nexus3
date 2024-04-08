@@ -6,3 +6,4 @@ Gemfile.lock
 .kitchen/
 .kitchen.local.yml
 .bundle/
+bundle/

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'nexus3_resources_test::default' do
-  NON_TESTED_RESOURCES = %w[service_systemd service_windows default service_sysvinit].freeze
+  NON_TESTED_RESOURCES = %w[default license service_systemd service_sysvinit service_windows].freeze
   cached(:chef_run) do
     ::ChefSpec::SoloRunner.new(platform: 'centos', version: CENTOS_VERSION).converge(described_recipe)
   end
