@@ -17,6 +17,8 @@ property :service_name, String, default: lazy { instance_name }
 property :properties_variables, Hash, default: lazy { node['nexus3']['properties_variables'] }
 property :vmoptions_variables, Hash, default: lazy { node['nexus3']['vmoptions_variables'] }
 property :outbound_proxy, [Hash, NilClass], sensitive: true, default: lazy { node['nexus3']['outbound_proxy'] }
+property :license_fingerprint, [String, NilClass], default: lazy { node['nexus3']['license_fingerprint'] }
+property :license, [String, NilClass], sensitive: true, default: lazy { node['nexus3']['license'] }
 property :plugins, Hash, default: lazy { node['nexus3']['plugins'] }
 property :logback_variables, Hash, default: lazy { node['nexus3']['logback_variables'] }
 
@@ -140,6 +142,30 @@ action :install do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  license_file_path = new_resource.properties_variables['nexus.licenseFile']
+  license_already_installed = !license_file_path.nil? && ::File.exist?(license_file_path)
+
+  directory "license directory for #{new_resource.instance_name}" do
+    path(lazy { ::File.dirname(license_file_path) })
+    recursive true
+    owner     'root'
+    group     'root'
+    mode      '0755'
+    only_if { !new_resource.license.nil? && !license_file_path.nil? }
+  end
+
+  file "license for #{new_resource.instance_name}" do
+    action    :create
+    path      license_file_path
+    owner     'root'
+    group     new_resource.nexus3_group
+    mode      '0640'
+    sensitive true
+    content(lazy { ::Base64.decode64(new_resource.license) })
+    notifies :update, 'nexus3_license[update installed license]', :delayed if license_already_installed
+    only_if { !new_resource.license.nil? && !license_file_path.nil? }
+  end
+
   link new_resource.nexus3_home do
     to install_dir
     owner new_resource.nexus3_user
@@ -162,9 +188,9 @@ action :install do # rubocop:disable Metrics/BlockLength
       wait_until_ready!(::Nexus3::Api.endpoint(port), node['nexus3']['api']['wait'])
     end
     action :nothing
-    notifies :create, "nexus3_api[#{pwchanger}]"
-    notifies :run, "nexus3_api[#{pwchanger}]"
-    notifies new_resource.outbound_proxy ? :create : :delete, 'nexus3_outbound_proxy[default]'
+    notifies :create, "nexus3_api[#{pwchanger}]", :delayed
+    notifies :run, "nexus3_api[#{pwchanger}]", :delayed
+    notifies new_resource.outbound_proxy ? :create : :delete, 'nexus3_outbound_proxy[default]', :delayed
   end
 
   passwd_file = ::File.join(new_resource.data, 'admin.password')
@@ -176,7 +202,7 @@ action :install do # rubocop:disable Metrics/BlockLength
     api_client(lazy { ::Nexus3::Api.local(port, 'admin', ::File.read(passwd_file)) })
     only_if { ::File.exist? passwd_file }
     action :nothing
-    notifies :delete, "file[#{passwd_file}]"
+    notifies :delete, "file[#{passwd_file}]", :delayed
   end
 
   file passwd_file do
@@ -188,6 +214,12 @@ action :install do # rubocop:disable Metrics/BlockLength
     action :nothing
     config new_resource.outbound_proxy unless new_resource.outbound_proxy.nil?
     api_client(lazy { ::Nexus3::Api.local(port, 'admin', new_resource.nexus3_password) })
+  end
+
+  nexus3_license 'update installed license' do
+    action :nothing
+    fingerprint new_resource.license_fingerprint
+    license new_resource.license
   end
 end
 
