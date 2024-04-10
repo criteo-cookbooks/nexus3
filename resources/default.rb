@@ -109,6 +109,12 @@ action :install do # rubocop:disable Metrics/BlockLength
     notifies :run, "ruby_block[#{blocker}]", :delayed
   end
 
+  directory ::File.join(new_resource.data, 'etc', 'logback') do
+    mode '0755'
+    owner new_resource.nexus3_user
+    group new_resource.nexus3_group
+  end
+
   template ::File.join(new_resource.data, 'etc', 'logback', 'logback.xml') do
     source new_resource.logback_variables['source']
     cookbook new_resource.logback_variables['cookbook']
