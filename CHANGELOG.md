@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.2.0 2024-04-10
+
+- Allow to customize logback.xml
+
 ## 5.1.0 2024-02-06
 
 - Allow to add nexus user to additional groups
