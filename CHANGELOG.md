@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.2.1 2024-04-11
+
+- Fixing logback.xml by creating etc/logback directory before nexus starts
+
 ## 5.2.0 2024-04-10
 
 - Allow to customize logback.xml
