@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.3.0 2024-04-19
+
+* Add new resource for license update
+* Support license install via system property
+
 ## 5.2.1 2024-04-11
 
 - Fixing logback.xml by creating etc/logback directory before nexus starts
