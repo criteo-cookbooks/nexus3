@@ -43,7 +43,7 @@ describe 'nexus3_test::user' do
                    user_response('user_with_role'),
                    user_response('user_with_role'))
 
-      stub_request(:get, 'http://localhost:8081/service/rapture/session')
+      stub_request(:get, 'http://localhost:8081/service/rest/v1/status')
         .to_return(api_response(200))
     end
 

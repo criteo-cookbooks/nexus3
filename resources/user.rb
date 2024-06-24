@@ -19,7 +19,7 @@ load_current_value do |desired|
     # Check if we need to change the password.
     if self.class.properties[:password].is_set?(desired)
       begin
-        ::Nexus3::Api.new(api_client.endpoint, username, desired.password).request(:get, '/service/rapture/session')
+        ::Nexus3::Api.new(api_client.endpoint, username, desired.password).request(:get, 'status')
         password desired.password
       rescue ::Nexus3::ApiError
         password 'Supercalifragilisticexpialidocious-that-does-not-exist-so-maybe-the-resource-will-need-to-converge'
