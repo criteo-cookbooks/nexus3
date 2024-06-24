@@ -21,7 +21,6 @@ platforms:
     image: dokken/centos-stream-8
     intermediate_instructions:
       - RUN yum clean all
-      - RUN yum -y install net-tools lsof
     pid_one_command: /usr/lib/systemd/systemd
 
 - name: fedora-39
