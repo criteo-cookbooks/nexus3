@@ -18,8 +18,10 @@ verifier:
 platforms:
 - name: centos-stream-8
   driver:
-    image: dokken/centos-stream-8:sha-f885abd
+    image: dokken/centos-stream-8
     intermediate_instructions:
+      - RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+      - RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
       - RUN dnf clean all
       - RUN dnf -y install net-tools lsof
     pid_one_command: /usr/lib/systemd/systemd
