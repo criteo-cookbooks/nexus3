@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.3.1 2024-06-25
+
+- Fix loading current value for nexus user passwords
+- Fix CI errors with centos-stream-8 kitchen suite
+
 ## 5.3.0 2024-04-19
 
 * Add new resource for license update
