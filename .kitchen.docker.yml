@@ -20,8 +20,10 @@ platforms:
   driver:
     image: dokken/centos-stream-8
     intermediate_instructions:
-      - RUN yum clean all
-      - RUN yum -y install net-tools lsof
+      - RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+      - RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+      - RUN dnf clean all
+      - RUN dnf -y install net-tools lsof
     pid_one_command: /usr/lib/systemd/systemd
 
 - name: fedora-39
