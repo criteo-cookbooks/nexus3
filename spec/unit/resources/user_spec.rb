@@ -43,8 +43,11 @@ describe 'nexus3_test::user' do
                    user_response('user_with_role'),
                    user_response('user_with_role'))
 
-      stub_request(:get, 'http://localhost:8081/service/metrics/ping')
-        .to_return(api_response(200))
+      stub_request(:get, 'http://localhost:8081/service/rest/v1/status')
+        .to_return(api_response(200)) # Nominal case
+      stub_request(:get, 'http://localhost:8081/service/rest/v1/status')
+        .with(basic_auth: %w[test-with-pass newpassword])
+        .to_return(api_response(401)) # When password is changed
     end
 
     it 'creates a user' do
