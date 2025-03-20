@@ -67,6 +67,11 @@ module Nexus3
       JSON.parse(body)['result']
     end
 
+    def run_json_script(scriptname, params)
+      result = run_script(scriptname, params)
+      [nil, '', 'null'].include?(result) ? nil : JSON.parse(result)
+    end
+
     # Define rest methods to get and updates resources.
     # single and many are used to name ruby methods.
     [

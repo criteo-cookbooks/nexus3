@@ -7,7 +7,7 @@ property :api_client, ::Nexus3::Api, identity: true, desired_state: false, defau
 
 load_current_value do |desired|
   begin
-    config = ::JSON.parse(api_client.run_script('get_repo', desired.repo_name))
+    config = api_client.run_json_script('get_repo', desired.repo_name)
     current_value_does_not_exist! if config.nil?
     ::Chef::Log.debug "Config is: #{config}"
     repo_name config['repositoryName']
