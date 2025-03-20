@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.2 2025-03-20
+
+- Fix & centralize the json parsing of the scripts executions
+
 ## 5.3.1 2024-06-25
 
 - Fix loading current value for nexus user passwords
