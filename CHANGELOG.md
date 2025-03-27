@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.3.3 2025-03-27
+
+- Fix license update in multi-instance context
+
 ## 5.3.2 2025-03-20
 
 - Fix & centralize the json parsing of the scripts executions
