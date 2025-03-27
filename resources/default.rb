@@ -220,6 +220,7 @@ action :install do # rubocop:disable Metrics/BlockLength
     action :nothing
     fingerprint new_resource.license_fingerprint
     license new_resource.license
+    api_client(lazy { ::Nexus3::Api.local(port, 'admin', new_resource.nexus3_password) })
   end
 end
 
